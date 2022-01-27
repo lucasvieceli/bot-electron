@@ -1,0 +1,17 @@
+export const colors = {
+  seledyn: '#32E6B7',
+  green: '#82D930',
+  violet: '#9379FF',
+  blue: '#3BACD9',
+  red: '#D9506B',
+  orange: '#D98425',
+  black: '#212024',
+  almostBlack: '#2C2D30',
+  white: '#FFFFFF',
+  gray: '#C7CFD6',
+  yellow: '#D9CF25',
+  pink: '#CA50D9',
+  ultramarin: '#3255E6',
+  lightGray: '#E5E5E5',
+  gray08: 'rgba(199,207,214, 0.08)',
+}
