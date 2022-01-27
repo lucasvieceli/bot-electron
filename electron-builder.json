@@ -17,6 +17,7 @@
             { "target": "deb", "arch": ["x64"] },
             { "target": "7z", "arch": ["x64"] }
         ],
+
         "category": "Education"
     },
     "nsis": {
