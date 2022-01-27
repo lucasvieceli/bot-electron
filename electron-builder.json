@@ -1,6 +1,6 @@
 {
     "appId": "com.bot.app",
-    "files": ["dist-webpack/main/bundle.js", "dist-webpack/renderer/**/*", "./assets/**/*"],
+    "files": ["dist-webpack/main/bundle.js", "dist-webpack/renderer/**/*", "./assets/**/*", "./python/**/*"],
     "win": {
         "target": ["nsis"],
         "requestedExecutionLevel": "requireAdministrator"
@@ -11,6 +11,18 @@
     "mac": {
         "icon": "./assets/images/bcoin.ico"
     },
+    "extraFiles": [
+        {
+            "from": "assets",
+            "to": "assets",
+            "filter": ["**/*"]
+        },
+        {
+            "from": "python",
+            "to": "python",
+            "filter": ["**/*"]
+        }
+    ],
     "linux": {
         "icon": "./assets/images/linux.png",
         "target": [
