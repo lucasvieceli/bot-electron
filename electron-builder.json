@@ -12,7 +12,7 @@
         "icon": "./assets/images/bcoin.ico"
     },
     "linux": {
-        "icon": "./assets/images/bcoin.png",
+        "icon": "./assets/images/linux.png",
         "target": [
             { "target": "deb", "arch": ["x64"] },
             { "target": "7z", "arch": ["x64"] }

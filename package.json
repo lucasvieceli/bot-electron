@@ -12,7 +12,7 @@
         "postinstall": "electron-builder install-app-deps",
         "build": "webpack --config webpack.config.prod.js",
         "build:dev": "webpack --config webpack.config.dev.js",
-        "package": "npm run build && electron-builder --linux  ",
+        "package": " npm run build && electron-builder --linux  ",
         "start": "concurrently \"npm run start:dev\" \"npm run start:electron\"",
         "start1": "concurrently \"npm run start:prod\" \"npm run start:electron\"",
         "start:dev": "webpack-dev-server --config webpack.config.dev.js",
@@ -32,7 +32,7 @@
         "react-router-dom": "^6.2.1",
         "reactstrap": "^9.0.1",
         "reflect-metadata": "^0.1.13",
-        "sqlite3": "^4.1.1",
+        "sqlite3": "^5.0.0",
         "styled-components": "^5.3.3",
         "typeorm": "^0.2.24"
     },
