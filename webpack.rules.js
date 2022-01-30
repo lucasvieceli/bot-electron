@@ -1,3 +1,5 @@
+const path = require("path");
+
 //
 module.exports = rules = [
     {
@@ -5,6 +7,12 @@ module.exports = rules = [
         use: ['style-loader', 'css-loader', 'sass-loader'],
     },
     {
+        test: /\.node$/,
+        loader: "node-loader",
+    },
+
+    {
+
         test: /\.(jpg|png|woff|woff2|eot|ttf)$/,
         use: [
             {

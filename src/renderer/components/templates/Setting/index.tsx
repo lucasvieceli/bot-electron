@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Spinner } from 'reactstrap';
-import Config from '../../../../main/database/models/config';
+import Config from '../../../../main/database/models/config.model';
 import { ConfigService } from '../../../services';
 import { ConfigItemNumber, ConfigItemSelect } from '../../molecules';
 import { ContainerMain } from '../../organisms';

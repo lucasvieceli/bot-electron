@@ -1,10 +1,10 @@
 import { ipcRenderer, remote } from 'electron';
-import { IpcRendererEvent } from 'electron/renderer';
+import { IpcRendererEvent } from 'electron';
 // import { IpcRendererEvent } from 'electron/renderer';
 import React, { useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Database from '../../../../main/database/Database';
-import Log from '../../../../main/database/models/log';
+import Log from '../../../../main/database/models/log.model';
 import { TerminalItem } from '../../molecules';
 import { Container, Content } from './styles';
 
@@ -37,12 +37,11 @@ export const Terminal = () => {
         const create = {
             message: 'teste mensagem com parametro e translate parametro: {{parametro}}',
             params: { parametro: 'valor parameltro' },
+            account: 1,
         };
-
         const log = repo.create(create);
         console.log(await repo.save(log), log);
     };
-    console.log(messages);
     return (
         <>
             <button onClick={teste} style={{ height: 150, background: 'red' }}>
@@ -51,8 +50,12 @@ export const Terminal = () => {
             <Container>
                 <Content>
                     <TerminalItem text="Aguardando mensagem..." />
-                    {messages.map(({ id, message, params }, i) => (
-                        <TerminalItem key={id.toString()} text={t(message, params) + ' ' + id} />
+                    {messages.map((item) => (
+                        <TerminalItem
+                            key={item.id.toString()}
+                            account={item.account}
+                            text={t(item.message, item.params)}
+                        />
                     ))}
                     <div style={{ float: 'left', clear: 'both' }} ref={refMessageEnd}></div>
                 </Content>

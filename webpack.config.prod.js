@@ -1,7 +1,6 @@
 const path = require('path');
 const rules = require('./webpack.rules');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const rendererConfig = {
     mode: 'production',
     target: 'electron-renderer',
@@ -50,6 +49,12 @@ const mainConfig = {
             },
             ...rules,
         ],
+    },
+    node: {
+        __dirname: false,
+    },
+    optimization: {
+        minimize: false
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],

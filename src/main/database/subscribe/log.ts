@@ -1,6 +1,7 @@
-import { EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
+import { EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
 import { win } from '../..';
-import Log from '../models/log';
+import Database from '../Database';
+import Log from '../models/log.model';
 
 @EventSubscriber()
 export class LogSubscriber implements EntitySubscriberInterface {
@@ -8,7 +9,9 @@ export class LogSubscriber implements EntitySubscriberInterface {
         return Log;
     }
 
-    afterInsert(event: InsertEvent<Log>) {
-        win.webContents.send('log', event.entity);
+    async afterInsert(event: InsertEvent<Log>) {
+        const repo = Database.getInstance().getRepository<Log>('Log');
+        const entity = await repo.findOne(event.entity.id, { relations: ['account'] });
+        win.webContents.send('log', entity);
     }
 }

@@ -1,15 +1,27 @@
 import path from 'path';
 import { Connection, getConnectionManager } from 'typeorm';
 import { defaultStorageFolder } from '..';
-import { Config1643217018480 } from './migrations/1643217018480-Config';
-import Config from './models/config';
-import Log from './models/log';
+import { CreateConfig1643552279546 } from './migrations/1643552279546-CreateConfig';
+import { CreateAccount1643552406874 } from './migrations/1643552406874-CreateAccount';
+import { CreateLog1643552491184 } from './migrations/1643552491184-CreateLog';
+import { CreateGameAction1643555044764 } from './migrations/1643555044764-CreateGameAction';
+import Account from './models/account.model';
+import Config from './models/config.model';
+import Log from './models/log.model';
 import { LogSubscriber } from './subscribe/log';
 
 export default class Database {
     public connection: Connection;
+    static instance: Database;
 
     constructor() {}
+
+    static getInstance() {
+        if (Database.instance) return Database.instance;
+
+        Database.instance = new Database();
+        return Database.instance;
+    }
 
     public async init(): Promise<void> {
         const connectionManager = getConnectionManager();
@@ -19,11 +31,16 @@ export default class Database {
                 name: 'sqlite',
                 type: 'sqlite',
                 database: path.join(defaultStorageFolder, 'bot_database.sqlite'),
-                entities: [Config, Log],
-                migrations: [Config1643217018480],
+                entities: [Config, Log, Account],
+                migrations: [
+                    CreateConfig1643552279546,
+                    CreateAccount1643552406874,
+                    CreateLog1643552491184,
+                    CreateGameAction1643555044764,
+                ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,
-                synchronize: true,
+                synchronize: false,
             });
         }
 

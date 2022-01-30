@@ -1,18 +1,28 @@
-import React, { FC } from 'react'
-import { Container, TextMessage, TextSeparator, TextSystem } from './styles'
+import React, { FC } from 'react';
+import Account from '../../../../main/database/models/account.model';
+import { Container, TextMessage, TextSeparator, TextSystem } from './styles';
 
 interface TerminalItemProps {
-  text: string
+    text: string;
+    account?: Account | number;
 }
 
-const TerminalItem: FC<TerminalItemProps> = ({ text }) => {
-  return (
-    <Container>
-      <TextSystem>sistema</TextSystem>
-      <TextSeparator>:~$</TextSeparator>
-      <TextMessage>{text}</TextMessage>
-    </Container>
-  )
-}
+const TerminalItem: FC<TerminalItemProps> = ({ text, account }) => {
+    const getAccount = () => {
+        console.log(account);
+        if (!account || typeof account == 'number') return 'sistema';
 
-export default TerminalItem
+        const label = account.name ? account.name : account.metamaskId;
+
+        return label;
+    };
+    return (
+        <Container>
+            <TextSystem>{getAccount()}</TextSystem>
+            <TextSeparator>:~$</TextSeparator>
+            <TextMessage>{text}</TextMessage>
+        </Container>
+    );
+};
+
+export default TerminalItem;

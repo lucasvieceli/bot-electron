@@ -1,15 +1,21 @@
-import { app, BrowserWindow, Menu } from 'electron';
 import 'reflect-metadata'; // Required by TypoORM.
+import { app, BrowserWindow, Menu } from 'electron';
+import path from 'path';
 import Database from './database/Database';
+import { GameLoop } from './service/game-loop.service';
+import { copyTargets } from './util/copy-targets';
 
-export const defaultStorageFolder = app.getPath('documents');
+export const defaultStorageFolder = path.join(app.getPath('documents'), 'bot-bombcrypto');
 
 const isDev: boolean = !app.isPackaged;
-const database = new Database();
 export let win: BrowserWindow;
+const database = Database.getInstance();
 
 async function createWindow() {
+    await copyTargets();
     await database.init();
+
+    global.database = database;
 
     win = new BrowserWindow({
         width: 1920,
@@ -26,8 +32,6 @@ async function createWindow() {
 
     Menu.setApplicationMenu(Menu.buildFromTemplate([{ label: 'teste' }]));
 
-    global.database = database;
-
     if (isDev) {
         win.loadURL('http://localhost:8080');
         win.webContents.openDevTools();
@@ -35,7 +39,13 @@ async function createWindow() {
         win.loadFile('./dist-webpack/renderer/index.html');
         // win.loadURL(`file://${path.join(__dirname, '../../.webpack/renderer/index.html')}`);
     }
+
     win.show();
+
+    setTimeout(async () => {
+        const game = GameLoop.getInstance();
+        game.start();
+    }, 3000);
 }
 
 async function registerListeners() {
@@ -44,33 +54,16 @@ async function registerListeners() {
     //   const print = await printScreen()
     //   e.returnValue = print
     // })
-    const { PythonShell } = require('python-shell');
-    let options: any = {
-        mode: 'text',
-        pythonOptions: ['-u'],
-        args: ['waldo'],
-        // pythonPath: './python-3.10/python.exe',
-    };
-    setTimeout(async () => {
-        console.log('foi');
-        let pyshell: any = PythonShell.run('python/positions.py', options, (r: string) => {
-            console.log(r);
-        });
-        console.log(await PythonShell.getVersion());
-        pyshell.on('message', function (message: string) {
-            console.log(message, 'uashduashdipuasdhuasdhuasd');
-        });
-    }, 3000);
 }
 app.whenReady().then(registerListeners).then(createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-    database.close();
-    //app.quit();
+    // if (process.platform !== 'darwin') {
+    //     app.quit();
+    // }
+    Database.getInstance().close();
+    app.quit();
 });
 
 app.on('activate', () => {
