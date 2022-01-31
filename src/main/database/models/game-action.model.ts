@@ -21,8 +21,8 @@ export default class GameAction {
     @Column({ name: 'loop' })
     loop?: number;
 
-    @Column('integer')
-    time: number;
+    @Column({ name: 'config_time' })
+    configTime: string;
 
     @Column('integer')
     order: number;

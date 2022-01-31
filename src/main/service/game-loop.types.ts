@@ -7,7 +7,7 @@ export interface Browser {
 }
 
 export interface ActionsConfig {
-    time: number;
+    configTime?: string;
     lastTime: number;
     action: GameAction;
 }

@@ -55,9 +55,9 @@ export class GameLoop {
 
                 for (let action of this.actions) {
                     if (!this.execute) return;
-
+                    const timeCheck = this.getTimeActionCheck(action);
                     const lastExecute = timeToMinutes(currentTime - action.lastTime);
-                    const checkTime = lastExecute > action.time;
+                    const checkTime = lastExecute > timeCheck;
 
                     if (checkTime) {
                         action.lastTime = currentTime;
@@ -68,6 +68,10 @@ export class GameLoop {
                 await sleep(1000);
             }
         }
+    }
+
+    private getTimeActionCheck(action: ActionsConfig) {
+        return action.configTime ? parseInt(this.getConfigByName(action.configTime, '0')) : 0;
     }
 
     private async checkAccount(browser: Browser) {
@@ -96,7 +100,7 @@ export class GameLoop {
 
             if (action.loop) {
                 this.actions.push({
-                    time: action.time,
+                    configTime: action.configTime,
                     lastTime: action.startTime ? getTime() : 0,
                     action: classAction.getInstance(),
                 });
