@@ -4,9 +4,10 @@ import Config from '../../main/database/models/config.model';
 
 const database: Database = remote.getGlobal('database');
 
-const getAll = async (): Promise<Config> => {
+const getConfigSystem = async (): Promise<Config[]> => {
     const repo = database.getRepository<Config>('Config');
-    return repo.findOne('config');
+
+    return repo.find({ where: { account: null } });
 };
 const update = async (values: Config) => {
     return await database.connection
@@ -20,8 +21,8 @@ const updateColumn = async (column: string, value: string) => {
     return await database.connection
         .createQueryBuilder()
         .update('Config')
-        .set({ [column]: value })
-        .where('id = :id', { id: 'config' })
+        .set({ value })
+        .where('name = :name', { name: column })
         .execute();
 };
-export default { getAll, update, updateColumn };
+export default { getConfigSystem, update, updateColumn };

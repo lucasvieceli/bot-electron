@@ -1,71 +1,33 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    PrimaryColumn,
+    ManyToOne,
+    JoinColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import Account from './account.model';
 
 @Entity('Config')
 export default class Config {
-    // @PrimaryGeneratedColumn()
-    @PrimaryColumn()
-    id?: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
-    intervalWork: string;
+    name: string;
 
     @Column()
-    intervalRefreshHeroes: string;
+    value: string;
 
-    @Column()
-    intervalCheckLogin: string;
+    @ManyToOne(() => Account, (account) => account.configs, { nullable: true })
+    @JoinColumn({ name: 'account_id' })
+    account?: Account | number;
 
-    @Column()
-    thresholdDefault: string;
+    @CreateDateColumn()
+    created: Date;
 
-    @Column()
-    thresholdHeroCommon: string;
-
-    @Column()
-    thresholdHeroRare: string;
-
-    @Column()
-    thresholdHeroSuperRare: string;
-
-    @Column()
-    thresholdHeroEpic: string;
-
-    @Column()
-    thresholdHeroLegend: string;
-
-    @Column()
-    thresholdHeroSuperLegend: string;
-
-    @Column()
-    thresholdButtonMetamask: string;
-
-    @Column()
-    thresholdButtonWork: string;
-
-    @Column()
-    thresholdBarLife: string;
-
-    @Column()
-    newMapEnable: string;
-
-    @Column()
-    newMapHeroCommon: string;
-
-    @Column()
-    newMapHeroRare: string;
-
-    @Column()
-    newMapHeroSuperRare: string;
-
-    @Column()
-    newMapHeroEpic: string;
-
-    @Column()
-    newMapHeroLegend: string;
-
-    @Column()
-    newMapHeroSuperLegend: string;
-
-    @Column()
-    newMapTime: string;
+    @UpdateDateColumn()
+    updated: Date;
 }

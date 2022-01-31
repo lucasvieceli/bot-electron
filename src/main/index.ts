@@ -4,6 +4,7 @@ import path from 'path';
 import Database from './database/Database';
 import { GameLoop } from './service/game-loop.service';
 import { copyTargets } from './util/copy-targets';
+require('./util/opencv');
 
 export const defaultStorageFolder = path.join(app.getPath('documents'), 'bot-bombcrypto');
 

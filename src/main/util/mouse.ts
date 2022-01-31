@@ -23,6 +23,7 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
 
         const center = centerTarget(match);
         moveMouseAndClick(center.x, center.y);
-        return true;
+        await sleep(300);
+        return match;
     }
 };

@@ -7,9 +7,12 @@ export class CreateGameAction1643555044764 implements MigrationInterface {
             "id"	INTEGER NOT NULL,
             "name"	VARCHAR NOT NULL,
             "file_name"	VARCHAR NOT NULL,
+            "class_name"	VARCHAR NOT NULL,
             "start_time"	INTEGER,
+            "loop"	INTEGER NOT NULL,
             "time"	INTEGER NOT NULL,
-            "created"	DATETIME NOT NULL DEFAULT 'datetime(''now'')',
+            "order"	INTEGER NOT NULL,
+            "created"	DATETIME NOT NULL DEFAULT (datetime('now')),
             PRIMARY KEY("id")
         );
         `);

@@ -15,7 +15,7 @@ import Account from './account.model';
 @Entity('Log')
 export default class Log {
     @PrimaryGeneratedColumn()
-    id?: string;
+    id: number;
 
     @Column()
     message: string;

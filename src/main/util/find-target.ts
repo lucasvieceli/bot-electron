@@ -1,10 +1,10 @@
 const cv = require('./opencv');
-import { app } from 'electron';
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
 import { CenterTarget, TargetMatch, TargetNames, TargetsCv } from './find-target.types';
 import { printScreen } from './print-screen';
+import { sleep } from './time';
 
 let targets: TargetsCv = {} as TargetsCv;
 

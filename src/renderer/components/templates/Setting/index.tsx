@@ -8,21 +8,24 @@ import { Container, ContainerBlock, Content, Row, TextSubTitle, TextTitle, Conte
 interface SettingProps {}
 
 const Setting: FC<SettingProps> = ({}) => {
-    const [value, setValue] = useState<Config>(undefined);
+    const [value, setValue] = useState<Config[]>(undefined);
     useEffect(() => {
         (async () => {
-            const result = await ConfigService.getAll();
+            const result = await ConfigService.getConfigSystem();
             setValue(result);
         })();
     }, []);
 
     const handleChange = useCallback((value: string, column: string) => {
-        setValue((old: Config) => ({
-            ...old,
-            [column]: value,
-        }));
+        setValue((old: Config[]) => {
+            const index = old.findIndex((v) => v.name == column);
+            old[index].value = value;
+            return [...old];
+        });
         ConfigService.updateColumn(column, value);
     }, []);
+
+    const getValue = (name: string) => value.find((v) => v.name == name).value;
 
     return (
         <ContainerMain>
@@ -39,20 +42,20 @@ const Setting: FC<SettingProps> = ({}) => {
                                 <Content>
                                     <TextSubTitle>Intervalo em minutos</TextSubTitle>
                                     <ConfigItemNumber
-                                        value={value.intervalWork}
-                                        name="intervalWork"
+                                        value={getValue('interval-work')}
+                                        name="interval-work"
                                         text="Tempo para verificar se há heróis disponíveis para trabalhar"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
-                                        value={value.intervalRefreshHeroes}
+                                        value={getValue('interval-refresh-heroes')}
                                         onChange={handleChange}
                                         text="Tempo para atualizar a posição dos heróis no mapa"
-                                        name="intervalRefreshHeroes"
+                                        name="interval-refresh-heroes"
                                     />
                                     <ConfigItemNumber
-                                        value={value.intervalCheckLogin}
-                                        name="intervalCheckLogin"
+                                        value={getValue('interval-check-login')}
+                                        name="interval-check-login"
                                         text="Tempo para verificar login"
                                         onChange={handleChange}
                                     />
@@ -66,63 +69,63 @@ const Setting: FC<SettingProps> = ({}) => {
                                         1. 0 é o valor mínimo, 1 é o valor máximo)
                                     </TextSubTitle>
                                     <ConfigItemNumber
-                                        value={value.thresholdDefault}
-                                        name="thresholdDefault"
+                                        value={getValue('threshold-default')}
+                                        name="threshold-default"
                                         text="Padrão"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói Comum"
-                                        value={value.thresholdHeroCommon}
-                                        name="thresholdHeroCommon"
+                                        value={getValue('threshold-hero-common')}
+                                        name="threshold-hero-common"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói raro"
-                                        value={value.thresholdHeroRare}
-                                        name="thresholdHeroRare"
+                                        value={getValue('threshold-hero-rare')}
+                                        name="threshold-hero-rare"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói super raro"
-                                        value={value.thresholdHeroSuperRare}
-                                        name="thresholdHeroSuperRare"
+                                        value={getValue('threshold-hero-super-rare')}
+                                        name="threshold-hero-super-rare"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói lendário"
-                                        value={value.thresholdHeroLegend}
-                                        name="thresholdHeroLegend"
+                                        value={getValue('threshold-hero-legend')}
+                                        name="threshold-hero-legend"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói épico"
-                                        value={value.thresholdHeroEpic}
-                                        name="thresholdHeroEpic"
+                                        value={getValue('threshold-hero-epic')}
+                                        name="threshold-hero-epic"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Herói super lendário"
-                                        value={value.thresholdHeroSuperLegend}
-                                        name="thresholdHeroSuperLegend"
+                                        value={getValue('threshold-hero-super-legend')}
+                                        name="threshold-hero-super-legend"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Botão Carteira metamask"
-                                        value={value.thresholdButtonMetamask}
-                                        name="thresholdButtonMetamask"
+                                        value={getValue('threshold-button-metamask')}
+                                        name="threshold-button-metamask"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Botão Work"
-                                        value={value.thresholdButtonWork}
-                                        name="thresholdButtonWork"
+                                        value={getValue('threshold-button-work')}
+                                        name="threshold-button-work"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Barra vender estamina"
-                                        value={value.thresholdBarLife}
-                                        name="thresholdBarLife"
+                                        value={getValue('threshold-bar-life')}
+                                        name="threshold-bar-life"
                                         onChange={handleChange}
                                     />
                                 </Content>
@@ -139,14 +142,14 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '0', label: 'Não' },
                                             { id: '1', label: 'Sim' },
                                         ]}
-                                        value={value.newMapEnable}
-                                        name="newMapEnable"
+                                        value={getValue('new-map-enable')}
+                                        name="new-map-enable"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
                                         text="Por quanto tempo irá executar (minutos)"
-                                        value={value.newMapTime}
-                                        name="newMapTime"
+                                        value={getValue('new-map-time')}
+                                        name="new-map-time"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemSelect
@@ -156,8 +159,8 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '0', label: 'Não' },
                                             { id: '1', label: 'Sim' },
                                         ]}
-                                        value={value.newMapHeroCommon}
-                                        name="newMapHeroCommon"
+                                        value={getValue('new-map-hero-common')}
+                                        name="new-map-hero-common"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemSelect
@@ -167,8 +170,8 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '0', label: 'Não' },
                                             { id: '1', label: 'Sim' },
                                         ]}
-                                        value={value.newMapHeroRare}
-                                        name="newMapHeroRare"
+                                        value={getValue('new-map-hero-rare')}
+                                        name="new-map-hero-rare"
                                         onChange={handleChange}
                                     />
                                     <ConfigItemSelect
@@ -179,8 +182,8 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '1', label: 'Sim' },
                                         ]}
                                         onChange={handleChange}
-                                        name="newMapHeroSuperRare"
-                                        value={value.newMapHeroSuperRare}
+                                        name="new-map-hero-super-rare"
+                                        value={getValue('new-map-hero-super-rare')}
                                     />
                                     <ConfigItemSelect
                                         text="Épico"
@@ -190,8 +193,8 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '1', label: 'Sim' },
                                         ]}
                                         onChange={handleChange}
-                                        value={value.newMapHeroEpic}
-                                        name="newMapHeroEpic"
+                                        value={getValue('new-map-hero-epic')}
+                                        name="new-map-hero-epic"
                                     />
                                     <ConfigItemSelect
                                         text="Lendário"
@@ -200,9 +203,9 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '0', label: 'Não' },
                                             { id: '1', label: 'Sim' },
                                         ]}
-                                        value={value.newMapHeroLegend}
+                                        value={getValue('new-map-hero-legend')}
                                         onChange={handleChange}
-                                        name="newMapHeroLegend"
+                                        name="new-map-hero-legend"
                                     />
                                     <ConfigItemSelect
                                         text="Super lendário"
@@ -212,8 +215,8 @@ const Setting: FC<SettingProps> = ({}) => {
                                             { id: '1', label: 'Sim' },
                                         ]}
                                         onChange={handleChange}
-                                        value={value.newMapHeroSuperLegend}
-                                        name="newMapHeroSuperLegend}"
+                                        value={getValue('new-map-hero-super-legend')}
+                                        name="new-map-hero-super-legend"
                                     />
                                 </Content>
                             </ContainerBlock>

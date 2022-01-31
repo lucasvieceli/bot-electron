@@ -1,5 +1,6 @@
 export enum TargetNames {
-    WALDO = 'waldo.jpg',
+    METAMASK = 'metamask.png',
+    METAMASK_COPY = 'copy.png',
 }
 
 export interface CenterTarget {
