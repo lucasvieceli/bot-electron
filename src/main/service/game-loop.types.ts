@@ -2,7 +2,7 @@ import Account from '../database/models/account.model';
 import { GameAction } from './game-actions/game-action.types';
 
 export interface Browser {
-    [key: string]: unknown;
+    [key: string]: any;
     account?: Account;
 }
 

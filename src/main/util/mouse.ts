@@ -26,4 +26,6 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
         await sleep(300);
         return match;
     }
+
+    return false;
 };
