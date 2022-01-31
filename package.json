@@ -16,7 +16,7 @@
         "postinstall": "electron-builder install-app-deps",
         "build": "webpack --config webpack.config.prod.js",
         "build:dev": "webpack --config webpack.config.dev.js",
-        "package": "npx rimraf ./dist-webpack && npm run build && electron-builder --linux --x64 ",
+        "package": "npx rimraf ./dist-webpack && npm run build && electron-builder --mac ",
         "start": "concurrently \"npm run start:dev\" \"npm run start:electron\"",
         "start1": "concurrently \"npm run start:prod\" \"npm run start:electron\"",
         "start:dev": "webpack-dev-server --config webpack.config.dev.js --port 8080",

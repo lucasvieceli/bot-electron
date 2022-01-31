@@ -7,6 +7,9 @@ var basepath = app.getAppPath();
 export async function copyTargets() {
     const pathSource = path.join(basepath, '..', '..', 'assets', 'targets');
     const pathImages = path.join(defaultStorageFolder, 'images');
+    if (!fs.existsSync(defaultStorageFolder)) {
+        fs.mkdirSync(defaultStorageFolder);
+    }
     if (!fs.existsSync(pathImages)) {
         fs.mkdirSync(pathImages);
     }
