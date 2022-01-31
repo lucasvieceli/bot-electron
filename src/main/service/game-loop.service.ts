@@ -47,7 +47,6 @@ export class GameLoop {
     }
 
     private async loop() {
-        console.log(this.browsers);
         while (this.execute) {
             for (let browser of this.browsers) {
                 if ((await this.checkAccount(browser)) == false) return;
@@ -83,7 +82,12 @@ export class GameLoop {
 
     private async initActions() {
         await logService.registerLog('Buscando ações da serem executadas');
-        const actions = await gameActionService.getAll();
+        const actions = await gameActionService.getAll({
+            order: {
+                order: 'ASC',
+            },
+        });
+
         this.actions = [];
         this.actionsStart = [];
 

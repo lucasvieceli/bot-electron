@@ -40,6 +40,13 @@ const mainConfig = {
     mode: 'production',
     target: 'electron-main',
     entry: './src/main/index.ts',
+
+    node: {
+        __dirname: false,
+    },
+    optimization: {
+        minimize: false
+    },
     module: {
         rules: [
             {
@@ -50,17 +57,11 @@ const mainConfig = {
             ...rules,
         ],
     },
-    node: {
-        __dirname: false,
-    },
-    optimization: {
-        minimize: false
-    },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
     //Sqlite3 won't work without this line.
-    externals: { sqlite3: 'commonjs sqlite3', mssql: '', mysql: '', robotjs: '' },
+    externals: { sqlite3: 'commonjs sqlite3', robotjs: 'commonjs robotjs' },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist-webpack', 'main'),

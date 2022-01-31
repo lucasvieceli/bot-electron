@@ -1,3 +1,5 @@
+const a = 2;
+export default { a };
 // import { format } from 'date-fns';
 // import Account from '../../database/models/account.model';
 // import configService from '../config.service';

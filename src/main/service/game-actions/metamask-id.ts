@@ -22,8 +22,10 @@ export class MetamaskId implements GameAction {
     async start(browser: Browser): Promise<void> {
         await LogService.registerLog('Buscando metamask ID');
         const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+
         await clickTarget(TargetNames.METAMASK, threshold);
         const match = await clickTarget(TargetNames.METAMASK_COPY, threshold, 15);
+
         const id = clipboard.readText();
 
         if (match && id) {

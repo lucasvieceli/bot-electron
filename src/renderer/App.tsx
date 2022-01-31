@@ -1,16 +1,16 @@
-import 'reflect-metadata';
-
-import { HashRouter } from 'react-router-dom';
-import { MenuSideBar } from './components/organisms';
-import { RoutesApp } from './routes';
-import { Container, Content } from './styles';
-import { GlobalStyle } from './styles/GlobalStyle';
-import './i18n';
-import { useEffect } from 'react';
 import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { useEffect } from 'react';
+import { HashRouter } from 'react-router-dom';
+import 'reflect-metadata';
+import { MenuSideBar } from './components/organisms';
+import './i18n';
+import { RoutesApp } from './routes';
+import { GlobalStyle } from './styles/GlobalStyle';
+
 // import { IpcRendererEvent } from 'electron/renderer';
 
 export function App() {
+    console.log('initttt');
     useEffect(() => {
         const onLog: any = (e: IpcRendererEvent, log: string) => {
             alert(log);
