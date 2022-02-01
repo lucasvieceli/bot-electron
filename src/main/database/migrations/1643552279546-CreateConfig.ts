@@ -26,7 +26,7 @@ export class CreateConfig1643552279546 implements MigrationInterface {
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-hero-super-legend', '0.8');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-button-metamask', '0.8');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-button-work', '0.9');`);
-        await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-bar-life', '0.9');`);
+        await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-bar-life', '0.85');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('new-map-enable', '0');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('new-map-hero-common', '0');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('new-map-hero-rare', '0');`);

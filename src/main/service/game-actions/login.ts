@@ -18,21 +18,11 @@ export class Login implements GameAction {
     async start(browser: Browser): Promise<void> {
         await LogService.registerLog('Verificando se esta desconectado do jogo', {}, browser.account?.id);
         const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
-        if (browser.loginAttempts == undefined) {
-            browser.loginAttempts = 0;
-        }
 
-        if (await clickTarget(TargetNames.OK, threshold)) {
-            await sleep(15000);
-        }
+        await this.checkButtonOk(threshold);
+        await this.checkLoginAttempls(browser);
 
-        if (browser.loginAttempts > 3) {
-            browser.loginAttempts = 0;
-            await LogService.registerLog('Forçando recarregamento da pagina', {}, browser.account?.id);
-            controlF5();
-        }
-
-        const clickWallet = await clickTarget(TargetNames.CONNECT_WALLET, threshold, 10);
+        const clickWallet = await clickTarget(TargetNames.CONNECT_WALLET, threshold);
         if (!clickWallet) return;
 
         await LogService.registerLog('Botão conectar carteira foi detectado', {}, browser.account?.id);
@@ -41,11 +31,33 @@ export class Login implements GameAction {
         const clickSign = await clickTarget(TargetNames.CONNECT_WALLET_SIGN, threshold, 15);
         if (!clickSign) return;
 
+        await this.checkClickTreasuteHut(browser, threshold);
+    }
+
+    private async checkClickTreasuteHut(browser: Browser, threshold: number) {
         const clickTreasuteHunt = await clickTarget(TargetNames.TREASURE_HUNT, threshold, 20);
 
         if (clickTreasuteHunt) {
             browser.loginAttempts = 0;
             await LogService.registerLog('Colocando heróis para trabalhar', {}, browser.account?.id);
+        }
+    }
+
+    private async checkButtonOk(threshold: number) {
+        const exists = await clickTarget(TargetNames.OK, 0.6);
+        if (exists) {
+            await sleep(15000);
+        }
+    }
+    private async checkLoginAttempls(browser: Browser) {
+        if (browser.loginAttempts == undefined) {
+            browser.loginAttempts = 0;
+        }
+        if (browser.loginAttempts > 3) {
+            browser.loginAttempts = 0;
+            await LogService.registerLog('Forçando recarregamento da pagina', {}, browser.account?.id);
+            controlF5();
+            await sleep(15000);
         }
     }
 }

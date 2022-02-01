@@ -5,7 +5,9 @@ import { CreateConfig1643552279546 } from './migrations/1643552279546-CreateConf
 import { CreateAccount1643552406874 } from './migrations/1643552406874-CreateAccount';
 import { CreateLog1643552491184 } from './migrations/1643552491184-CreateLog';
 import { CreateGameAction1643555044764 } from './migrations/1643555044764-CreateGameAction';
+import { CreateBcoin1643672519095 } from './migrations/1643672519095-CreateBcoin';
 import Account from './models/account.model';
+import Bcoin from './models/bcoin.model';
 import Config from './models/config.model';
 import GameAction from './models/game-action.model';
 import Log from './models/log.model';
@@ -32,12 +34,13 @@ export default class Database {
                 name: 'sqlite',
                 type: 'sqlite',
                 database: path.join(defaultStorageFolder, 'bot_database.sqlite'),
-                entities: [Config, Log, Account, GameAction],
+                entities: [Config, Log, Account, GameAction, Bcoin],
                 migrations: [
                     CreateConfig1643552279546,
                     CreateAccount1643552406874,
                     CreateLog1643552491184,
                     CreateGameAction1643555044764,
+                    CreateBcoin1643672519095,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,

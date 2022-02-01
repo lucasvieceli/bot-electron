@@ -31,7 +31,6 @@ export const Terminal = () => {
 
     const { t } = useTranslation();
     const teste = async () => {
-        console.log('asdasdsa');
         const database: Database = remote.getGlobal('database');
         const repo = database.getRepository<Log>('Log');
         const create = {
@@ -40,7 +39,6 @@ export const Terminal = () => {
             account: 1,
         };
         const log = repo.create(create);
-        console.log(await repo.save(log), log);
     };
     return (
         <>

@@ -6,7 +6,9 @@ const robotjs = require('robotjs');
 
 export const moveMouseAndClick = async (x: number, y: number) => {
     robotjs.moveMouseSmooth(x, y);
+    await sleep(300);
     robotjs.mouseClick();
+    await sleep(300);
 };
 
 export const clickTarget = async (target: TargetNames, threshold: number, timeOut = 3, print?: string) => {
@@ -28,4 +30,13 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
     }
 
     return false;
+};
+
+export const moveAndDragMouse = async (x: number, y: number) => {
+    robotjs.setMouseDelay(400);
+    robotjs.moveMouseSmooth(x, y);
+    robotjs.mouseToggle('down');
+    robotjs.moveMouseSmooth(x, y - 200);
+    robotjs.mouseToggle('up');
+    robotjs.setMouseDelay(10);
 };

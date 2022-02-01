@@ -10,7 +10,6 @@ import { GlobalStyle } from './styles/GlobalStyle';
 // import { IpcRendererEvent } from 'electron/renderer';
 
 export function App() {
-    console.log('initttt');
     useEffect(() => {
         const onLog: any = (e: IpcRendererEvent, log: string) => {
             alert(log);

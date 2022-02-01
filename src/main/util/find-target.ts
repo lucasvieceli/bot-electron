@@ -4,7 +4,7 @@ import path from 'path';
 import { defaultStorageFolder } from '..';
 import { CenterTarget, TargetMatch, TargetNames, TargetsCv } from './find-target.types';
 import { printScreen } from './print-screen';
-import { sleep } from './time';
+import { getTime, sleep, timeToSeconds } from './time';
 
 let targets: TargetsCv = {} as TargetsCv;
 
@@ -59,4 +59,22 @@ const getTemplate = async (target: TargetNames) => {
     targets[target] = templ;
 
     return templ;
+};
+
+export const findTargetRepeat = async (target: TargetNames, threshold: number = 0.7, timeOut = 3, print?: string) => {
+    const startTime = getTime();
+    let hasTimeOut = false;
+
+    while (!hasTimeOut) {
+        const match = await findTarget(target, threshold, print);
+        if (match.length == 0) {
+            hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
+            await sleep(1000);
+            continue;
+        }
+
+        return match;
+    }
+
+    return false;
 };

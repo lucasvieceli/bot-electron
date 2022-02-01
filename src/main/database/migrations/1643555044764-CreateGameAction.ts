@@ -17,10 +17,22 @@ export class CreateGameAction1643555044764 implements MigrationInterface {
         );
         `);
         await queryRunner.query(`
-        INSERT INTO "GameAction" ("id", "name", "file_name", "class_name", "start_time", "loop",  "order") VALUES ('1', 'Busca id metamask', 'metamask-id', 'MetamaskId', '0', '0', '0');
+            INSERT INTO "GameAction" ("id", "name", "file_name", "class_name", "start_time", "loop",  "order") VALUES ('1', 'Busca id metamask', 'metamask-id', 'MetamaskId', '0', '0', '0');
         `);
         await queryRunner.query(`
-        INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica login', 'login', 'Login', '0', '1', 'interval-check-login', '0');
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica login', 'login', 'Login', '0', '1', 'interval-check-login', '1');
+        `);
+        await queryRunner.query(`
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Register BCOIN', 'register-bcoin', 'RegisterBcoin', '0', '1', '', '2');
+        `);
+        await queryRunner.query(`
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica heróis', 'check-heroes', 'CheckHeroes', '0', '1', 'interval-work', '3');
+        `);
+        await queryRunner.query(`
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica novo mapa', 'new-map', 'NewMap', '0', '1', '', '4');
+        `);
+        await queryRunner.query(`
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Recarrega posições', 'refresh-heroes', 'RefreshHeroes', '1', '1', 'interval-refresh-heroes', '5');
         `);
     }
 

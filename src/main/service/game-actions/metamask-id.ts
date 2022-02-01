@@ -1,8 +1,5 @@
-import { format } from 'date-fns';
 import { clipboard } from 'electron';
 import { AccountService, LogService } from '..';
-import Account from '../../database/models/account.model';
-import { findTarget } from '../../util/find-target';
 import { TargetNames } from '../../util/find-target.types';
 import { clickTarget, moveMouseAndClick } from '../../util/mouse';
 import { sleep } from '../../util/time';

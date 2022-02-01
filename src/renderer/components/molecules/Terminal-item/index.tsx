@@ -9,7 +9,6 @@ interface TerminalItemProps {
 
 const TerminalItem: FC<TerminalItemProps> = ({ text, account }) => {
     const getAccount = () => {
-        console.log(account);
         if (!account || typeof account == 'number') return 'sistema';
 
         const label = account.name ? account.name : account.metamaskId;

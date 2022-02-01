@@ -71,7 +71,7 @@ export class GameLoop {
     }
 
     private getTimeActionCheck(action: ActionsConfig) {
-        return action.configTime ? parseInt(this.getConfigByName(action.configTime, '0')) : 0;
+        return action.configTime ? parseInt(this.getConfigByName(action.configTime, '0')) : 1;
     }
 
     private async checkAccount(browser: Browser) {

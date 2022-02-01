@@ -6,7 +6,6 @@ export const resources = {
     'pt-BR': ptbr,
 } as const;
 
-console.log(resources);
 i18n.use(initReactI18next).init({
     lng: 'pt-BR',
     interpolation: {
