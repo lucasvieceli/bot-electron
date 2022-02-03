@@ -1,11 +1,14 @@
 import path from 'path';
 import { Connection, getConnectionManager } from 'typeorm';
 import { defaultStorageFolder } from '..';
-import { CreateConfig1643552279546 } from './migrations/1643552279546-CreateConfig';
-import { CreateAccount1643552406874 } from './migrations/1643552406874-CreateAccount';
-import { CreateLog1643552491184 } from './migrations/1643552491184-CreateLog';
-import { CreateGameAction1643555044764 } from './migrations/1643555044764-CreateGameAction';
-import { CreateBcoin1643672519095 } from './migrations/1643672519095-CreateBcoin';
+import {
+    AlterBcoin1643829051934,
+    CreateAccount1643552406874,
+    CreateBcoin1643672519095,
+    CreateConfig1643552279546,
+    CreateGameAction1643555044764,
+    CreateLog1643552491184,
+} from './migrations';
 import Account from './models/account.model';
 import Bcoin from './models/bcoin.model';
 import Config from './models/config.model';
@@ -41,6 +44,7 @@ export default class Database {
                     CreateLog1643552491184,
                     CreateGameAction1643555044764,
                     CreateBcoin1643672519095,
+                    AlterBcoin1643829051934,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,

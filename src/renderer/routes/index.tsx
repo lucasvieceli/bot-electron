@@ -1,17 +1,14 @@
-import React from 'react'
-import { Link, Route, Routes } from 'react-router-dom'
-import { Home, Setting } from '../pages'
-
-const Teste = () => {
-  return <Link to="/">aaa</Link>
-}
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { Home, Setting } from '../pages';
+import { RoutesApplications } from './Applications';
 
 export const RoutesApp = () => {
-  return (
-    <Routes>
-      <Route element={<Home />} path="/" />
-      <Route element={<Teste />} path="/oi" />
-      <Route element={<Setting />} path="/setting" />
-    </Routes>
-  )
-}
+    return (
+        <Routes>
+            <Route element={<Home />} path="/" />
+            <Route element={<RoutesApplications />} path="/applications/*" />
+            <Route element={<Setting />} path="/setting" />
+        </Routes>
+    );
+};

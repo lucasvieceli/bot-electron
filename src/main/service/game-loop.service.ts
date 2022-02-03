@@ -1,9 +1,12 @@
+import { ipcMain } from 'electron';
+import { win } from '..';
 import Config from '../database/models/config.model';
 import { getTime, sleep, timeToMinutes } from '../util/time';
 import configService from './config.service';
 import gameActionService from './game-action.service';
 import { ActionsConfig, ActionsStartConfig, Browser } from './game-loop.types';
 import logService from './log.service';
+import { EVENT_GAME_LOOP_STATUS } from './events.types';
 
 export class GameLoop {
     static instance: GameLoop;
@@ -27,15 +30,27 @@ export class GameLoop {
 
     async start() {
         try {
+            this.setExecute(true);
             await this.initActions();
             await this.getConfig();
             await this.getBrowsers();
             await this.execActionsStart();
             await this.loop();
         } catch (e) {
-            console.log(e);
-            logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) });
+            console.log(e, 'error');
+            logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
+            this.start();
         }
+    }
+
+    async stop() {
+        this.setExecute(false);
+        await logService.registerLog('Bot encerrado');
+    }
+
+    setExecute(value: boolean) {
+        this.execute = value;
+        ipcMain.emit(EVENT_GAME_LOOP_STATUS, value);
     }
 
     private async execActionsStart() {

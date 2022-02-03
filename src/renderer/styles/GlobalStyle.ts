@@ -1,6 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
+a { color: inherit; } 
+a:hover { color: inherit; } 
   * {
     margin: 0;
     padding: 0;
@@ -9,6 +11,10 @@ export const GlobalStyle = createGlobalStyle`
   html {
     height: 100%;
   }
+  *:focus {
+    outline: none !important;
+    outline-offset: none !important;
+}
   
   body {
     font-family: Ubuntu, Helvetica, sans-serif;
@@ -23,11 +29,7 @@ export const GlobalStyle = createGlobalStyle`
     display:flex;
     width: 100%;
   }
-  // @font-face {
-  //   font-family: "Ubuntu";
-  //   src: local("Ubuntu"),
-  //   url("./fonts/Ubuntu-Regular.ttf") format("truetype");
-  // }
+  
   // @font-face {
   //   font-family: 'Ubuntu-Medium';
   //   src: local('Ubuntu-Medium'), url("../../assets/fonts/Ubuntu-Medium.ttf") format('ttf');

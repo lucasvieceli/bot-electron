@@ -74,6 +74,13 @@ const mainConfig = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /worker\.js$/,
+                loader: 'threads-webpack-plugin',
+                options: {
+                    //Webpack child bundler options
+                }
+            },
             ...rules,
         ],
     },
@@ -83,7 +90,7 @@ const mainConfig = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     //Sqlite3 won't work without this line.
-    externals: { sqlite3: 'commonjs sqlite3', robotjs: 'commonjs robotjs' },
+    externals: { sqlite3: 'commonjs sqlite3', robotjs: 'commonjs robotjs', 'node-window-manager': 'commonjs node-window-manager' },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist-webpack', 'main'),

@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateGameAction1643555044764 implements MigrationInterface {
+    name = 'CreateGameAction1643555044764';
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
         CREATE TABLE "GameAction" (

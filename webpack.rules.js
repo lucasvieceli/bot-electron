@@ -10,7 +10,10 @@ module.exports = rules = [
         test: /\.node$/,
         loader: "node-loader",
     },
-
+    {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ['file-loader']
+    },
     {
 
         test: /\.(jpg|png|woff|woff2|eot|ttf)$/,

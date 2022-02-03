@@ -15,7 +15,7 @@ import { match } from 'assert';
 export class RegisterBcoin implements GameAction {
     static instance: RegisterBcoin;
     configRegister = 'game-action-metamask-last-date';
-    hourCheck = '21';
+    hourCheck = '17';
 
     static getInstance() {
         if (RegisterBcoin.instance) return RegisterBcoin.instance;
@@ -30,7 +30,6 @@ export class RegisterBcoin implements GameAction {
         const hour = format(date, 'H');
         const current = format(date, 'yyyy-MM-dd');
         const lastDate = await this.getLastDateRegister(browser.account.id);
-        console.log((!lastDate || lastDate < current) && hour == this.hourCheck, 'aaaaaa');
 
         if ((!lastDate || lastDate < current) && hour == this.hourCheck) {
             await LogService.registerLog('Registrando quantos bcoin possui no momento', {}, browser.account.id);
@@ -70,7 +69,6 @@ export class RegisterBcoin implements GameAction {
 
         for (const { num, img } of search) {
             const matchs = await findTarget(img, 0.95, print);
-            console.log(matchs);
             for (const match of matchs) {
                 digits.push({ digit: num, x: match.x });
             }

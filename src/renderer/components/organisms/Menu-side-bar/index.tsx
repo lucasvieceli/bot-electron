@@ -13,7 +13,7 @@ const menus: Menu[] = [
     },
     {
         color: '#D98425',
-        href: '/oi',
+        href: '/applications',
         Icon: <IconItems width={25} />,
     },
     {

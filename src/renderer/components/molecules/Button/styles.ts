@@ -9,7 +9,7 @@ const colorsType: ButtonColors = {
         text: colors.white,
     },
     [ButtonType.SUCCESS]: {
-        background: colors.red,
+        background: colors.orange,
         text: colors.white,
     },
 };
