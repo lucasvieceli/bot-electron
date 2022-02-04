@@ -33,7 +33,7 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
 };
 
 export const moveAndDragMouse = async (x: number, y: number) => {
-    robotjs.setMouseDelay(400);
+    robotjs.setMouseDelay(300);
     robotjs.moveMouseSmooth(x, y);
     robotjs.mouseToggle('down');
     robotjs.moveMouseSmooth(x, y - 200);

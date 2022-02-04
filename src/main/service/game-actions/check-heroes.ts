@@ -37,7 +37,7 @@ export class CheckHeroes implements GameAction {
             total += await this.clickGreenBar(browser);
 
             await this.scroll();
-            await sleep(2000);
+            await sleep(1000);
         }
         await LogService.registerLog('Enviando {{qty}} heróis', { qty: total.toString() }, browser.account);
         await this.goToWork(threshold);
