@@ -30,7 +30,6 @@
     "nsis": {
         "uninstallDisplayName": "Bot",
         "license": "license.txt",
-        "icon": "./assets/images/bcoin.ico",
         "oneClick": false,
         "installerIcon": "./assets/images/bcoin.ico",
         "installerHeaderIcon": "./assets/images/bcoin.ico",
