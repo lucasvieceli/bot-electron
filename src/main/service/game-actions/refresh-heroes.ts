@@ -15,9 +15,9 @@ export class RefreshHeroes implements GameAction {
         return RefreshHeroes.instance;
     }
     async start(browser: Browser): Promise<void> {
-        const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
-        await LogService.registerLog('Atualizando posições dos heróis', {}, browser.account.id);
+        await LogService.registerLog('Atualizando posições dos heróis', {}, browser.account);
         await clickTarget(TargetNames.GO_BACK_ARROW, threshold);
         await clickTarget(TargetNames.TREASURE_HUNT, threshold);
     }

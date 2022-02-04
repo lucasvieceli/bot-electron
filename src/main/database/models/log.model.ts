@@ -28,7 +28,7 @@ export default class Log {
 
     @ManyToOne(() => Account, (account) => account.logs, { nullable: true })
     @JoinColumn({ name: 'account_id' })
-    account?: Account | number;
+    account?: Account;
 
     @BeforeInsert()
     paramsToString() {

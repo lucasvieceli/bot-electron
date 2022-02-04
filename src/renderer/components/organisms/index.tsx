@@ -5,3 +5,5 @@ export { default as ContainerMain } from './Container-main';
 export { default as ApplicationsMenu } from './Applications-menu';
 export { default as Pagination } from './Pagination';
 export { default as BcoinList } from './Bcoin-list';
+export { default as MapList } from './Map-list';
+export { default as LogList } from './Log-list';

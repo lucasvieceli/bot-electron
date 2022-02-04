@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { colors } from '../../../layout/colors';
 import { TextMedium14 } from '../../../layout/Fonts/medium';
+import { ContainerImage } from './types';
 
 export const Container = styled.div`
     // display: flex;
@@ -18,15 +19,16 @@ export const Container = styled.div`
     height: 128px;
     flex-direction: column;
 `;
-export const ContainerIcon = styled.button`
+export const ContainerIcon = styled.button<ContainerImage>`
     justify-content: center;
     align-items: center;
     display: flex;
     width: 80px;
     height: 80px;
+    overflow: hidden;
     flex: 0 1 auto;
     flex-shrink: 0;
-    background: ${colors.gray08};
+    background: ${({ backgroundColor }) => backgroundColor || colors.gray08};
     border-radius: 15px;
 `;
 export const Button = styled.button`
@@ -46,7 +48,7 @@ export const TextTitle = styled(TextMedium14)`
 `;
 
 export const Icon = styled.img`
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
+    width: 80px;
+    height: 80px;
+    // border-radius: 30px;
 `;

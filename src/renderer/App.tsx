@@ -1,7 +1,7 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useEffect } from 'react';
 import { QueryClientProvider } from 'react-query';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import 'reflect-metadata';
 import { MenuSideBar } from './components/organisms';
 import './i18n';
@@ -23,8 +23,8 @@ export function App() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
-            <BrowserRouter>
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            <HashRouter>
                 <GlobalStyle />
                 {/* <Container> */}
                 <MenuSideBar />
@@ -32,7 +32,7 @@ export function App() {
                 <RoutesApp />
                 {/* </Content> */}
                 {/* </Container> */}
-            </BrowserRouter>
+            </HashRouter>
         </QueryClientProvider>
     );
 }

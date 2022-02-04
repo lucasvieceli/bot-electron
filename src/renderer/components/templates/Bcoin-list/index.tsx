@@ -15,7 +15,7 @@ const BcoinList: FC<BcoinListProps> = ({}) => {
             <Container>
                 <Breadcrumb>
                     <BreadcrumbItem>
-                        <Link to="/">Página Inicial</Link>
+                        <Link to="/">{t('Página Inicial')}</Link>
                     </BreadcrumbItem>
                     <BreadcrumbItem>
                         <Link to="/applications">Menus</Link>

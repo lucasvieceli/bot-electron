@@ -17,6 +17,7 @@ export class CreateConfig1643552279546 implements MigrationInterface {
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('interval-work', '10')`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('interval-refresh-heroes', '5');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('interval-check-login', '5');`);
+        await queryRunner.query(`INSERT INTO "Config" (name, value) values('interval-bcoin', '30');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-default', '0.7');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-hero-common', '0.8');`);
         await queryRunner.query(`INSERT INTO "Config" (name, value) values('threshold-hero-rare', '0.8');`);

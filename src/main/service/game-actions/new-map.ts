@@ -1,4 +1,4 @@
-import { LogService } from '..';
+import { LogService, MapService } from '..';
 import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
 import { GameLoop } from '../game-loop.service';
@@ -15,11 +15,12 @@ export class NewMap implements GameAction {
         return NewMap.instance;
     }
     async start(browser: Browser): Promise<void> {
-        const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
         const exists = await clickTarget(TargetNames.NEW_MAP, threshold);
         if (!exists) return;
 
-        await LogService.registerLog('Clicado em novo mapa', {}, browser.account.id);
+        await LogService.registerLog('Clicado em novo mapa', {}, browser.account);
+        await MapService.addMapAccount(browser.account);
     }
 }

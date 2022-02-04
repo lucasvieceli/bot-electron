@@ -24,7 +24,7 @@ export class CreateGameAction1643555044764 implements MigrationInterface {
             INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica login', 'login', 'Login', '0', '1', 'interval-check-login', '1');
         `);
         await queryRunner.query(`
-            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Register BCOIN', 'register-bcoin', 'RegisterBcoin', '0', '1', '', '2');
+            INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Register BCOIN', 'register-bcoin', 'RegisterBcoin', '0', '1', 'interval-bcoin', '2');
         `);
         await queryRunner.query(`
             INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica heróis', 'check-heroes', 'CheckHeroes', '0', '1', 'interval-work', '3');

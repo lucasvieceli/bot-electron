@@ -8,12 +8,14 @@ import {
     CreateConfig1643552279546,
     CreateGameAction1643555044764,
     CreateLog1643552491184,
+    CreateNewMap1643893646832,
 } from './migrations';
 import Account from './models/account.model';
 import Bcoin from './models/bcoin.model';
 import Config from './models/config.model';
 import GameAction from './models/game-action.model';
 import Log from './models/log.model';
+import Map from './models/map.model';
 import { LogSubscriber } from './subscribe/log';
 
 export default class Database {
@@ -37,7 +39,7 @@ export default class Database {
                 name: 'sqlite',
                 type: 'sqlite',
                 database: path.join(defaultStorageFolder, 'bot_database.sqlite'),
-                entities: [Config, Log, Account, GameAction, Bcoin],
+                entities: [Config, Log, Account, GameAction, Bcoin, Map],
                 migrations: [
                     CreateConfig1643552279546,
                     CreateAccount1643552406874,
@@ -45,6 +47,7 @@ export default class Database {
                     CreateGameAction1643555044764,
                     CreateBcoin1643672519095,
                     AlterBcoin1643829051934,
+                    CreateNewMap1643893646832,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,
@@ -56,7 +59,9 @@ export default class Database {
             this.connection = connectionManager.get('sqlite');
             await this.connection.connect();
         } catch (error) {
+            console.log(typeof error);
             console.log(error);
+            alert(`Erro no banco de dados ${error.message}`);
         }
     }
     public close() {

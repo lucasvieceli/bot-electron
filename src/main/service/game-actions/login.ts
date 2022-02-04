@@ -16,8 +16,8 @@ export class Login implements GameAction {
         return Login.instance;
     }
     async start(browser: Browser): Promise<void> {
-        await LogService.registerLog('Verificando se esta desconectado do jogo', {}, browser.account?.id);
-        const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        await LogService.registerLog('Verificando se esta desconectado do jogo', {}, browser.account);
+        const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
         await this.checkButtonOk(threshold);
         await this.checkLoginAttempls(browser);
@@ -25,7 +25,7 @@ export class Login implements GameAction {
         const clickWallet = await clickTarget(TargetNames.CONNECT_WALLET, threshold);
         if (!clickWallet) return;
 
-        await LogService.registerLog('Botão conectar carteira foi detectado', {}, browser.account?.id);
+        await LogService.registerLog('Botão conectar carteira foi detectado', {}, browser.account);
         browser.loginAttempts = browser.loginAttempts + 1;
 
         const clickSign = await clickTarget(TargetNames.CONNECT_WALLET_SIGN, threshold, 15);
@@ -39,7 +39,7 @@ export class Login implements GameAction {
 
         if (clickTreasuteHunt) {
             browser.loginAttempts = 0;
-            await LogService.registerLog('Colocando heróis para trabalhar', {}, browser.account?.id);
+            await LogService.registerLog('Colocando heróis para trabalhar', {}, browser.account);
         }
     }
 
@@ -55,7 +55,7 @@ export class Login implements GameAction {
         }
         if (browser.loginAttempts > 3) {
             browser.loginAttempts = 0;
-            await LogService.registerLog('Forçando recarregamento da pagina', {}, browser.account?.id);
+            await LogService.registerLog('Forçando recarregamento da pagina', {}, browser.account);
             controlF5();
             await sleep(15000);
         }

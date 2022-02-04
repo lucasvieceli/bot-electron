@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { Spinner, Table } from 'reactstrap';
@@ -12,6 +12,7 @@ import { ContainerPagination, ContainerSpinner, TextTotal } from './styles';
 interface BcoinListProps {}
 
 const BcoinList: FC<BcoinListProps> = ({}) => {
+    const refTable = useRef(null);
     const [params, setParams] = useState<PaginationParams>({
         page: 1,
         created: null,
@@ -33,6 +34,7 @@ const BcoinList: FC<BcoinListProps> = ({}) => {
             ...old,
             page,
         }));
+        refTable.current.scrollIntoView({ behavior: 'smooth' });
     };
 
     const handleChangeFilter = useCallback((name: string, value: string | number) => {
@@ -45,6 +47,7 @@ const BcoinList: FC<BcoinListProps> = ({}) => {
 
     return (
         <>
+            <div ref={refTable} />
             <Table borderless dark hover responsive striped>
                 <thead>
                     <tr>

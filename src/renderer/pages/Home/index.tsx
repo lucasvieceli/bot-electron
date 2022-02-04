@@ -1,8 +1,8 @@
-import React from 'react'
-import { DashBoard } from '../../components/templates'
+import React from 'react';
+import { DashBoard } from '../../components/templates';
 
 const Home = () => {
-  return <DashBoard />
-}
+    return <DashBoard />;
+};
 
-export default Home
+export default Home;

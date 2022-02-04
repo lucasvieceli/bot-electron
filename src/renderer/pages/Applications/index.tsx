@@ -8,7 +8,7 @@ interface ApplicationsProps {}
 const Applications: FC<ApplicationsProps> = ({}) => {
     const navigate = useNavigate();
     const handlePresMenu = (menu: ApplicationMenuItem) => {
-        navigate('/applications/bcoin');
+        navigate(menu.url);
     };
 
     return <ApplicationsTemplate onPressMenu={handlePresMenu} />;

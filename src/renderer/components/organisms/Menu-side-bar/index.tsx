@@ -1,9 +1,12 @@
 import LogoImg from '../../../../../assets/images/bcoin.png';
+import FlagPtBR from '../../../../../assets/images/flag-pt-br.png';
+import FlagEn from '../../../../../assets/images/flag-en.png';
 import { colors } from '../../../layout/colors';
 import { IconItems, IconRobot, IconSetting } from '../../atoms';
-import { MenuSideBarItem } from '../../molecules';
-import { Container, ContentLogo, Gap, Logo } from './styles';
+import { BcoinPrice, ButtonLanguage, MenuSideBarItem } from '../../molecules';
+import { Container, ContainerLanguage, ContainerMenus, ContentLogo, Gap, Logo } from './styles';
 import { Menu } from './types';
+import { TextRegular12 } from '../../../layout/Fonts/regular';
 
 const menus: Menu[] = [
     {
@@ -29,14 +32,21 @@ const MenuSideBar = () => {
             <ContentLogo>
                 <Logo src={LogoImg} />
             </ContentLogo>
-            {menus.map((menu, i) => (
-                <div key={i.toString()}>
-                    <MenuSideBarItem borderColor={menu.color} href={menu.href}>
-                        {menu.Icon}
-                    </MenuSideBarItem>
-                    <Gap />
-                </div>
-            ))}
+            <ContainerMenus>
+                {menus.map((menu, i) => (
+                    <div key={i.toString()}>
+                        <MenuSideBarItem borderColor={menu.color} href={menu.href}>
+                            {menu.Icon}
+                        </MenuSideBarItem>
+                        <Gap />
+                    </div>
+                ))}
+            </ContainerMenus>
+            <ContainerLanguage>
+                <BcoinPrice />
+                <ButtonLanguage language="pt-BR" image={FlagPtBR} />
+                <ButtonLanguage language="en" image={FlagEn} />
+            </ContainerLanguage>
         </Container>
     );
 };

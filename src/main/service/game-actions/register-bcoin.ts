@@ -1,21 +1,18 @@
-import { format } from 'date-fns';
-import Account from '../../database/models/account.model';
+import { BcoinService, LogService } from '..';
+import { findTarget } from '../../util/find-target';
+import { TargetNames } from '../../util/find-target.types';
+import { clickTarget } from '../../util/mouse';
+import { printScreen } from '../../util/print-screen';
+import { sleep } from '../../util/time';
 import configService from '../config.service';
+import { GameLoop } from '../game-loop.service';
 import { Browser } from '../game-loop.types';
 import { GameAction } from './game-action.types';
-import { BcoinService, LogService } from '..';
-import { clickTarget } from '../../util/mouse';
-import { TargetNames } from '../../util/find-target.types';
-import { GameLoop } from '../game-loop.service';
-import { sleep } from '../../util/time';
-import { printScreen } from '../../util/print-screen';
-import { findTarget } from '../../util/find-target';
-import { match } from 'assert';
 
 export class RegisterBcoin implements GameAction {
     static instance: RegisterBcoin;
     configRegister = 'game-action-metamask-last-date';
-    hourCheck = '17';
+    hourCheck = '23';
 
     static getInstance() {
         if (RegisterBcoin.instance) return RegisterBcoin.instance;
@@ -25,29 +22,20 @@ export class RegisterBcoin implements GameAction {
     }
 
     async start(browser?: Browser): Promise<void> {
-        const date = new Date();
+        await LogService.registerLog('Registrando quantos bcoin possui no momento', {}, browser.account);
 
-        const hour = format(date, 'H');
-        const current = format(date, 'yyyy-MM-dd');
-        const lastDate = await this.getLastDateRegister(browser.account.id);
+        const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        const clickChest = await clickTarget(TargetNames.CHEST, threshold);
+        if (!clickChest) return;
 
-        if ((!lastDate || lastDate < current) && hour == this.hourCheck) {
-            await LogService.registerLog('Registrando quantos bcoin possui no momento', {}, browser.account.id);
+        await sleep(8000);
+        const digits = await this.getDigits();
+        await LogService.registerLog('Encontrou {{bcoin}} bcoin', { bcoin: digits }, browser.account);
 
-            const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
-            const clickChest = await clickTarget(TargetNames.CHEST, threshold);
-            if (!clickChest) return;
-
-            await sleep(8000);
-            const digits = await this.getDigits();
-            await LogService.registerLog('Encontrou {{bcoin}} bcoin', { bcoin: digits }, browser.account.id);
-
-            if (digits !== '') {
-                await this.setLastDateRegister(current, browser.account.id);
-                await BcoinService.addBcoinAccount(browser.account, parseFloat(digits));
-            }
-            await clickTarget(TargetNames.X, threshold);
+        if (digits !== '') {
+            await BcoinService.addBcoinAccount(browser.account, parseFloat(digits));
         }
+        await clickTarget(TargetNames.X, threshold);
     }
 
     private async getDigits() {

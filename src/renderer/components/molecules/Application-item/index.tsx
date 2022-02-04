@@ -1,20 +1,15 @@
 import React, { FC } from 'react';
 import { Button, Container, ContainerIcon, Icon, TextTitle } from './styles';
+import { ApplicationItemProps } from './types';
 
-interface ApplicationItemProps {
-    name: string;
-    image: any;
-    onPress: () => void;
-}
-
-const ApplicationItem: FC<ApplicationItemProps> = ({ image, name, onPress }) => {
+const ApplicationItem: FC<ApplicationItemProps> = ({ data, onPress }) => {
     return (
         <Container>
-            <ContainerIcon onClick={onPress}>
-                <Icon src={image} />
+            <ContainerIcon onClick={onPress} backgroundColor={data.backgroundColor}>
+                <Icon src={data.image} />
             </ContainerIcon>
             <Button onClick={onPress}>
-                <TextTitle title={name}>{name}</TextTitle>
+                <TextTitle title={data.name}>{data.name}</TextTitle>
             </Button>
         </Container>
     );

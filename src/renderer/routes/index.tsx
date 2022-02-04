@@ -7,6 +7,7 @@ export const RoutesApp = () => {
     return (
         <Routes>
             <Route element={<Home />} path="/" />
+            <Route element={<Home />} path="/main_window" />
             <Route element={<RoutesApplications />} path="/applications/*" />
             <Route element={<Setting />} path="/setting" />
         </Routes>

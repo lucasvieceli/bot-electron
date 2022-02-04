@@ -1,12 +1,14 @@
 import React from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import { Applications, ApplicationsBcoin } from '../../pages';
+import { Route, Routes } from 'react-router-dom';
+import { Applications, ApplicationsBcoin, ApplicationsLog, ApplicationsMap } from '../../pages';
 
 export const RoutesApplications = () => {
     return (
         <Routes>
             <Route element={<Applications />} path="/" />
             <Route element={<ApplicationsBcoin />} path="/bcoin" />
+            <Route element={<ApplicationsMap />} path="/map" />
+            <Route element={<ApplicationsLog />} path="/log" />
         </Routes>
     );
 };

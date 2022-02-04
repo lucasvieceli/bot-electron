@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
@@ -32,7 +32,7 @@ async function createWindow() {
         height: 768,
         show: false,
         autoHideMenuBar: !isDev,
-        icon: 'assets/images/bcoin.ico',
+        icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
@@ -52,7 +52,9 @@ async function createWindow() {
         win.loadFile('./dist-webpack/renderer/index.html');
     }
 
-    win.show();
+    win.webContents.on('did-finish-load', function () {
+        win.show();
+    });
 }
 
 async function registerListeners() {}

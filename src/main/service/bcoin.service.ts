@@ -4,7 +4,7 @@ import Bcoin from '../database/models/bcoin.model';
 import paginateService from './paginate.service';
 import { PaginationParams, TotalBcoinParams } from './bcoin.types';
 import { Brackets, Not, MoreThanOrEqual, LessThan, FindConditions } from 'typeorm';
-import { endOfDay, parseJSON, startOfDay } from 'date-fns';
+import { endOfDay, endOfYesterday, parseJSON, startOfDay, startOfYesterday, sub } from 'date-fns';
 
 const addBcoinAccount = async (account: Account, bcoin: number) => {
     const repo = Database.getInstance().getRepository<Bcoin>('Bcoin');
@@ -28,7 +28,7 @@ const getQueryPagination = (params: PaginationParams) => {
     if (params.account) {
         query.andWhere(
             new Brackets((subQb) => {
-                subQb.where('a.name like :account', { account: `%${params.account}%` });
+                subQb.where('a.name = :accountName', { accountName: params.account });
                 subQb.orWhere('a.metamaskId like :account', { account: `%${params.account}%` });
             }),
         );
@@ -68,11 +68,23 @@ const getBcoinDay = async (qty: number, account: Account, id?: number) => {
         where,
         order: { id: 'DESC' },
     });
-    if (lastBcoin && qty > 0) {
-        return qty - lastBcoin.qty;
+    if (lastBcoin) {
+        //fez um saque
+        if (madeBcoinWithdrawal(lastBcoin.qty, qty)) {
+            return lastBcoin.qty - qty;
+        } else {
+            return qty - lastBcoin.qty;
+        }
     }
+    // if (lastBcoin && qty > 0) {
+    //     return qty - lastBcoin.qty;
+    // }
 
     return 0;
+};
+
+const madeBcoinWithdrawal = (qtyBefore: number, qtyAfter: number) => {
+    return qtyAfter < qtyBefore;
 };
 
 const getTotalBcoin = async (params: TotalBcoinParams) => {
@@ -89,5 +101,51 @@ const getTotalBcoin = async (params: TotalBcoinParams) => {
 
     return Number(value);
 };
+const getTotalBcoinYesterday = async () => {
+    const dateStart = startOfYesterday().toJSON().replace('T', ' ');
+    const dateEnd = endOfYesterday().toJSON().replace('T', ' ');
 
-export default { addBcoinAccount, pagination, getBcoinDay, getTotalBcoin };
+    const query = Database.getInstance().connection.createQueryBuilder();
+    const { value } = await query
+        .select(['m'])
+        .from(Bcoin, 'm')
+        .andWhere('m.created BETWEEN :createdStart AND :createdEnd', {
+            createdStart: dateStart,
+            createdEnd: dateEnd,
+        })
+        .select('sum(m.qtyDay)', 'value')
+        .getRawOne<{ value: string }>();
+
+    return Number(value);
+};
+const getAverageBcoinLastWeek = async () => {
+    const dateObj = new Date();
+    const dateStart = sub(dateObj, { days: 7 }).toJSON().replace('T', ' ');
+    const dateEnd = dateObj.toJSON().replace('T', ' ');
+
+    const query = Database.getInstance().connection.createQueryBuilder();
+    const { value } = await query
+        .select(['m'])
+        .from(Bcoin, 'm')
+        .andWhere('m.created BETWEEN :createdStart AND :createdEnd', {
+            createdStart: dateStart,
+            createdEnd: dateEnd,
+        })
+        .select('sum(m.qtyDay)', 'value')
+        .getRawOne<{ value: string }>();
+
+    const newValue = Number(value);
+    if (newValue > 0) {
+        return newValue / 7;
+    }
+
+    return 0;
+};
+export default {
+    addBcoinAccount,
+    pagination,
+    getBcoinDay,
+    getTotalBcoin,
+    getTotalBcoinYesterday,
+    getAverageBcoinLastWeek,
+};

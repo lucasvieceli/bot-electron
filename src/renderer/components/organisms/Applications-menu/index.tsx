@@ -12,7 +12,7 @@ const ApplicationsMenu: FC<ApplicationsMenuProps> = ({ menus, onPress }) => {
     return (
         <Container>
             {menus.map((menu, i) => (
-                <ApplicationItem key={i.toString()} name={menu.name} onPress={() => onPress(menu)} image={menu.image} />
+                <ApplicationItem key={i.toString()} data={menu} onPress={() => onPress(menu)} />
             ))}
         </Container>
     );

@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } f
 import Bcoin from './bcoin.model';
 import Config from './config.model';
 import Log from './log.model';
+import Map from './map.model';
 
 @Entity('Account')
 export default class Account {
@@ -27,4 +28,7 @@ export default class Account {
 
     @OneToMany(() => Bcoin, (entity) => entity.account)
     bcoins: Bcoin[];
+
+    @OneToMany(() => Map, (entity) => entity.account)
+    maps: Map[];
 }

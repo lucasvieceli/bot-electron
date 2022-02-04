@@ -70,7 +70,7 @@ export class GameLoop {
 
                 for (let action of this.actions) {
                     if (!this.execute) return;
-                    const timeCheck = this.getTimeActionCheck(action);
+                    const timeCheck = await this.getTimeActionCheck(action);
                     const lastExecute = timeToMinutes(currentTime - action.lastTime);
                     const checkTime = lastExecute > timeCheck;
 
@@ -85,8 +85,8 @@ export class GameLoop {
         }
     }
 
-    private getTimeActionCheck(action: ActionsConfig) {
-        return action.configTime ? parseInt(this.getConfigByName(action.configTime, '0')) : 1;
+    private async getTimeActionCheck(action: ActionsConfig) {
+        return action.configTime ? parseInt(await this.getConfigByName(action.configTime, '0')) : 1;
     }
 
     private async checkAccount(browser: Browser) {
@@ -134,7 +134,11 @@ export class GameLoop {
         });
         this.browsers = [{}];
     }
-    public getConfigByName(name: string, valueDefault: string) {
+    public async getConfigByName(name: string, valueDefault: string) {
+        if (!this.config) {
+            await this.getConfig();
+        }
+
         const config = this.config.find((c) => c.name == name);
 
         return config.value || valueDefault;

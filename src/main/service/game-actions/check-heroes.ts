@@ -17,8 +17,8 @@ export class CheckHeroes implements GameAction {
         return CheckHeroes.instance;
     }
     async start(browser: Browser): Promise<void> {
-        await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account?.id);
-        const threshold = parseFloat(GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
+        const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
         await this.goToHeroes(threshold);
         await this.search(browser, threshold);
@@ -35,7 +35,7 @@ export class CheckHeroes implements GameAction {
             await this.scroll();
             await sleep(2000);
         }
-        await LogService.registerLog('Enviando {{qty}} heróis', { qty: total.toString() }, browser.account.id);
+        await LogService.registerLog('Enviando {{qty}} heróis', { qty: total.toString() }, browser.account);
         await this.goToWork(threshold);
     }
 
@@ -70,8 +70,10 @@ export class CheckHeroes implements GameAction {
     private async clickGreenBar(browser: Browser) {
         const offset = 100;
         const print = await printScreen();
-        const thresholdBar = parseFloat(GameLoop.getInstance().getConfigByName('threshold-bar-life', '0.85'));
-        const thresholdGoWork = parseFloat(GameLoop.getInstance().getConfigByName('threshold-button-work', '0.9'));
+        const thresholdBar = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-bar-life', '0.85'));
+        const thresholdGoWork = parseFloat(
+            await GameLoop.getInstance().getConfigByName('threshold-button-work', '0.9'),
+        );
 
         const [fullBars, greenBars] = await Promise.all([
             findTarget(TargetNames.FULL_BAR, thresholdBar, print),
@@ -89,7 +91,7 @@ export class CheckHeroes implements GameAction {
         await LogService.registerLog(
             'Detectado {{qty}} heroís disponíveis',
             { qty: notWorkingGreenBars.length.toString() },
-            browser.account.id,
+            browser.account,
         );
         if (notWorkingGreenBars.length) {
             notWorkingGreenBars.sort((a, b) => (a.y > b.y ? 1 : -1));

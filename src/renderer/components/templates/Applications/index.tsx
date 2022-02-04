@@ -2,8 +2,10 @@ import React, { FC } from 'react';
 import { Container } from './styles';
 import { ApplicationsMenu, ContainerMain } from '../../organisms';
 import { ApplicationMenuItem } from '../../organisms/Applications-menu/types';
-import BcoinImg from '../../../../../assets/images/bcoin.png';
+import BcoinImg from '../../../../../assets/images/bcoin-menu.png';
 import NewMapImg from '../../../../../assets/images/new-map.png';
+import LogImg from '../../../../../assets/images/log.png';
+import { colors } from '../../../layout/colors';
 
 const menus: ApplicationMenuItem[] = [
     {
@@ -12,9 +14,15 @@ const menus: ApplicationMenuItem[] = [
         url: '/applications/bcoin',
     },
     {
-        name: 'Novos Mapas',
+        name: 'Mapas',
         image: NewMapImg,
-        url: '/applications/bcoin',
+        url: '/applications/map',
+    },
+    {
+        name: 'Logs',
+        image: LogImg,
+        backgroundColor: colors.lightGray,
+        url: '/applications/log',
     },
 ];
 

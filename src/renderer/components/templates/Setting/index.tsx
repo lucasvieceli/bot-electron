@@ -59,6 +59,12 @@ const Setting: FC<SettingProps> = ({}) => {
                                         text="Tempo para verificar login"
                                         onChange={handleChange}
                                     />
+                                    <ConfigItemNumber
+                                        value={getValue('interval-bcoin')}
+                                        name="interval-bcoin"
+                                        text="Tempo para verificar registar quantidade de bcoin no baú"
+                                        onChange={handleChange}
+                                    />
                                 </Content>
                             </ContainerBlock>
                             <ContainerBlock>
