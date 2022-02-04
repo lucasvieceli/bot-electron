@@ -46,7 +46,7 @@ export class GameLoop {
             logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
             logService.registerLog('Got será reiniciado automáticamente', { error: JSON.stringify(e.message) || '' });
             await this.stop();
-            await this.start();
+            //await this.start();
         }
     }
 

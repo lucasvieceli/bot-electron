@@ -93,7 +93,7 @@ export class CheckHeroes implements GameAction {
             }
         }
         await LogService.registerLog(
-            'Detectado {{qty}} heroís disponíveis',
+            'Detectado {{qty}} heróis disponíveis',
             { qty: notWorkingGreenBars.length.toString() },
             browser.account,
         );
