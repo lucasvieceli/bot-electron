@@ -20,7 +20,7 @@
         }
     ],
     "linux": {
-        "icon": "./assets/images/linux.png",
+        "icon": "assets/images/linux.png",
         "target": [
             { "target": "deb", "arch": ["x64"] },
             { "target": "7z", "arch": ["x64"] }
@@ -29,9 +29,12 @@
         "category": "Education"
     },
     "nsis": {
-        "uninstallDisplayName": "CPU Monitor",
+        "uninstallDisplayName": "Bot",
         "license": "license.txt",
         "oneClick": false,
+        "installerIcon": "assets/images/bcoin.ico",
+        "installerHeaderIcon": "build/icon.ico",
+        "deleteAppDataOnUninstall": true,
         "allowToChangeInstallationDirectory": true
     }
 }
