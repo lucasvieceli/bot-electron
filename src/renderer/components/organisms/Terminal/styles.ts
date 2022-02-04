@@ -16,7 +16,7 @@ export const Container = styled.div`
     padding: 5px;
     overflow-y: scroll;
     overflow-x: hidden;
-    // max-height: 800px;
+    max-height: 800px;
     height: auto;
     justify-content: flex-end;
 `;
