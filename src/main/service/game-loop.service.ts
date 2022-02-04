@@ -15,7 +15,7 @@ export class GameLoop {
     public actionsStart: ActionsStartConfig[];
     public browsers: Browser[];
 
-    public execute: boolean = true;
+    public execute: boolean = false;
 
     windowName = 'Bombcrypto';
 
