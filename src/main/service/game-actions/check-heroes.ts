@@ -20,7 +20,7 @@ export class CheckHeroes implements GameAction {
         await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
         const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
-        await this.goToHeroes(threshold);
+        await this.goToHeroes(threshold, browser);
         await this.search(browser, threshold);
     }
 
@@ -28,7 +28,7 @@ export class CheckHeroes implements GameAction {
         const exists = await this.getPositionHero();
         if (!exists) {
             await LogService.registerLog('Não identificou nenhum herói para fazer a rolagem', {}, browser.account);
-            await this.goToWork(threshold);
+            await this.goToWork(threshold, browser);
             return false;
         }
         let total = 0;
@@ -40,7 +40,7 @@ export class CheckHeroes implements GameAction {
             await sleep(1000);
         }
         await LogService.registerLog('Enviando {{qty}} heróis', { qty: total.toString() }, browser.account);
-        await this.goToWork(threshold);
+        await this.goToWork(threshold, browser);
     }
 
     private async scroll() {
@@ -119,13 +119,23 @@ export class CheckHeroes implements GameAction {
         return true;
     }
 
-    private async goToHeroes(threshold: number) {
+    private async goToHeroes(threshold: number, browser: Browser) {
         await clickTarget(TargetNames.GO_BACK_ARROW, threshold);
-        await clickTarget(TargetNames.HERO_ICON, threshold, 4);
+        const clickHero = await clickTarget(TargetNames.HERO_ICON, threshold, 4);
+        if (!clickHero) {
+            await LogService.registerLog('Não identificou botão para ir na listagem dos heróis', {}, browser.account);
+        }
     }
 
-    private async goToWork(threshold: number) {
-        await clickTarget(TargetNames.X, threshold);
-        await clickTarget(TargetNames.TREASURE_HUNT, threshold, 4);
+    private async goToWork(threshold: number, browser: Browser) {
+        const clickX = await clickTarget(TargetNames.X, threshold);
+        if (!clickX) {
+            await LogService.registerLog('Não identificou botão de fechar listagem', {}, browser.account);
+        }
+
+        const clickTreasure = await clickTarget(TargetNames.TREASURE_HUNT, threshold, 4);
+        if (!clickTreasure) {
+            await LogService.registerLog('Não identificou botão iniciar jogo', {}, browser.account);
+        }
     }
 }

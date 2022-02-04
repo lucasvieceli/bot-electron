@@ -30,6 +30,11 @@ export class GameLoop {
 
     async start() {
         try {
+            if (this.execute) {
+                logService.registerLog('O bot já esta sendo executando', {});
+                return;
+            }
+
             this.setExecute(true);
             await this.initActions();
             await this.getConfig();
@@ -39,6 +44,7 @@ export class GameLoop {
         } catch (e) {
             console.log(e, 'error');
             logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
+            logService.registerLog('Got será reiniciado automáticamente', { error: JSON.stringify(e.message) || '' });
             this.start();
         }
     }

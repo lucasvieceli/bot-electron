@@ -62,6 +62,7 @@ export class RegisterBcoin implements GameAction {
             { num: 8, img: TargetNames.NUMBER_8 },
             { num: 9, img: TargetNames.NUMBER_9 },
             { num: '.', img: TargetNames.NUMBER_PONTO },
+            { num: '.', img: TargetNames.NUMBER_VIRGULA },
         ];
 
         for (const { num, img } of search) {

@@ -17,6 +17,7 @@ export enum TargetNames {
     NUMBER_8 = '8.png',
     NUMBER_9 = '9.png',
     NUMBER_PONTO = 'ponto.png',
+    NUMBER_VIRGULA = 'virgula.png',
     X = 'x.png',
     GO_BACK_ARROW = 'go-back-arrow.png',
     HERO_ICON = 'hero-icon.png',
