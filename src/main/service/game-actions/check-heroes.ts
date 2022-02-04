@@ -26,7 +26,11 @@ export class CheckHeroes implements GameAction {
 
     private async search(browser: Browser, threshold: number) {
         const exists = await this.getPositionHero();
-        if (!exists) return false;
+        if (!exists) {
+            await LogService.registerLog('Não identificou nenhum herói para fazer a rolagem', {}, browser.account);
+            await this.goToWork(threshold);
+            return false;
+        }
         let total = 0;
 
         for (let i = 0; i <= 5; i++) {

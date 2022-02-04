@@ -26,7 +26,16 @@ export class RegisterBcoin implements GameAction {
 
         const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
         const clickChest = await clickTarget(TargetNames.CHEST, threshold);
-        if (!clickChest) return;
+        if (!clickChest) {
+            await LogService.registerLog('Não conseguiu encontar imagem do baú', {}, browser.account);
+            return;
+        }
+
+        await LogService.registerLog(
+            'Sistema irá aguardar por 8 segundos caso aconteça algum lentidão no bomb',
+            {},
+            browser.account,
+        );
 
         await sleep(8000);
         const digits = await this.getDigits();

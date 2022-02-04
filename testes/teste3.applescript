@@ -94,39 +94,19 @@
 #  set frontmost of the first process whose unix id is 872 to true
 # end tell
 
-set theList to {}
 
- 
+ set theList to {}
  tell application "Google Chrome"
-        set window_list to every window # get the windows
-            
-            
-         repeat with the_window in window_list # for every window
-              #   set tab_list to every tab in the_window
-                 set id_window to id in the_window
-                 set the_title to the title of tab in the_window
+        set window_list to every window
 
-
-                 #repeat with the_tab in tab_list # for every tab
-                         #set the_url to the URL of the_tab 
-                         #set the_title to the title of the_tab 
-                         #set the_id to the id of the_tab 
-                   
-                         
-                         set end of theList to the_title & "|||" & id_window
-                        # if the id_window = 56 then
-
-                               
-                                #tell application "System Events" to tell the_window
-                                #        set frontmost to true
-                                #end tell
-                        # end if
-                 #end repeat
+        repeat with the_window in window_list # for every window
+                tell application "System Events"
+                        set frontApp to the_window
+                        set frontAppName to name of frontApp
+                        set idWindow to id in the_window
+                end tell
+                set end of theList to {frontAppName, idWindow}
          end repeat
- 
-#          set the_url to the URL of active tab of front window # grab the URL
-#    set the_title to the URL of active tab of front window # grab the title
-#          set titleString to titleString & "Active: " & the_url & " - " & the_title & "\n" # concatenate
  end tell
 
 return theList

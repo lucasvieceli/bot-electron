@@ -1,17 +1,9 @@
 {
     "appId": "com.bot.app",
     "files": ["dist-webpack/main/**/*", "dist-webpack/renderer/**/*", "./assets/**/*"],
-    "win": {
-        "target": ["nsis"],
-        "requestedExecutionLevel": "requireAdministrator"
-    },
     "directories": {
         "buildResources": "public"
     },
-    "mac": {
-        "icon": "./assets/images/bcoin.ico"
-    },
-
     "extraFiles": [
         {
             "from": "assets",
@@ -19,21 +11,29 @@
             "filter": ["**/*"]
         }
     ],
+    "mac": {
+        "icon": "./assets/images/bcoin.ico"
+    },
     "linux": {
-        "icon": "assets/images/linux.png",
+        "icon": "./assets/images/linux.png",
         "target": [
             { "target": "deb", "arch": ["x64"] },
             { "target": "7z", "arch": ["x64"] }
         ],
 
-        "category": "Education"
+        "category": "Internet"
+    },
+    "win": {
+        "target": ["nsis"],
+        "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
         "uninstallDisplayName": "Bot",
         "license": "license.txt",
+        "icon": "./assets/images/bcoin.ico",
         "oneClick": false,
-        "installerIcon": "assets/images/bcoin.ico",
-        "installerHeaderIcon": "build/icon.ico",
+        "installerIcon": "./assets/images/bcoin.ico",
+        "installerHeaderIcon": "./assets/images/bcoin.ico",
         "deleteAppDataOnUninstall": true,
         "allowToChangeInstallationDirectory": true
     }
