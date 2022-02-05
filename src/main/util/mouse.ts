@@ -1,8 +1,6 @@
-import { TargetNames } from './find-target.types';
 import { centerTarget, findTarget } from './find-target';
+import { TargetNames } from './find-target.types';
 import { getTime, sleep, timeToSeconds } from './time';
-import { GameLoop } from '../service/game-loop.service';
-import { Console } from 'console';
 
 const robotjs = require('robotjs');
 
@@ -13,7 +11,40 @@ export const moveMouseAndClick = async (x: number, y: number) => {
     await sleep(300);
 };
 
-export const clickTarget = async (target: TargetNames, threshold: number, timeOut = 3, print?: string) => {
+/**
+ * Verifica se realmente cliclou, robotjs as vezes não clica no elemento
+ */
+const moveMouseAndClickRepeat = async (
+    x: number,
+    y: number,
+    target: TargetNames,
+    threshold: number,
+    print?: string,
+) => {
+    let attempts = 0;
+    await moveMouseAndClick(x, y);
+
+    while (attempts <= 3) {
+        console.log('não cliclou, tentativa ' + attempts);
+        const [match] = await findTarget(target, threshold, print);
+        if (match) {
+            attempts++;
+            await sleep(300);
+            continue;
+        }
+        return true;
+    }
+
+    return false;
+};
+
+export const clickTarget = async (
+    target: TargetNames,
+    threshold: number,
+    timeOut = 3,
+    print?: string,
+    retryClick = true,
+) => {
     const startTime = getTime();
     let hasTimeOut = false;
 
@@ -26,7 +57,12 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
         }
 
         const center = centerTarget(match);
-        await moveMouseAndClick(center.x, center.y);
+        if (retryClick) {
+            await moveMouseAndClickRepeat(center.x, center.y, target, threshold, print);
+        } else {
+            await moveMouseAndClick(center.x, center.y);
+        }
+
         await sleep(300);
         return match;
     }

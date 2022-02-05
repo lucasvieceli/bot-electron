@@ -41,11 +41,21 @@ export const Terminal = () => {
             {}
             {lastLogs &&
                 lastLogs.items.map((item) => (
-                    <TerminalItem key={item.id.toString()} account={item.account} text={t(item.message, item.params)} />
+                    <TerminalItem
+                        key={item.id.toString()}
+                        date={item.created}
+                        account={item.account}
+                        text={t(item.message, item.params)}
+                    />
                 ))}
-            {lastLogs && <TerminalItem text={t('Logs executados anteriormente /\\')} />}
+            {lastLogs && <TerminalItem text={t('Logs executados anteriormente /\\')} date={new Date()} />}
             {messages.map((item) => (
-                <TerminalItem key={item.id.toString()} account={item.account} text={t(item.message, item.params)} />
+                <TerminalItem
+                    key={item.id.toString()}
+                    date={item.created}
+                    account={item.account}
+                    text={t(item.message, item.params)}
+                />
             ))}
             <div style={{ float: 'left', clear: 'both' }} ref={refMessageEnd}></div>
             {/* </Content> */}
