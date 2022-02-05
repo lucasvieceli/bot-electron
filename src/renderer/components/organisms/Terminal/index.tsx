@@ -57,7 +57,7 @@ export const Terminal = () => {
                     text={t(item.message, item.params)}
                 />
             ))}
-            <div style={{ float: 'left', clear: 'both' }} ref={refMessageEnd}></div>
+            <div ref={refMessageEnd}></div>
             {/* </Content> */}
         </Container>
     );

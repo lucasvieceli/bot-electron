@@ -8,8 +8,15 @@ const getPagination = async (params: PaginationParams): Promise<PaginationRespon
     return ipcRenderer.sendSync(EVENT_LOG_LIST, params);
 };
 
-const getLastLogs = (): Promise<PaginationResponse<Log>> => {
-    return ipcRenderer.sendSync(EVENT_LOG_LIST, { page: 1, orderId: 'ASC' } as PaginationParams);
-};
+const getLastLogs = async (): Promise<PaginationResponse<Log>> => {
+    const result = (await ipcRenderer.sendSync(EVENT_LOG_LIST, {
+        page: 1,
+        orderId: 'DESC',
+    } as PaginationParams)) as PaginationResponse<Log>;
+    if (result) {
+        result.items.reverse();
+    }
 
+    return result;
+};
 export default { getPagination, getLastLogs };

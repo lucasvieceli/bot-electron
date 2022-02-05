@@ -8,7 +8,7 @@ export const moveMouseAndClick = async (x: number, y: number) => {
     await robotjs.moveMouseSmooth(x, y);
     await sleep(300);
     await robotjs.mouseClick('left', false);
-    await sleep(300);
+    await sleep(500);
 };
 
 /**
@@ -22,12 +22,14 @@ const moveMouseAndClickRepeat = async (
     print?: string,
 ) => {
     let attempts = 0;
-    await moveMouseAndClick(x, y);
 
     while (attempts <= 3) {
-        console.log('não cliclou, tentativa ' + attempts);
+        await moveMouseAndClick(x, y);
+        await sleep(300);
+
         const [match] = await findTarget(target, threshold, print);
         if (match) {
+            console.log(`não cliclou, tentativa ${attempts} ${target}`);
             attempts++;
             await sleep(300);
             continue;
@@ -43,7 +45,7 @@ export const clickTarget = async (
     threshold: number,
     timeOut = 3,
     print?: string,
-    retryClick = true,
+    retryClick = false,
 ) => {
     const startTime = getTime();
     let hasTimeOut = false;
