@@ -4,23 +4,11 @@ import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
 import { printScreen } from '../../util/print-screen';
 import { sleep } from '../../util/time';
-import configService from '../config.service';
 import { GameLoop } from '../game-loop.service';
 import { Browser } from '../game-loop.types';
 import { GameAction } from './game-action.types';
 
 export class RegisterBcoin implements GameAction {
-    static instance: RegisterBcoin;
-    configRegister = 'game-action-metamask-last-date';
-    hourCheck = '23';
-
-    static getInstance() {
-        if (RegisterBcoin.instance) return RegisterBcoin.instance;
-
-        RegisterBcoin.instance = new RegisterBcoin();
-        return RegisterBcoin.instance;
-    }
-
     async start(browser?: Browser): Promise<void> {
         await LogService.registerLog('Registrando quantos bcoin possui no momento', {}, browser.account);
 
@@ -79,14 +67,5 @@ export class RegisterBcoin implements GameAction {
         digits.sort((a, b) => (a.x > b.x ? 1 : -1));
         digits.pop();
         return digits.map((d) => d.digit).join('');
-    }
-
-    private async getLastDateRegister(accountId: number) {
-        const result = await configService.getConfig(this.configRegister, accountId);
-        return result ? result.value : null;
-    }
-
-    private async setLastDateRegister(date: string, accountId: number) {
-        return configService.setConfig(this.configRegister, date, accountId);
     }
 }

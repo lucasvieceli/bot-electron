@@ -42,17 +42,26 @@ export class GameLoop {
             await this.execActionsStart();
             await this.loop();
         } catch (e) {
-            console.log(e, 'error');
-            logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
-            logService.registerLog('Got será reiniciado automáticamente', { error: JSON.stringify(e.message) || '' });
+            console.log(e, 'error chegou aki');
+            await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
+            await logService.registerLog('Got será reiniciado automáticamente', {
+                error: JSON.stringify(e.message) || '',
+            });
             await this.stop();
-            //await this.start();
+            await this.start();
         }
     }
 
     async stop() {
         this.setExecute(false);
         await logService.registerLog('Bot encerrado');
+        this.actions.forEach((action) => {
+            delete action.action;
+        });
+        this.actionsStart.forEach((action) => {
+            action.action;
+        });
+        delete GameLoop.instance;
     }
 
     setExecute(value: boolean) {
@@ -124,11 +133,11 @@ export class GameLoop {
                 this.actions.push({
                     configTime: action.configTime,
                     lastTime: action.startTime ? getTime() : 0,
-                    action: classAction.getInstance(),
+                    action: new classAction(),
                 });
             } else {
                 this.actionsStart.push({
-                    action: classAction.getInstance(),
+                    action: new classAction(),
                 });
             }
         }

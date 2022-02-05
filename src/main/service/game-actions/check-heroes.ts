@@ -8,14 +8,6 @@ import { GameLoop } from '../game-loop.service';
 import { Browser } from '../game-loop.types';
 import { GameAction } from './game-action.types';
 export class CheckHeroes implements GameAction {
-    private static instance: CheckHeroes;
-
-    static getInstance() {
-        if (CheckHeroes.instance) return CheckHeroes.instance;
-
-        CheckHeroes.instance = new CheckHeroes();
-        return CheckHeroes.instance;
-    }
     async start(browser: Browser): Promise<void> {
         await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
         const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));

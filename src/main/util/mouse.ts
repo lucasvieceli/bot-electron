@@ -1,13 +1,15 @@
 import { TargetNames } from './find-target.types';
 import { centerTarget, findTarget } from './find-target';
 import { getTime, sleep, timeToSeconds } from './time';
+import { GameLoop } from '../service/game-loop.service';
+import { Console } from 'console';
 
 const robotjs = require('robotjs');
 
 export const moveMouseAndClick = async (x: number, y: number) => {
-    robotjs.moveMouseSmooth(x, y);
+    await robotjs.moveMouseSmooth(x, y);
     await sleep(300);
-    robotjs.mouseClick();
+    await robotjs.mouseClick('left', false);
     await sleep(300);
 };
 
@@ -24,7 +26,7 @@ export const clickTarget = async (target: TargetNames, threshold: number, timeOu
         }
 
         const center = centerTarget(match);
-        moveMouseAndClick(center.x, center.y);
+        await moveMouseAndClick(center.x, center.y);
         await sleep(300);
         return match;
     }

@@ -47,7 +47,7 @@ async function createWindow() {
 
     if (isDev) {
         win.loadURL('http://localhost:8080');
-        win.webContents.openDevTools();
+        // win.webContents.openDevTools();
     } else {
         win.loadFile('./dist-webpack/renderer/index.html');
     }
