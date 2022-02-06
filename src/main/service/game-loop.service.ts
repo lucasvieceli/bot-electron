@@ -42,8 +42,8 @@ export class GameLoop {
             await this.execActionsStart();
             await this.loop();
         } catch (e) {
-            console.log(e, 'error chegou aki');
-            await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e.message) || '' });
+            console.log(e, 'error chegou aki', e.message);
+            await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
             await logService.registerLog('Got será reiniciado automáticamente', {
                 error: JSON.stringify(e.message) || '',
             });
@@ -72,7 +72,11 @@ export class GameLoop {
     private async execActionsStart() {
         for (let browser of this.browsers) {
             for (let action of this.actionsStart) {
-                await action.action.start(browser);
+                try {
+                    await action.action.start(browser);
+                } catch (e) {
+                    await logService.registerLog('Erro na ação {{action}}', { action: action.name });
+                }
             }
         }
     }
@@ -92,7 +96,15 @@ export class GameLoop {
 
                     if (checkTime) {
                         action.lastTime = currentTime;
-                        await action.action.start(browser);
+                        try {
+                            await action.action.start(browser);
+                        } catch (e) {
+                            console.log(e, e.message);
+                            await logService.registerLog('Erro na ação {{action}}: {{error}}', {
+                                action: action.name,
+                                error: JSON.stringify(e),
+                            });
+                        }
                     }
                 }
 
@@ -134,10 +146,12 @@ export class GameLoop {
                     configTime: action.configTime,
                     lastTime: action.startTime ? getTime() : 0,
                     action: new classAction(),
+                    name: action.name,
                 });
             } else {
                 this.actionsStart.push({
                     action: new classAction(),
+                    name: action.name,
                 });
             }
         }

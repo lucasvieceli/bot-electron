@@ -14,20 +14,20 @@ export class Login implements GameAction {
         await this.checkButtonOk(threshold);
         await this.checkLoginAttempls(browser);
 
-        const clickWallet = await clickTarget(TargetNames.CONNECT_WALLET, threshold);
+        const clickWallet = await clickTarget({ target: TargetNames.CONNECT_WALLET, threshold });
         if (!clickWallet) return;
 
         await LogService.registerLog('Botão conectar carteira foi detectado', {}, browser.account);
         browser.loginAttempts = browser.loginAttempts + 1;
 
-        const clickSign = await clickTarget(TargetNames.CONNECT_WALLET_SIGN, threshold, 15);
+        const clickSign = await clickTarget({ target: TargetNames.CONNECT_WALLET_SIGN, threshold, timeOut: 15 });
         if (!clickSign) return;
 
         await this.checkClickTreasuteHut(browser, threshold);
     }
 
     private async checkClickTreasuteHut(browser: Browser, threshold: number) {
-        const clickTreasuteHunt = await clickTarget(TargetNames.TREASURE_HUNT, threshold, 20);
+        const clickTreasuteHunt = await clickTarget({ target: TargetNames.TREASURE_HUNT, threshold, timeOut: 20 });
 
         if (clickTreasuteHunt) {
             browser.loginAttempts = 0;
@@ -36,7 +36,7 @@ export class Login implements GameAction {
     }
 
     private async checkButtonOk(threshold: number) {
-        const exists = await clickTarget(TargetNames.OK, 0.6);
+        const exists = await clickTarget({ target: TargetNames.OK, threshold: 0.6 });
         if (exists) {
             await sleep(15000);
         }

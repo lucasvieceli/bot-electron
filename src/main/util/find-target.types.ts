@@ -29,6 +29,7 @@ export enum TargetNames {
     SUPER_RARE_TEXT = 'super_rare-text.png',
     EPIC_TEXT = 'epic-text.png',
     NEW_MAP = 'new-map.png',
+    BAR_LIST = 'bar-list.png',
 }
 
 export interface CenterTarget {

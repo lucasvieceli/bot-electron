@@ -9,7 +9,7 @@ export class NewMap implements GameAction {
     async start(browser: Browser): Promise<void> {
         const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
 
-        const exists = await clickTarget(TargetNames.NEW_MAP, threshold);
+        const exists = await clickTarget({ target: TargetNames.NEW_MAP, threshold });
         if (!exists) return;
 
         await LogService.registerLog('Clicado em novo mapa', {}, browser.account);

@@ -13,7 +13,7 @@ export class RegisterBcoin implements GameAction {
         await LogService.registerLog('Registrando quantos bcoin possui no momento', {}, browser.account);
 
         const threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
-        const clickChest = await clickTarget(TargetNames.CHEST, threshold);
+        const clickChest = await clickTarget({ target: TargetNames.CHEST, threshold });
         if (!clickChest) {
             await LogService.registerLog('Não conseguiu encontar imagem do baú', {}, browser.account);
             return;
@@ -32,7 +32,7 @@ export class RegisterBcoin implements GameAction {
         if (digits !== '') {
             await BcoinService.addBcoinAccount(browser.account, parseFloat(digits));
         }
-        await clickTarget(TargetNames.X, threshold);
+        await clickTarget({ target: TargetNames.X, threshold });
     }
 
     private async getDigits() {

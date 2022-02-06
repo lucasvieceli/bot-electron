@@ -36,7 +36,6 @@ export const findTarget = async (
     const positions = [];
     for (let i = 0; i < contours.size(); ++i) {
         let [x, y] = contours.get(i).data32S; // Contains the points
-
         positions.push({ x, y, height: templ.rows, width: templ.cols });
     }
     return positions;
@@ -68,6 +67,7 @@ export const findTargetRepeat = async (target: TargetNames, threshold: number = 
     while (!hasTimeOut) {
         const match = await findTarget(target, threshold, print);
         if (match.length == 0) {
+            console.log(`Não encontrou ${target} findtargetrepeat`);
             hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
             await sleep(1000);
             continue;

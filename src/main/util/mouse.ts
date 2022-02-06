@@ -1,5 +1,6 @@
 import { centerTarget, findTarget } from './find-target';
 import { TargetNames } from './find-target.types';
+import { ClickTargetParams } from './mouse.types';
 import { getTime, sleep, timeToSeconds } from './time';
 
 const robotjs = require('robotjs');
@@ -40,19 +41,16 @@ const moveMouseAndClickRepeat = async (
     return false;
 };
 
-export const clickTarget = async (
-    target: TargetNames,
-    threshold: number,
-    timeOut = 3,
-    print?: string,
-    retryClick = false,
-) => {
+export const clickTarget = async (params: ClickTargetParams) => {
+    const { target, threshold, timeOut = 3, print, retryClick = false } = params;
+
     const startTime = getTime();
     let hasTimeOut = false;
 
     while (!hasTimeOut) {
         const [match] = await findTarget(target, threshold, print);
         if (!match) {
+            console.log(`não encontrou target ${target}`);
             hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
             await sleep(1000);
             continue;
