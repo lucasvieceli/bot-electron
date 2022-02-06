@@ -27,10 +27,13 @@ export class RegisterBcoin implements GameAction {
 
         await sleep(8000);
         const digits = await this.getDigits();
-        await LogService.registerLog('Encontrou {{bcoin}} bcoin', { bcoin: digits }, browser.account);
 
         if (digits !== '') {
+            await LogService.registerLog('Encontrou {{bcoin}} bcoin', { bcoin: digits }, browser.account);
+
             await BcoinService.addBcoinAccount(browser.account, parseFloat(digits));
+        } else {
+            await LogService.registerLog('Não conseguiu registrar os bcoins', {}, browser.account);
         }
         await clickTarget({ target: TargetNames.X, threshold });
     }
