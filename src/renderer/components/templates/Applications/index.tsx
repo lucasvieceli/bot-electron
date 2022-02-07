@@ -5,6 +5,7 @@ import { ApplicationMenuItem } from '../../organisms/Applications-menu/types';
 import BcoinImg from '../../../../../assets/images/bcoin-menu.png';
 import NewMapImg from '../../../../../assets/images/new-map.png';
 import LogImg from '../../../../../assets/images/log.png';
+import AccountImg from '../../../../../assets/images/account.png';
 import { colors } from '../../../layout/colors';
 
 const menus: ApplicationMenuItem[] = [
@@ -23,6 +24,12 @@ const menus: ApplicationMenuItem[] = [
         image: LogImg,
         backgroundColor: colors.lightGray,
         url: '/applications/log',
+    },
+    {
+        name: 'Contas',
+        image: AccountImg,
+        backgroundColor: colors.lightGray,
+        url: '/applications/account',
     },
 ];
 

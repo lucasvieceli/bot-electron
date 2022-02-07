@@ -4,3 +4,4 @@ export { default as Applications } from './Applications';
 export { default as ApplicationsBcoin } from './Applications/Bcoin';
 export { default as ApplicationsMap } from './Applications/Map';
 export { default as ApplicationsLog } from './Applications/Log';
+export { default as ApplicationsAccount } from './Applications/Account';

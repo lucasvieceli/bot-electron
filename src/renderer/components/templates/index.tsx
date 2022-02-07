@@ -4,3 +4,4 @@ export { default as Applications } from './Applications';
 export { default as BcoinList } from './Bcoin-list';
 export { default as MapList } from './Map-list';
 export { default as LogList } from './Log-list';
+export { default as AccountList } from './Account-list';

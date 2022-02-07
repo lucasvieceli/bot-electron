@@ -1,5 +1,7 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import { win } from '..';
+import accountService from './account.service';
+import { AccountChangeName } from './account.types';
 import bcoinService from './bcoin.service';
 import {
     EVENT_BCOIN_LIST,
@@ -13,6 +15,8 @@ import {
     EVENT_MAP_AVERAGE_LAST_WEEK,
     EVENT_BCOIN_TOTAL_YESTERDAY,
     EVENT_BCOIN_AVERAGE_LAST_WEEK,
+    EVENT_ACCOUNT_LIST,
+    EVENT_ACCOUNT_CHANGE_NAME,
 } from './events.types';
 import { GameLoop } from './game-loop.service';
 import logService from './log.service';
@@ -45,6 +49,12 @@ const registerEvents = async () => {
     });
     ipcMain.on(EVENT_BCOIN_AVERAGE_LAST_WEEK, async (e: IpcMainEvent, params) => {
         e.returnValue = await bcoinService.getAverageBcoinLastWeek();
+    });
+    ipcMain.on(EVENT_ACCOUNT_LIST, async (e: IpcMainEvent, params) => {
+        e.returnValue = await accountService.pagination(params);
+    });
+    ipcMain.on(EVENT_ACCOUNT_CHANGE_NAME, async (e: IpcMainEvent, params: AccountChangeName) => {
+        e.returnValue = await accountService.changeName(params);
     });
 };
 export default { registerEvents };

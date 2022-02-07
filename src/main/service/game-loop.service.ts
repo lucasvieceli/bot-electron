@@ -74,6 +74,7 @@ export class GameLoop {
             for (let action of this.actionsStart) {
                 try {
                     await action.action.start(browser);
+                    await sleep(500);
                 } catch (e) {
                     await logService.registerLog('Erro na ação {{action}}', { action: action.name });
                 }
@@ -98,6 +99,7 @@ export class GameLoop {
                         action.lastTime = currentTime;
                         try {
                             await action.action.start(browser);
+                            await sleep(500);
                         } catch (e) {
                             console.log(e, e.message);
                             await logService.registerLog('Erro na ação {{action}}: {{error}}', {

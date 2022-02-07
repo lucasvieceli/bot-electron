@@ -38,7 +38,6 @@
         "jimp": "^0.16.1",
         "node-abort-controller": "^3.0.1",
         "node-process-windows": "0.0.2",
-        "node-window-manager": "github:sentialx/node-window-manager",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-hot-loader": "^4.12.20",

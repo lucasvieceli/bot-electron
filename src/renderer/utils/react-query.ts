@@ -12,3 +12,4 @@ export const MAP_TOTAL = 'map-total';
 export const MAP_AVERAGE_LAST_WEEK = 'map-average-last-week';
 export const LOG_LIST = 'log-list';
 export const LOG_LAST = 'log-last';
+export const ACCOUNT_LIST = 'account-list';

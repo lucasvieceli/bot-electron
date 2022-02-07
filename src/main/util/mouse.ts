@@ -42,32 +42,37 @@ const moveMouseAndClickRepeat = async (
 };
 
 export const clickTarget = async (params: ClickTargetParams) => {
-    const { target, threshold, timeOut = 3, print, retryClick = false } = params;
+    try {
+        const { target, threshold, timeOut = 3, print, retryClick = false } = params;
 
-    const startTime = getTime();
-    let hasTimeOut = false;
+        const startTime = getTime();
+        let hasTimeOut = false;
 
-    while (!hasTimeOut) {
-        const [match] = await findTarget(target, threshold, print);
-        if (!match) {
-            console.log(`não encontrou target ${target}`);
-            hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
-            await sleep(1000);
-            continue;
+        while (!hasTimeOut) {
+            const [match] = await findTarget(target, threshold, print);
+            if (!match) {
+                console.log(`não encontrou target ${target}`);
+                hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
+                await sleep(1000);
+                continue;
+            }
+
+            const center = centerTarget(match);
+            if (retryClick) {
+                await moveMouseAndClickRepeat(center.x, center.y, target, threshold, print);
+            } else {
+                await moveMouseAndClick(center.x, center.y);
+            }
+
+            await sleep(300);
+            return match;
         }
 
-        const center = centerTarget(match);
-        if (retryClick) {
-            await moveMouseAndClickRepeat(center.x, center.y, target, threshold, print);
-        } else {
-            await moveMouseAndClick(center.x, center.y);
-        }
-
-        await sleep(300);
-        return match;
+        return false;
+    } catch (e) {
+        console.log('error clickTarget ', e);
+        throw e;
     }
-
-    return false;
 };
 
 export const moveAndDragMouse = async (x: number, y: number) => {

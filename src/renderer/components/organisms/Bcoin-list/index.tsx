@@ -2,6 +2,7 @@ import React, { FC, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { Spinner, Table } from 'reactstrap';
+import { TextRegular15 } from '../../../layout/Fonts/regular';
 import { AccountService, BcoinService } from '../../../services';
 import { PaginationParams } from '../../../services/bcoin.types';
 import { BCOIN_LIST, BCOIN_TOTAL } from '../../../utils/react-query';
@@ -73,23 +74,18 @@ const BcoinList: FC<BcoinListProps> = ({}) => {
                         <td>
                             <TableFilter
                                 type="date"
-                                value={params.account}
+                                value={params.created}
                                 name="created"
                                 onChange={handleChangeFilter}
                             />
                         </td>
                         <td>
-                            <TableFilter
-                                type="currency"
-                                value={params.account}
-                                name="qty"
-                                onChange={handleChangeFilter}
-                            />
+                            <TableFilter type="currency" value={params.qty} name="qty" onChange={handleChangeFilter} />
                         </td>
                         <td>
                             <TableFilter
                                 type="currency"
-                                value={params.account}
+                                value={params.qtyDay}
                                 name="qtyDay"
                                 onChange={handleChangeFilter}
                             />
@@ -101,21 +97,31 @@ const BcoinList: FC<BcoinListProps> = ({}) => {
                     {!isLoading &&
                         data.items.map((item) => (
                             <tr key={item.id.toString()}>
-                                <td>{AccountService.getName(item.account)}</td>
                                 <td>
-                                    {item.created.toLocaleDateString(language, {
-                                        year: 'numeric',
-                                        month: 'numeric',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                    })}
+                                    <TextRegular15>{AccountService.getName(item.account)}</TextRegular15>
                                 </td>
-                                <td align="right">{item.qty.toLocaleString(language, { minimumFractionDigits: 2 })}</td>
+                                <td>
+                                    <TextRegular15>
+                                        {item.created.toLocaleDateString(language, {
+                                            year: 'numeric',
+                                            month: 'numeric',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                        })}
+                                    </TextRegular15>
+                                </td>
                                 <td align="right">
-                                    {item.qtyDay
-                                        ? item.qtyDay.toLocaleString(language, { minimumFractionDigits: 2 })
-                                        : 0}
+                                    <TextRegular15>
+                                        {item.qty.toLocaleString(language, { minimumFractionDigits: 2 })}
+                                    </TextRegular15>
+                                </td>
+                                <td align="right">
+                                    <TextRegular15>
+                                        {item.qtyDay
+                                            ? item.qtyDay.toLocaleString(language, { minimumFractionDigits: 2 })
+                                            : 0}
+                                    </TextRegular15>
                                 </td>
                             </tr>
                         ))}

@@ -7,15 +7,19 @@ import { LogParams, PaginationParams } from './log.types';
 import paginateService from './paginate.service';
 
 const registerLog = async (message: string, params: LogParams = {}, account?: Account): Promise<Log> => {
-    const repo = Database.getInstance().getRepository<Log>('Log');
+    try {
+        const repo = Database.getInstance().connection.getRepository<Log>('Log');
 
-    const log = repo.create({
-        message,
-        params,
-        account,
-    });
-    await repo.save(log);
-    return log;
+        const log = repo.create({
+            message,
+            params,
+            account,
+        });
+        await repo.save(log);
+        return log;
+    } catch (e) {
+        console.log('error registerLog ', e);
+    }
 };
 
 const getQueryPagination = (params: PaginationParams) => {
@@ -49,7 +53,7 @@ const getQueryPagination = (params: PaginationParams) => {
 
 const pagination = async (params: PaginationParams) => {
     const query = getQueryPagination(params);
-    return await paginateService.pagination<Log>(query, { page: params.page, limit: 200 });
+    return await paginateService.pagination<Log>(query, { page: params.page });
 };
 
 export default { registerLog, pagination };

@@ -9,3 +9,5 @@ export const EVENT_MAP_LIST = 'map:list';
 export const EVENT_MAP_TOTAL = 'map:total';
 export const EVENT_MAP_AVERAGE_LAST_WEEK = 'map:average-last-week';
 export const EVENT_LOG_LIST = 'log:list';
+export const EVENT_ACCOUNT_LIST = 'account:list';
+export const EVENT_ACCOUNT_CHANGE_NAME = 'account:change_name';

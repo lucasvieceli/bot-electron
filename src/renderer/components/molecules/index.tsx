@@ -11,3 +11,5 @@ export { default as BcoinPrice } from './Bcoin-price';
 export { default as DashboardMapsAverageLastWeek } from './Dashboard-maps-average-last-week';
 export { default as DashboardBcoinYesterday } from './Dashboard-bcoin-yesterday';
 export { default as DashboardBcoinAverageLastWeek } from './Dashboard-bcoin-average-last-week';
+export { default as InputInline } from './Input-inline';
+export { default as InputInlineAccountName } from './Input-inline-account-name';

@@ -13,32 +13,39 @@ export const findTarget = async (
     threshold: number = 0.7,
     print?: string,
 ): Promise<TargetMatch[]> => {
-    const printScreenSource = !print ? await printScreen() : print;
+    try {
+        const printScreenSource = !print ? await printScreen() : print;
+        const imageSource = await Jimp.read(
+            Buffer.from(printScreenSource.replace(/^data:image\/png;base64,/, ''), 'base64'),
+        );
 
-    const imageSource = await Jimp.read(
-        Buffer.from(printScreenSource.replace(/^data:image\/png;base64,/, ''), 'base64'),
-    );
+        const templ = await getTemplate(target);
+        let src = cv.matFromImageData(imageSource.bitmap);
+        let processedImage = new cv.Mat();
+        let mask = new cv.Mat();
 
-    const templ = await getTemplate(target);
+        cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask);
 
-    let src = cv.matFromImageData(imageSource.bitmap);
-    let processedImage = new cv.Mat();
-    let mask = new cv.Mat();
+        cv.threshold(processedImage, processedImage, threshold, 1, cv.THRESH_BINARY);
+        processedImage.convertTo(processedImage, cv.CV_8UC1);
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
 
-    cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask);
-    cv.threshold(processedImage, processedImage, threshold, 1, cv.THRESH_BINARY);
-    processedImage.convertTo(processedImage, cv.CV_8UC1);
+        cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        const positions = [];
+        for (let i = 0; i < contours.size(); ++i) {
+            let [x, y] = contours.get(i).data32S; // Contains the points
+            positions.push({ x, y, height: templ.rows, width: templ.cols });
+        }
 
-    let contours = new cv.MatVector();
-    let hierarchy = new cv.Mat();
-
-    cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-    const positions = [];
-    for (let i = 0; i < contours.size(); ++i) {
-        let [x, y] = contours.get(i).data32S; // Contains the points
-        positions.push({ x, y, height: templ.rows, width: templ.cols });
+        src.delete();
+        mask.delete();
+        templ.delete();
+        return positions;
+    } catch (e) {
+        console.log(' error findTarget ', e);
+        throw e;
     }
-    return positions;
 };
 
 export const centerTarget = ({ x, height, width, y }: TargetMatch): CenterTarget => {
@@ -49,15 +56,15 @@ export const centerTarget = ({ x, height, width, y }: TargetMatch): CenterTarget
 };
 
 const getTemplate = async (target: TargetNames) => {
-    if (target in targets) {
-        return targets[target];
-    }
+    // if (target in targets) {
+    //     return targets[target];
+    // }
     const imageTemplate = await Jimp.read(path.join(defaultStorageFolder, 'images', target));
     const templ = cv.matFromImageData(imageTemplate.bitmap);
-
-    targets[target] = templ;
-
     return templ;
+    // targets[target] = templ;
+
+    // return templ;
 };
 
 export const findTargetRepeat = async (target: TargetNames, threshold: number = 0.7, timeOut = 3, print?: string) => {

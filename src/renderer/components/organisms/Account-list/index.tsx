@@ -1,27 +1,27 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Spinner, Table } from 'reactstrap';
-import { PaginationParams } from '../../../../main/service/map.types';
+import { PaginationParams } from '../../../../main/service/account.types';
 import { TextRegular15 } from '../../../layout/Fonts/regular';
 import { AccountService, MapService } from '../../../services';
-import { MAP_LIST, MAP_TOTAL } from '../../../utils/react-query';
-import { TableFilter } from '../../molecules';
+import { ACCOUNT_LIST, MAP_LIST, MAP_TOTAL } from '../../../utils/react-query';
+import { InputInline, InputInlineAccountName, TableFilter } from '../../molecules';
 import Pagination from '../Pagination';
 import { ContainerPagination, ContainerSpinner, TextTotal } from './styles';
 
-interface MapListProps {}
+interface AccountListProps {}
 
-const MapList: FC<MapListProps> = ({}) => {
+const AccountList: FC<AccountListProps> = ({}) => {
     const refTable = useRef(null);
     const [params, setParams] = useState<PaginationParams>({
         page: 1,
         created: null,
-        account: null,
+        name: null,
+        metamaskId: null,
     } as PaginationParams);
 
-    const { data, isLoading } = useQuery([MAP_LIST, params], () => MapService.getPagination(params));
-    const { data: totalMaps } = useQuery([MAP_TOTAL, params], () => MapService.getTotal(params));
+    const { data, isLoading } = useQuery([ACCOUNT_LIST, params], () => AccountService.getPagination(params));
 
     const {
         i18n: { language },
@@ -50,22 +50,21 @@ const MapList: FC<MapListProps> = ({}) => {
             <Table borderless dark hover responsive striped>
                 <thead>
                     <tr>
-                        <th>{t('Conta')}</th>
+                        <th>{t('Nome')}</th>
+                        <th>{t('Metamask ID')}</th>
                         <th>{t('Data')}</th>
                     </tr>
                     <tr>
                         <td>
-                            <TableFilter
-                                title="Busca pelo id da metamask ou nome da conta"
-                                value={params.account}
-                                name="account"
-                                onChange={handleChangeFilter}
-                            />
+                            <TableFilter value={params.name} name="name" onChange={handleChangeFilter} />
+                        </td>
+                        <td>
+                            <TableFilter value={params.metamaskId} name="metamaskId" onChange={handleChangeFilter} />
                         </td>
                         <td>
                             <TableFilter
                                 type="date"
-                                value={params.account}
+                                value={params.created}
                                 name="created"
                                 onChange={handleChangeFilter}
                             />
@@ -78,7 +77,10 @@ const MapList: FC<MapListProps> = ({}) => {
                         data.items.map((item) => (
                             <tr key={item.id.toString()}>
                                 <td>
-                                    <TextRegular15>{AccountService.getName(item.account)}</TextRegular15>
+                                    <InputInlineAccountName account={item} />
+                                </td>
+                                <td>
+                                    <TextRegular15>{item.metamaskId}</TextRegular15>
                                 </td>
                                 <td>
                                     <TextRegular15>
@@ -104,11 +106,10 @@ const MapList: FC<MapListProps> = ({}) => {
             {data && (
                 <ContainerPagination>
                     <Pagination totalPages={data.totalPages} onChangePage={handleChangePage} page={data.page} />
-                    <TextTotal>Total Mapas: {totalMaps ? totalMaps : 0}</TextTotal>
                 </ContainerPagination>
             )}
         </>
     );
 };
 
-export default MapList;
+export default AccountList;

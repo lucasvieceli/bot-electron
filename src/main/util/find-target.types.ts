@@ -1,5 +1,7 @@
 export enum TargetNames {
     METAMASK = 'metamask.png',
+    METAMASK_1 = 'metamask-1.png',
+    METAMASK_2 = 'metamask-2.png',
     METAMASK_COPY = 'copy.png',
     CONNECT_WALLET = 'connect-wallet.png',
     CONNECT_WALLET_SIGN = 'select-wallet-2.png',

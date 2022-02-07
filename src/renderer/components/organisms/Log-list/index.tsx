@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { Spinner, Table } from 'reactstrap';
 import { PaginationParams } from '../../../../main/service/map.types';
-import { AccountService, LogService, MapService } from '../../../services';
+import { TextRegular15 } from '../../../layout/Fonts/regular';
+import { AccountService, LogService } from '../../../services';
 import { LOG_LIST } from '../../../utils/react-query';
 import { TableFilter } from '../../molecules';
 import Pagination from '../Pagination';
-import { ContainerPagination, ContainerSpinner, TextTotal } from './styles';
+import { ContainerPagination, ContainerSpinner } from './styles';
 
 interface LogListProps {}
 
@@ -77,16 +78,24 @@ const LogList: FC<LogListProps> = ({}) => {
                     {!isLoading &&
                         data.items.map((item) => (
                             <tr key={item.id.toString()}>
-                                <td>{item.account && AccountService.getName(item.account)}</td>
-                                <td>{t(item.message, item.params)}</td>
                                 <td>
-                                    {item.created.toLocaleDateString(language, {
-                                        year: 'numeric',
-                                        month: 'numeric',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                    })}
+                                    <TextRegular15>
+                                        {item.account && AccountService.getName(item.account)}
+                                    </TextRegular15>
+                                </td>
+                                <td>
+                                    <TextRegular15>{t(item.message, item.params)}</TextRegular15>
+                                </td>
+                                <td>
+                                    <TextRegular15>
+                                        {item.created.toLocaleDateString(language, {
+                                            year: 'numeric',
+                                            month: 'numeric',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                        })}
+                                    </TextRegular15>
                                 </td>
                             </tr>
                         ))}
