@@ -47,3 +47,12 @@ export interface TargetMatch {
 }
 
 export type TargetsCv = { [key in TargetNames]: any };
+
+export interface FindTargetParams {
+    target: TargetNames;
+    threshold?: number;
+    print?: string;
+}
+export interface FindTargetRepeatParams extends FindTargetParams {
+    timeOut?: number;
+}

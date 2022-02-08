@@ -62,7 +62,11 @@ export class CheckHeroes implements GameAction {
 
     private async getPositionBar() {
         try {
-            const exists = await findTargetRepeat(TargetNames.BAR_LIST, this.threshold, 6);
+            const exists = await findTargetRepeat({
+                target: TargetNames.BAR_LIST,
+                threshold: this.threshold,
+                timeOut: 6,
+            });
 
             if (exists) {
                 return centerTarget(exists[0]);
@@ -85,10 +89,10 @@ export class CheckHeroes implements GameAction {
             );
 
             const [fullBars, greenBars] = await Promise.all([
-                findTarget(TargetNames.FULL_BAR, thresholdBar, print),
-                findTarget(TargetNames.GREEN_BAR, thresholdBar, print),
+                findTarget({ target: TargetNames.FULL_BAR, threshold: thresholdBar, print }),
+                findTarget({ target: TargetNames.GREEN_BAR, threshold: thresholdBar, print }),
             ]);
-            const buttons = await findTarget(TargetNames.GO_WORK, thresholdGoWork, print);
+            const buttons = await findTarget({ target: TargetNames.GO_WORK, threshold: thresholdGoWork, print });
             const bars = [...fullBars, ...greenBars];
 
             const notWorkingGreenBars: TargetMatch[] = [];

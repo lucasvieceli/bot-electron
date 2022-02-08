@@ -2,22 +2,24 @@ const cv = require('./opencv');
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
-import { CenterTarget, TargetMatch, TargetNames, TargetsCv } from './find-target.types';
+import {
+    CenterTarget,
+    FindTargetParams,
+    FindTargetRepeatParams,
+    TargetMatch,
+    TargetNames,
+    TargetsCv,
+} from './find-target.types';
 import { printScreen } from './print-screen';
 import { getTime, sleep, timeToSeconds } from './time';
 
-let targets: TargetsCv = {} as TargetsCv;
-
-export const findTarget = async (
-    target: TargetNames,
-    threshold: number = 0.7,
-    print?: string,
-): Promise<TargetMatch[]> => {
+export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[]> => {
     try {
-        const printScreenSource = !print ? await printScreen() : print;
-        const imageSource = await Jimp.read(
-            Buffer.from(printScreenSource.replace(/^data:image\/png;base64,/, ''), 'base64'),
-        );
+        const { target, threshold = 7, print = await printScreen() } = params;
+
+        const positions: TargetMatch[] = [];
+
+        const imageSource = await Jimp.read(Buffer.from(print.replace(/^data:image\/png;base64,/, ''), 'base64'));
 
         const templ = await getTemplate(target);
         let src = cv.matFromImageData(imageSource.bitmap);
@@ -32,10 +34,16 @@ export const findTarget = async (
         let hierarchy = new cv.Mat();
 
         cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-        const positions = [];
+
         for (let i = 0; i < contours.size(); ++i) {
             let [x, y] = contours.get(i).data32S; // Contains the points
-            positions.push({ x, y, height: templ.rows, width: templ.cols });
+
+            positions.push({
+                x,
+                y,
+                height: templ.rows,
+                width: templ.cols,
+            });
         }
 
         src.delete();
@@ -56,23 +64,19 @@ export const centerTarget = ({ x, height, width, y }: TargetMatch): CenterTarget
 };
 
 const getTemplate = async (target: TargetNames) => {
-    // if (target in targets) {
-    //     return targets[target];
-    // }
     const imageTemplate = await Jimp.read(path.join(defaultStorageFolder, 'images', target));
     const templ = cv.matFromImageData(imageTemplate.bitmap);
     return templ;
-    // targets[target] = templ;
-
-    // return templ;
 };
 
-export const findTargetRepeat = async (target: TargetNames, threshold: number = 0.7, timeOut = 3, print?: string) => {
+export const findTargetRepeat = async (params: FindTargetRepeatParams) => {
+    const { target, threshold = 0.7, timeOut = 3, print } = params;
+
     const startTime = getTime();
     let hasTimeOut = false;
 
     while (!hasTimeOut) {
-        const match = await findTarget(target, threshold, print);
+        const match = await findTarget({ target, threshold, print });
         if (match.length == 0) {
             console.log(`Não encontrou ${target} findtargetrepeat`);
             hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;

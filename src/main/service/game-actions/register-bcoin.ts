@@ -63,7 +63,7 @@ export class RegisterBcoin implements GameAction {
             ];
 
             for (const { num, img } of search) {
-                const matchs = await findTarget(img, 0.95, print);
+                const matchs = await findTarget({ target: img, threshold: 0.95, print });
                 for (const match of matchs) {
                     digits.push({ digit: num, x: match.x });
                 }

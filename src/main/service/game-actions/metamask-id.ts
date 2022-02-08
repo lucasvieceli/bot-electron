@@ -1,5 +1,4 @@
 import { clipboard } from 'electron';
-import { UsingJoinColumnOnlyOnOneSideAllowedError } from 'typeorm';
 import { AccountService, LogService } from '..';
 import { centerTarget, findTargetRepeat } from '../../util/find-target';
 import { TargetNames } from '../../util/find-target.types';
@@ -59,7 +58,9 @@ export class MetamaskId implements GameAction {
         try {
             const find = [TargetNames.METAMASK, TargetNames.METAMASK_1, TargetNames.METAMASK_2];
 
-            const exists = await Promise.race(find.map((target) => findTargetRepeat(target, this.threshold, 10)));
+            const exists = await Promise.race(
+                find.map((target) => findTargetRepeat({ target, threshold: this.threshold, timeOut: 10 })),
+            );
             if (exists) {
                 const center = centerTarget(exists[0]);
                 await moveMouseAndClick(center.x, center.y);

@@ -28,7 +28,7 @@ const moveMouseAndClickRepeat = async (
         await moveMouseAndClick(x, y);
         await sleep(300);
 
-        const [match] = await findTarget(target, threshold, print);
+        const [match] = await findTarget({ target, threshold, print });
         if (match) {
             console.log(`não cliclou, tentativa ${attempts} ${target}`);
             attempts++;
@@ -49,7 +49,7 @@ export const clickTarget = async (params: ClickTargetParams) => {
         let hasTimeOut = false;
 
         while (!hasTimeOut) {
-            const [match] = await findTarget(target, threshold, print);
+            const [match] = await findTarget({ target, threshold, print });
             if (!match) {
                 console.log(`não encontrou target ${target}`);
                 hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
