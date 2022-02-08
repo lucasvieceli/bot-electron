@@ -39,7 +39,7 @@ Windows ainda não foi testado
 
 ## O que falta
 
-[ ] Melhorar reconhecimento das imagens
+- [ ] Melhorar reconhecimento das imagens
 [ ] Arrumar CSS componente terminal
 [ ] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
 [ ] Adicionat multi threads
