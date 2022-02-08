@@ -12,6 +12,7 @@ Quando o for executado pela primeira vez, será criado uma pasta nos seus docume
 -   React
 -   Typescript
 -   TypeORM
+-   OpenCV.js
 -   SQLlite
 
 ## Funcionalidades
