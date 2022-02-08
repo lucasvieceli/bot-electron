@@ -1,5 +1,7 @@
 ## Sobre
 
+[Imagens demonstração](#Imagens)
+
 BOT em desenvolvimento, toda ajuda é bem vinda.
 
 Quando o for executado pela primeira vez, será criado uma pasta nos seus documentos com nome de "bot-bombcrypto", nela terá o banco de dados e as imagens que o bot usa para fazer o reconhecimento, você pode alterar essas imagens caso necessário
