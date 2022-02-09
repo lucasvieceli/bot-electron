@@ -1,12 +1,11 @@
 import { ipcMain } from 'electron';
-import { win } from '..';
 import Config from '../database/models/config.model';
 import { getTime, sleep, timeToMinutes } from '../util/time';
 import configService from './config.service';
+import { EVENT_GAME_LOOP_STATUS } from './events.types';
 import gameActionService from './game-action.service';
 import { ActionsConfig, ActionsStartConfig, Browser } from './game-loop.types';
 import logService from './log.service';
-import { EVENT_GAME_LOOP_STATUS } from './events.types';
 
 export class GameLoop {
     static instance: GameLoop;
@@ -42,11 +41,9 @@ export class GameLoop {
             await this.execActionsStart();
             await this.loop();
         } catch (e) {
-            console.log(e, 'error chegou aki', e.message);
+            console.log(e, 'Error GameLoop:start');
             await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
-            await logService.registerLog('Got será reiniciado automáticamente', {
-                error: JSON.stringify(e.message) || '',
-            });
+            await logService.registerLog('Bot será reiniciado automáticamente', {});
             await this.stop();
             await this.start();
         }
