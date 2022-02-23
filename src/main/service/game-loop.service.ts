@@ -1,14 +1,19 @@
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
+import { AccountService } from '.';
 import Config from '../database/models/config.model';
+import { clickCenterWindow } from '../util/mouse';
 import { getTime, sleep, timeToMinutes } from '../util/time';
+import { createWindowBomb } from '../util/window';
 import configService from './config.service';
-import { EVENT_GAME_LOOP_STATUS } from './events.types';
+import { EVENT_GAME_LOOP_BROWSER, EVENT_GAME_LOOP_STATUS } from './events.types';
 import gameActionService from './game-action.service';
 import { ActionsConfig, ActionsStartConfig, Browser } from './game-loop.types';
 import logService from './log.service';
 
 export class GameLoop {
     static instance: GameLoop;
+
+    public browserActive: BrowserWindow;
     public config: Config[];
     public actions: ActionsConfig[];
     public actionsStart: ActionsStartConfig[];
@@ -38,20 +43,28 @@ export class GameLoop {
             await this.initActions();
             await this.getConfig();
             await this.getBrowsers();
+            if (!this.browsers || this.browsers.length == 0) return false;
+
             await this.execActionsStart();
             await this.loop();
         } catch (e) {
             console.log(e, 'Error GameLoop:start');
             await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
-            await logService.registerLog('Bot será reiniciado automáticamente', {});
+            // await logService.registerLog('Bot será reiniciado automáticamente', {});
             await this.stop();
-            await this.start();
+            // await this.start();
         }
     }
 
     async stop() {
         this.setExecute(false);
+        ipcMain.emit(EVENT_GAME_LOOP_BROWSER, 0);
+
         await logService.registerLog('Bot encerrado');
+
+        this.browsers.map((browser) => browser.browser.close());
+        this.browsers = [];
+
         this.actions.forEach((action) => {
             delete action.action;
         });
@@ -61,6 +74,20 @@ export class GameLoop {
         delete GameLoop.instance;
     }
 
+    private async showBrowser({ browser }: Browser) {
+        this.browserActive = browser;
+
+        console.log(browser.isFocused(), browser.isMinimized(), browser.isAlwaysOnTop(), browser.isVisible());
+        if (!browser.isFocused() || !browser.isVisible()) {
+            console.log('aquiii');
+            browser.focus();
+            browser.setAlwaysOnTop(true);
+            browser.setAlwaysOnTop(false);
+            await sleep(500);
+            await clickCenterWindow(browser);
+            await sleep(500);
+        }
+    }
     setExecute(value: boolean) {
         this.execute = value;
         ipcMain.emit(EVENT_GAME_LOOP_STATUS, value);
@@ -70,6 +97,8 @@ export class GameLoop {
         for (let browser of this.browsers) {
             for (let action of this.actionsStart) {
                 try {
+                    await this.showBrowser(browser);
+
                     await action.action.start(browser);
                     await sleep(500);
                 } catch (e) {
@@ -95,6 +124,8 @@ export class GameLoop {
                     if (checkTime) {
                         action.lastTime = currentTime;
                         try {
+                            await this.showBrowser(browser);
+
                             await action.action.start(browser);
                             await sleep(500);
                         } catch (e) {
@@ -157,11 +188,20 @@ export class GameLoop {
     }
 
     private async getBrowsers() {
-        await logService.registerLog('Encontrado {{qty}} janela(s) com nome de {{nameWindow}}', {
-            nameWindow: this.windowName,
-            qty: '2',
+        const accounts = await AccountService.getAllActive();
+        await logService.registerLog('Encontrado {{qty}} contas para executar', {
+            qty: accounts.length.toString(),
         });
-        this.browsers = [{}];
+        ipcMain.emit(EVENT_GAME_LOOP_BROWSER, accounts.length);
+        this.browsers = [];
+
+        accounts.map(async (account) => {
+            this.browsers.push({
+                browser: await createWindowBomb(),
+                account,
+            });
+        });
+        await sleep(10000);
     }
     public async getConfigByName(name: string, valueDefault: string) {
         if (!this.config) {

@@ -1,9 +1,11 @@
-import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
 import { EventsService } from './service';
+import { GameLoop } from './service/game-loop.service';
 import { copyTargets } from './util/copy-targets';
+import { createWindowBomb } from './util/window';
 require('./util/opencv');
 declare global {
     namespace NodeJS {
@@ -62,6 +64,7 @@ app.whenReady().then(EventsService.registerEvents).then(createWindow);
 
 app.on('window-all-closed', () => {
     Database.getInstance().close();
+    GameLoop.getInstance().stop();
     app.quit();
 });
 

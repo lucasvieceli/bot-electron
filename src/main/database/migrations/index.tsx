@@ -5,3 +5,4 @@ export { CreateGameAction1643555044764 } from './1643555044764-CreateGameAction'
 export { CreateBcoin1643672519095 } from './1643672519095-CreateBcoin';
 export { AlterBcoin1643829051934 } from './1643829051934-AlterBcoin';
 export { CreateNewMap1643893646832 } from './1643893646832-CreateNewMap';
+export { AlterAccount1645622498304 } from './1645622498304-alterAccount';

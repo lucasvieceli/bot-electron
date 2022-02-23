@@ -17,6 +17,7 @@ import {
     EVENT_BCOIN_AVERAGE_LAST_WEEK,
     EVENT_ACCOUNT_LIST,
     EVENT_ACCOUNT_CHANGE_NAME,
+    EVENT_GAME_LOOP_BROWSER,
 } from './events.types';
 import { GameLoop } from './game-loop.service';
 import logService from './log.service';
@@ -24,6 +25,7 @@ import mapService from './map.service';
 
 const registerEvents = async () => {
     ipcMain.on(EVENT_GAME_LOOP_STATUS, (value) => win.webContents.send(EVENT_GAME_LOOP_STATUS, value));
+    ipcMain.on(EVENT_GAME_LOOP_BROWSER, (value) => win.webContents.send(EVENT_GAME_LOOP_BROWSER, value));
     ipcMain.on(EVENT_GAME_LOOP_START, () => GameLoop.getInstance().start());
     ipcMain.on(EVENT_GAME_LOOP_STOP, () => GameLoop.getInstance().stop());
     ipcMain.on(EVENT_BCOIN_LIST, async (e: IpcMainEvent, params) => {

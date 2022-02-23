@@ -10,3 +10,7 @@ export const controlF5 = () => {
 
     robotjs.keyToggle('f5', 'down', 'control');
 };
+
+export const typeKeyboard = async (text: string) => {
+    return robotjs.typeString(text);
+};

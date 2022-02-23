@@ -17,9 +17,7 @@ export class CreateGameAction1643555044764 implements MigrationInterface {
             PRIMARY KEY("id")
         );
         `);
-        await queryRunner.query(`
-            INSERT INTO "GameAction" ("id", "name", "file_name", "class_name", "start_time", "loop",  "order") VALUES ('1', 'Busca id metamask', 'metamask-id', 'MetamaskId', '0', '0', '0');
-        `);
+
         await queryRunner.query(`
             INSERT INTO "GameAction" ("name", "file_name", "class_name", "start_time", "loop", "config_time", "order") VALUES ('Verifica login', 'login', 'Login', '0', '1', 'interval-check-login', '1');
         `);

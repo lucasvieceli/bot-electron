@@ -1,8 +1,20 @@
 import { endOfDay, startOfDay } from 'date-fns';
+import { IsNull, Not } from 'typeorm';
 import Database from '../database/Database';
 import Account from '../database/models/account.model';
 import { AccountChangeName, PaginationParams } from './account.types';
 import paginateService from './paginate.service';
+
+const getAllActive = () => {
+    const repo = Database.getInstance().getRepository<Account>('Account');
+
+    return repo.find({
+        where: {
+            user: Not('null'),
+            password: Not('null'),
+        },
+    });
+};
 
 const findByMetamaskIdOrCreate = async (metamaskId: string): Promise<Account> => {
     const repo = Database.getInstance().getRepository<Account>('Account');
@@ -63,4 +75,4 @@ const changeName = async ({ accountId, name }: AccountChangeName) => {
     return account;
 };
 
-export default { findByMetamaskIdOrCreate, pagination, getQueryPagination, changeName };
+export default { findByMetamaskIdOrCreate, pagination, getQueryPagination, changeName, getAllActive };

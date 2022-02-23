@@ -17,6 +17,12 @@ export default class Account {
     @Column()
     name: string;
 
+    @Column()
+    user: string;
+
+    @Column()
+    password: string;
+
     @CreateDateColumn()
     created: Date;
 

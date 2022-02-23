@@ -65,7 +65,7 @@ export class CheckHeroes implements GameAction {
             const exists = await findTargetRepeat({
                 target: TargetNames.BAR_LIST,
                 threshold: this.threshold,
-                timeOut: 6,
+                timeOut: 0.9,
             });
 
             if (exists) {

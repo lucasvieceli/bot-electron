@@ -2,6 +2,7 @@ import path from 'path';
 import { Connection, getConnectionManager } from 'typeorm';
 import { defaultStorageFolder } from '..';
 import {
+    AlterAccount1645622498304,
     AlterBcoin1643829051934,
     CreateAccount1643552406874,
     CreateBcoin1643672519095,
@@ -48,6 +49,7 @@ export default class Database {
                     CreateBcoin1643672519095,
                     AlterBcoin1643829051934,
                     CreateNewMap1643893646832,
+                    AlterAccount1645622498304,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,

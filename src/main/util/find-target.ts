@@ -1,7 +1,9 @@
 const cv = require('./opencv');
+import Electron, { BrowserWindow } from 'electron';
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
+import { GameLoop } from '../service/game-loop.service';
 import {
     CenterTarget,
     FindTargetParams,
@@ -16,6 +18,8 @@ import { getTime, sleep, timeToSeconds } from './time';
 export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[]> => {
     try {
         const { target, threshold = 7, print = await printScreen() } = params;
+
+        if (!print) return [];
 
         const positions: TargetMatch[] = [];
 
@@ -35,12 +39,15 @@ export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[
 
         cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
+        const browserActive = GameLoop.getInstance().browserActive;
+        const [xWindow, yWindow] = browserActive.getPosition();
+
         for (let i = 0; i < contours.size(); ++i) {
             let [x, y] = contours.get(i).data32S; // Contains the points
 
             positions.push({
-                x,
-                y,
+                x: x + xWindow,
+                y: y + yWindow,
                 height: templ.rows,
                 width: templ.cols,
             });
