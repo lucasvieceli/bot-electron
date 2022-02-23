@@ -28,7 +28,7 @@
         "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
-        "uninstallDisplayName": "Bot",
+        "uninstallDisplayName": "Bot Bombcrypto",
         "license": "license.txt",
         "oneClick": false,
         "installerIcon": "./assets/images/bcoin.ico",

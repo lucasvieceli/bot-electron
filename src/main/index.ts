@@ -41,6 +41,12 @@ async function createWindow() {
         },
     });
 
+    win.on('close', () => {
+        Database.getInstance().close();
+        GameLoop.getInstance().stop();
+        app.quit();
+    });
+
     win.maximize();
 
     if (!isDev) {

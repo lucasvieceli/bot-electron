@@ -12,6 +12,7 @@ export const createWindowBomb = async (): Promise<BrowserWindow> => {
         height: WINDOW_HEIGHT,
         frame: false,
         autoHideMenuBar: true,
+        center: true,
 
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
@@ -25,5 +26,7 @@ export const createWindowBomb = async (): Promise<BrowserWindow> => {
     await sleep(1000);
     window.setAlwaysOnTop(true);
     window.setAlwaysOnTop(false);
+    await sleep(500);
+    await clickCenterWindow(window);
     return window;
 };

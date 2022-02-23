@@ -1,5 +1,5 @@
 {
-    "name": "Bot",
+    "name": "Bot-Bombcrypto",
     "main": "./dist-webpack/main/bundle.js",
     "version": "0.1.0",
     "email": "vieceli46@hotmail.com",
