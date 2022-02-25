@@ -1,8 +1,12 @@
+import { plainToClass } from 'class-transformer';
+import { validateOrReject } from 'class-validator';
 import { endOfDay, startOfDay } from 'date-fns';
-import { IsNull, Not } from 'typeorm';
+import { Not } from 'typeorm';
 import Database from '../database/Database';
 import Account from '../database/models/account.model';
-import { AccountChangeName, PaginationParams } from './account.types';
+import { AccountCreate } from '../dto/account-create';
+import { AccountUpdate } from '../dto/Account-update';
+import { AccountChange, AccountChangeName, PaginationParams } from './account.types';
 import paginateService from './paginate.service';
 
 const getAllActive = () => {
@@ -14,6 +18,11 @@ const getAllActive = () => {
             password: Not('null'),
         },
     });
+};
+const getById = (id: number) => {
+    const repo = Database.getInstance().getRepository<Account>('Account');
+
+    return repo.findOne(id);
 };
 
 const findByMetamaskIdOrCreate = async (metamaskId: string): Promise<Account> => {
@@ -74,5 +83,44 @@ const changeName = async ({ accountId, name }: AccountChangeName) => {
 
     return account;
 };
+const change = async (params: AccountChange) => {
+    const objInstance: any = plainToClass(AccountUpdate, params.value);
+    await validateOrReject(objInstance);
 
-export default { findByMetamaskIdOrCreate, pagination, getQueryPagination, changeName, getAllActive };
+    return await Database.getInstance()
+        .connection.createQueryBuilder()
+        .update(Account)
+        .set(params.value)
+        .where('id = :id', { id: params.id })
+        .execute();
+};
+const create = async (params: AccountCreate) => {
+    try {
+        const objInstance: any = plainToClass(AccountCreate, params);
+        await validateOrReject(objInstance);
+        const repo = Database.getInstance().getRepository<Account>('Account');
+        const account = repo.create(params);
+
+        await repo.save(account);
+
+        return account;
+    } catch (e) {
+        throw e;
+    }
+};
+const remove = async (id: number | string) => {
+    const repo = Database.getInstance().getRepository<Account>('Account');
+    return await repo.delete(id);
+};
+
+export default {
+    findByMetamaskIdOrCreate,
+    pagination,
+    getQueryPagination,
+    changeName,
+    getAllActive,
+    create,
+    getById,
+    change,
+    remove,
+};

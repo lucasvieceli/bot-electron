@@ -5,3 +5,5 @@ export { default as BcoinList } from './Bcoin-list';
 export { default as MapList } from './Map-list';
 export { default as LogList } from './Log-list';
 export { default as AccountList } from './Account-list';
+export { default as AccountCreate } from './Account-create';
+export { default as AccountUpdate } from './Account-update';

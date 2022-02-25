@@ -1,18 +1,20 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useMutation, useQuery } from 'react-query';
 import { Spinner, Table } from 'reactstrap';
 import { PaginationParams } from '../../../../main/service/account.types';
 import { TextRegular15 } from '../../../layout/Fonts/regular';
-import { AccountService, MapService } from '../../../services';
-import { ACCOUNT_LIST, MAP_LIST, MAP_TOTAL } from '../../../utils/react-query';
-import { InputInline, InputInlineAccountName, TableFilter } from '../../molecules';
+import { AccountService } from '../../../services';
+import { ACCOUNT_LIST, queryClient } from '../../../utils/react-query';
+import { ButtonIcon, TableFilter } from '../../molecules';
 import Pagination from '../Pagination';
-import { ContainerPagination, ContainerSpinner, TextTotal } from './styles';
+import { ContainerPagination, ContainerSpinner } from './styles';
+interface AccountListProps {
+    onPressEdit: (id: number) => void;
+}
 
-interface AccountListProps {}
-
-const AccountList: FC<AccountListProps> = ({}) => {
+const AccountList: FC<AccountListProps> = ({ onPressEdit }) => {
     const refTable = useRef(null);
     const [params, setParams] = useState<PaginationParams>({
         page: 1,
@@ -44,6 +46,12 @@ const AccountList: FC<AccountListProps> = ({}) => {
         }));
     }, []);
 
+    const { mutate: handleDelete } = useMutation((id: number) => AccountService.remove(id), {
+        onSuccess: () => {
+            queryClient.removeQueries([ACCOUNT_LIST]);
+        },
+    });
+
     return (
         <>
             <div ref={refTable} />
@@ -53,6 +61,7 @@ const AccountList: FC<AccountListProps> = ({}) => {
                         <th>{t('Nome')}</th>
                         <th>{t('Metamask ID')}</th>
                         <th>{t('Data')}</th>
+                        <th style={{ textAlign: 'right' }}>{t('Opções')}</th>
                     </tr>
                     <tr>
                         <td>
@@ -69,6 +78,7 @@ const AccountList: FC<AccountListProps> = ({}) => {
                                 onChange={handleChangeFilter}
                             />
                         </td>
+                        <td></td>
                     </tr>
                 </thead>
 
@@ -77,7 +87,7 @@ const AccountList: FC<AccountListProps> = ({}) => {
                         data.items.map((item) => (
                             <tr key={item.id.toString()}>
                                 <td>
-                                    <InputInlineAccountName account={item} />
+                                    <TextRegular15>{item.name}</TextRegular15>
                                 </td>
                                 <td>
                                     <TextRegular15>{item.metamaskId}</TextRegular15>
@@ -92,6 +102,14 @@ const AccountList: FC<AccountListProps> = ({}) => {
                                             minute: 'numeric',
                                         })}
                                     </TextRegular15>
+                                </td>
+                                <td style={{ textAlign: 'right' }}>
+                                    <ButtonIcon onPress={() => onPressEdit(item.id)}>
+                                        <FiEdit />
+                                    </ButtonIcon>
+                                    <ButtonIcon onPress={() => handleDelete(item.id)}>
+                                        <FiTrash2 />
+                                    </ButtonIcon>
                                 </td>
                             </tr>
                         ))}

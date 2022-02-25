@@ -1,5 +1,5 @@
 {
-    "appId": "com.bot.app",
+    "appId": "com.bot.bombcrypto.app",
     "files": ["dist-webpack/main/**/*", "dist-webpack/renderer/**/*", "./assets/**/*"],
     "directories": {
         "buildResources": "public"
@@ -24,6 +24,7 @@
         "category": "Internet"
     },
     "win": {
+        "icon": "./assets/images/linux.png",
         "target": ["nsis"],
         "requestedExecutionLevel": "requireAdministrator"
     },

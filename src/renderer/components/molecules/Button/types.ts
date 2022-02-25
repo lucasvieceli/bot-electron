@@ -11,6 +11,7 @@ export type ButtonColors = {
 export interface ButtonProps {
     type: ButtonType;
     text: string;
+    isLoading?: boolean;
     onPress: () => void;
 }
 

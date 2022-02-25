@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Applications, ApplicationsAccount, ApplicationsBcoin, ApplicationsLog, ApplicationsMap } from '../../pages';
+import { Applications, ApplicationsBcoin, ApplicationsLog, ApplicationsMap } from '../../pages';
+import { RoutesAccount } from './Account';
 
 export const RoutesApplications = () => {
     return (
@@ -9,7 +10,7 @@ export const RoutesApplications = () => {
             <Route element={<ApplicationsBcoin />} path="/bcoin" />
             <Route element={<ApplicationsMap />} path="/map" />
             <Route element={<ApplicationsLog />} path="/log" />
-            <Route element={<ApplicationsAccount />} path="/account" />
+            <Route element={<RoutesAccount />} path="/account/*" />
         </Routes>
     );
 };

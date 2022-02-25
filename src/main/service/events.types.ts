@@ -2,6 +2,8 @@ export const EVENT_GAME_LOOP_STATUS = 'game-loop:status';
 export const EVENT_GAME_LOOP_START = 'game-loop:start';
 export const EVENT_GAME_LOOP_STOP = 'game-loop:stop';
 export const EVENT_GAME_LOOP_BROWSER = 'game-loop:browser';
+export const EVENT_EXPRESS_URL = 'express:url';
+
 export const EVENT_BCOIN_LIST = 'bcoin:list';
 export const EVENT_BCOIN_TOTAL = 'bcoin:total';
 export const EVENT_BCOIN_TOTAL_YESTERDAY = 'bcoin:total-yesterday';
@@ -12,3 +14,12 @@ export const EVENT_MAP_AVERAGE_LAST_WEEK = 'map:average-last-week';
 export const EVENT_LOG_LIST = 'log:list';
 export const EVENT_ACCOUNT_LIST = 'account:list';
 export const EVENT_ACCOUNT_CHANGE_NAME = 'account:change_name';
+export const EVENT_ACCOUNT_CREATE = 'account:create';
+export const EVENT_ACCOUNT_DELETE = 'account:delete';
+export const EVENT_ACCOUNT_CHANGE = 'account:change';
+export const EVENT_ACCOUNT_INFO = 'account:info';
+
+export interface EventResponse<T> {
+    status: 'success' | 'error';
+    data: T;
+}

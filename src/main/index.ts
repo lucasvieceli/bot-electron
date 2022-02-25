@@ -1,12 +1,12 @@
-import { app, BrowserWindow, Menu, nativeImage } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
 import { EventsService } from './service';
 import { GameLoop } from './service/game-loop.service';
 import { copyTargets } from './util/copy-targets';
-import { createWindowBomb } from './util/window';
 require('./util/opencv');
+
 declare global {
     namespace NodeJS {
         interface Global {
@@ -33,6 +33,7 @@ async function createWindow() {
         width: 1280,
         height: 768,
         show: false,
+        maximizable: true,
         autoHideMenuBar: !isDev,
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
@@ -41,21 +42,11 @@ async function createWindow() {
         },
     });
 
-    win.on('close', () => {
-        Database.getInstance().close();
-        GameLoop.getInstance().stop();
-        app.quit();
-    });
-
     win.maximize();
-
-    if (!isDev) {
-        Menu.setApplicationMenu(Menu.buildFromTemplate([{ label: 'teste' }]));
-    }
+    win.on('close', () => close());
 
     if (isDev) {
         win.loadURL('http://localhost:8080');
-        // win.webContents.openDevTools();
     } else {
         win.loadFile('./dist-webpack/renderer/index.html');
     }
@@ -68,11 +59,14 @@ async function createWindow() {
 async function registerListeners() {}
 app.whenReady().then(EventsService.registerEvents).then(createWindow);
 
-app.on('window-all-closed', () => {
+function close() {
     Database.getInstance().close();
     GameLoop.getInstance().stop();
+
     app.quit();
-});
+}
+
+app.on('window-all-closed', () => close());
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

@@ -77,9 +77,7 @@ export class GameLoop {
     private async showBrowser({ browser }: Browser) {
         this.browserActive = browser;
 
-        console.log(browser.isFocused(), browser.isMinimized(), browser.isAlwaysOnTop(), browser.isVisible());
         if (!browser.isFocused() || !browser.isVisible()) {
-            console.log('aquiii');
             browser.focus();
             browser.setAlwaysOnTop(true);
             browser.setAlwaysOnTop(false);

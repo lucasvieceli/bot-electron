@@ -5,3 +5,5 @@ export { default as ApplicationsBcoin } from './Applications/Bcoin';
 export { default as ApplicationsMap } from './Applications/Map';
 export { default as ApplicationsLog } from './Applications/Log';
 export { default as ApplicationsAccount } from './Applications/Account';
+export { default as ApplicationsAccountCreate } from './Applications/Account/Create';
+export { default as ApplicationsAccountUpdate } from './Applications/Account/Update';
