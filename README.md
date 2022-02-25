@@ -49,7 +49,7 @@ Windows ainda não foi testado
 -   [ ] Adicionat multi threads
 -   [ ] Adicionar self update, para quando for lançado uma versão, todos receberem atualização
 -   [ ] Adicionar abortcontroller nas ações
--   [ ] Adicionar funcionalidade de excluir uma conta cadastrada
+-   [x] Adicionar funcionalidade de excluir uma conta cadastrada
 -   [ ] Adicionar ação de colocar um herói para trabalhar quando for resetado o mapa
 -   [ ] Adicionar traduções para EN
 
