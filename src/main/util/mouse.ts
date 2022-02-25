@@ -1,11 +1,10 @@
 import { BrowserWindow } from 'electron';
-import { GameLoop } from '../service/game-loop.service';
+import { WINDOW_BOMBCRYPTO_HEIGHT, WINDOW_BOMBCRYPTO_WIDTH } from '../../variables';
 import { centerTarget, findTarget } from './find-target';
 import { TargetNames } from './find-target.types';
 import { ClickTargetParams } from './mouse.types';
 import { PrintScreenResponse } from './print-screen.types';
 import { getTime, sleep, timeToSeconds } from './time';
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from './window';
 
 const robotjs = require('robotjs');
 const timeMouse = process.platform == 'win32' ? 1 : 3;
@@ -94,8 +93,8 @@ export const moveAndDragMouse = async (x: number, y: number) => {
 export const clickCenterWindow = async (browser: BrowserWindow) => {
     const [xWindow, yWindow] = browser.getPosition();
 
-    const x = xWindow + WINDOW_WIDTH / 2;
-    const y = yWindow + WINDOW_HEIGHT / 2;
+    const x = xWindow + WINDOW_BOMBCRYPTO_WIDTH / 2;
+    const y = yWindow + WINDOW_BOMBCRYPTO_HEIGHT / 2;
     robotjs.moveMouseSmooth(x, y, 0);
     robotjs.mouseClick('left', false);
 };

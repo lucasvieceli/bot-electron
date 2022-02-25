@@ -1,7 +1,7 @@
 import { ipcRenderer, IpcRendererEvent } from 'electron';
 import { useEffect } from 'react';
 import { QueryClientProvider } from 'react-query';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, useLocation } from 'react-router-dom';
 import 'reflect-metadata';
 import { MenuSideBar } from './components/organisms';
 import './i18n';
@@ -26,7 +26,6 @@ export function App() {
             <HashRouter>
                 <GlobalStyle />
                 {/* <Container> */}
-                <MenuSideBar />
                 {/* <Content> */}
                 <RoutesApp />
                 {/* </Content> */}

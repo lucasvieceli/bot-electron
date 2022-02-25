@@ -19,7 +19,7 @@ declare global {
 }
 export const defaultStorageFolder = path.join(app.getPath('documents'), 'bot-bombcrypto');
 
-const isDev: boolean = !app.isPackaged;
+export const isDev: boolean = !app.isPackaged;
 export let win: BrowserWindow;
 const database = Database.getInstance();
 

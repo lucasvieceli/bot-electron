@@ -195,7 +195,7 @@ export class GameLoop {
 
         accounts.map(async (account) => {
             this.browsers.push({
-                browser: await createWindowBomb(),
+                browser: await createWindowBomb(account),
                 account,
             });
         });
