@@ -121,8 +121,8 @@ export class Login implements GameAction {
             if (this.browser.loginAttempts > 3) {
                 this.browser.loginAttempts = 0;
                 await LogService.registerLog('Forçando recarregamento da pagina', {}, this.browser.account);
-                // controlF5();
-                // await sleep(15000);
+                controlF5();
+                await sleep(15000);
             }
         } catch (e) {
             console.log(e, 'login:checkLoginAttempls');

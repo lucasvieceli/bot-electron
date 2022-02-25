@@ -4,7 +4,7 @@ export const controlF5 = () => {
     const sis = process.platform;
 
     if (sis == 'darwin') {
-        robotjs.keyToggle('r', 'down', 'command');
+        robotjs.keyToggle('r', 'down', ['command', 'shift']);
         return;
     }
 
