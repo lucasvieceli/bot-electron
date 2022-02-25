@@ -45,7 +45,7 @@ Windows ainda não foi testado
 
 -   [ ] Melhorar reconhecimento das imagens
 -   [ ] Arrumar CSS componente terminal
--   [ ] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
+-   [x] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
 -   [ ] Adicionat multi threads
 -   [ ] Adicionar self update, para quando for lançado uma versão, todos receberem atualização
 -   [ ] Adicionar abortcontroller nas ações

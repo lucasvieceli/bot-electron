@@ -13,7 +13,6 @@ export const createWindowBomb = async (): Promise<BrowserWindow> => {
         frame: false,
         autoHideMenuBar: true,
         center: true,
-        resizable: false,
         movable: true,
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {

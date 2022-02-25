@@ -1,3 +1,5 @@
+import { PrintScreenResponse } from './print-screen.types';
+
 export enum TargetNames {
     METAMASK = 'metamask.png',
     METAMASK_1 = 'metamask-1.png',
@@ -55,7 +57,7 @@ export type TargetsCv = { [key in TargetNames]: any };
 export interface FindTargetParams {
     target: TargetNames;
     threshold?: number;
-    print?: string;
+    print?: PrintScreenResponse;
 }
 export interface FindTargetRepeatParams extends FindTargetParams {
     timeOut?: number;

@@ -3,6 +3,7 @@ import { GameLoop } from '../service/game-loop.service';
 import { centerTarget, findTarget } from './find-target';
 import { TargetNames } from './find-target.types';
 import { ClickTargetParams } from './mouse.types';
+import { PrintScreenResponse } from './print-screen.types';
 import { getTime, sleep, timeToSeconds } from './time';
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from './window';
 
@@ -16,15 +17,12 @@ export const moveMouseAndClick = async (x: number, y: number) => {
     await sleep(500);
 };
 
-/**
- * Verifica se realmente cliclou, robotjs as vezes não clica no elemento
- */
 const moveMouseAndClickRepeat = async (
     x: number,
     y: number,
     target: TargetNames,
     threshold: number,
-    print?: string,
+    print?: PrintScreenResponse,
 ) => {
     let attempts = 0;
 

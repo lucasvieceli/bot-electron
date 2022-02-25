@@ -1,17 +1,13 @@
-import { BrowserWindow, desktopCapturer, screen } from 'electron';
 import { GameLoop } from '../service/game-loop.service';
+import { PrintScreenResponse } from './print-screen.types';
 
-export const printScreen = async () => {
+export const printScreen = async (): Promise<PrintScreenResponse> => {
     try {
-        // const { size } = screen.getPrimaryDisplay();
-        // const [source] = await desktopCapturer.getSources({
-        //     types: ['screen'],
-        //     thumbnailSize: size,
-        // });
-        // return source.thumbnail.toDataURL();
         const gameLoop = GameLoop.getInstance();
-        if (!gameLoop.browserActive) return '';
+        if (!gameLoop.browserActive) return null;
         const capture = await gameLoop.browserActive.capturePage();
+
+        // writeFile(`./test.png`, capture.toPNG(), (err) => {});
 
         return capture.toDataURL();
     } catch (e) {
