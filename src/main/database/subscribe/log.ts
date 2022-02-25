@@ -17,7 +17,7 @@ export class LogSubscriber implements EntitySubscriberInterface {
         win.webContents.send('log', entity);
 
         const browsers = GameLoop.getInstance().browsers;
-        if (browsers.length) {
+        if (browsers && browsers.length) {
             browsers.map(({ browser }) => browser.webContents.send('log', entity));
         }
     }

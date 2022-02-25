@@ -116,11 +116,13 @@ export class GameLoop {
                 for (let action of this.actions) {
                     if (!this.execute) return;
                     const timeCheck = await this.getTimeActionCheck(action);
-                    const lastExecute = timeToMinutes(currentTime - action.lastTime);
-                    const checkTime = lastExecute > timeCheck;
+                    const actionLastPerformed = browser.timeActionsPerformed[action.name] || 0;
+                    const lastExecute = timeToMinutes(currentTime - actionLastPerformed);
+
+                    const checkTime = lastExecute >= timeCheck;
 
                     if (checkTime) {
-                        action.lastTime = currentTime;
+                        browser.timeActionsPerformed[action.name] = currentTime;
                         try {
                             await this.showBrowser(browser);
 
@@ -197,6 +199,7 @@ export class GameLoop {
             this.browsers.push({
                 browser: await createWindowBomb(account),
                 account,
+                timeActionsPerformed: {},
             });
         });
         await sleep(10000);

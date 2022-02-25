@@ -1,3 +1,4 @@
+import { writeFile } from 'fs';
 import { GameLoop } from '../service/game-loop.service';
 import { PrintScreenResponse } from './print-screen.types';
 
@@ -7,7 +8,7 @@ export const printScreen = async (): Promise<PrintScreenResponse> => {
         if (!gameLoop.browserActive) return null;
         const capture = await gameLoop.browserActive.capturePage();
 
-        // writeFile(`./test.png`, capture.toPNG(), (err) => {});
+        writeFile(`./test.png`, capture.toPNG(), (err) => {});
 
         return capture.toDataURL();
     } catch (e) {
