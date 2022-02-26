@@ -22,7 +22,9 @@
         "start:dev": "webpack-dev-server --config webpack.config.dev.js --port 8080 ",
         "start:prod": "webpack-dev-server --config webpack.config.prod.js --port 8080 ",
         "start:electron": "npm run build:dev && electron ./dist-webpack/main/bundle.js",
-        "migration": "typeorm migration:create -d ./src/main/database/migrations -n "
+        "migration": "typeorm migration:create -d ./src/main/database/migrations -n ",
+        "build:python": "npx rimraf ./bot-build/mac &&   python3.10 -m PyInstaller ./functions.py --noconsole --noconfirm --name bot  --distpath ./bot-build/mac --onefile",
+        "env:python": "source ./botbomb/bin/activate"
     },
     "dependencies": {
         "@hot-loader/react-dom": "^17.0.2",
@@ -42,6 +44,7 @@
         "jimp": "^0.16.1",
         "node-abort-controller": "^3.0.1",
         "node-process-windows": "0.0.2",
+        "python-shell": "^3.0.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-hot-loader": "^4.12.20",

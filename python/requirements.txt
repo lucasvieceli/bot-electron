@@ -1,0 +1,6 @@
+pyinstaller
+pyautogui==0.9.53
+Pillow
+opencv-python==4.5.4.60
+mss==6.1.0
+numpy==1.21.4
