@@ -86,8 +86,7 @@ export class GameLoop {
                 await logService.registerLog('Bot encerrado');
             }
 
-            this.browsers.map(({ browserWindow }) => browserWindow.close());
-
+            await this.closeAllBrowser();
             await this.abortAllActions();
             this.browsers = [];
         } catch (e) {
@@ -131,14 +130,13 @@ export class GameLoop {
             await this.stop();
         }
     }
+    private async closeAllBrowser() {
+        await Promise.all(this.browsers.map(async (browser) => browser.close()));
+    }
 
     private async abortAllActions() {
-        this.actionsStart.forEach((action) => {
-            action.stop();
-        });
-        this.actions.forEach((action) => {
-            action.stop();
-        });
+        this.actionsStart.forEach((action) => action.stop());
+        this.actions.forEach((action) => action.stop());
         this.controller.abort();
     }
 
@@ -153,6 +151,7 @@ export class GameLoop {
 
     private async showBrowser(browser: Browser) {
         this.browserActive = browser.browserWindow;
+        await browser.show();
     }
 
     setExecute(value: boolean) {
@@ -204,7 +203,7 @@ export class GameLoop {
 
                 while (this.execute && !this.isPaused) {
                     for (let browser of this.browsers) {
-                        if ((await this.checkLogged(browser)) == false) return;
+                        if ((await browser.checkLogged()) == false) return;
 
                         const currentTime = getTime();
 
@@ -222,14 +221,14 @@ export class GameLoop {
 
                                     await action.start(browser, this.controller);
                                     await sleep(500);
-                                    browser.timeActionsPerformed[action.name] = currentTime;
+                                    browser.setTimePerformed(action.name, currentTime);
                                 } catch (e) {
                                     console.log('game-loop:loop ', action.name, e);
                                     if (e.name == AbortedError.name) {
                                         return reject(e);
                                     }
 
-                                    browser.timeActionsPerformed[action.name] = currentTime;
+                                    browser.setTimePerformed(action.name, currentTime);
 
                                     await logService.registerLog('Erro na ação {{action}}: {{error}}', {
                                         action: action.name,
@@ -256,18 +255,6 @@ export class GameLoop {
     private async checkLoggedAllBrowsers() {
         const countLogged = this.browsers.filter((browser) => browser.logged).length;
         return Boolean(countLogged);
-    }
-
-    private async checkLogged(browser: Browser) {
-        if (!browser.logged) {
-            await logService.registerLog(
-                'Para executar as ações, é necessário o que o BOT consiga estar logado',
-                {},
-                browser.account,
-            );
-            return false;
-        }
-        return true;
     }
 
     private async initActions() {
