@@ -1,7 +1,7 @@
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
-import { GameLoop } from '../service/game-loop.service';
+import { GameLoop } from '../service/game-api/game-loop.class';
 import { AbortedError } from './aborted-error';
 import { CenterTarget, FindTargetParams, FindTargetRepeatParams, TargetMatch, TargetNames } from './find-target.types';
 import { printScreen } from './print-screen';

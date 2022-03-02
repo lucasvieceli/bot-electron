@@ -3,14 +3,10 @@ import { LogService } from '..';
 import { AbortedError } from '../../util/aborted-error';
 import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
-import { GameLoop } from '../game-loop.service';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
+import { Action, Browser, GameLoop } from '../game-api';
 
-export class RefreshHeroes implements GameAction {
-    threshold: number;
-    browser: Browser;
-    controller: AbortController;
+export class RefreshHeroes extends Action {
+    name = 'refresh-heroes';
 
     async start(browser: Browser): Promise<void> {
         this.controller = new AbortController();
@@ -45,12 +41,5 @@ export class RefreshHeroes implements GameAction {
                 reject(e);
             }
         });
-    }
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 }

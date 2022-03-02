@@ -1,4 +1,4 @@
-import { GameLoop } from '../service/game-loop.service';
+import { GameLoop } from '../service/game-api/game-loop.class';
 import { AbortedError } from '../util/aborted-error';
 import { PrintScreenParams, PrintScreenResponse } from './print-screen.types';
 

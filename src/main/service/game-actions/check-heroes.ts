@@ -6,13 +6,10 @@ import { CenterTarget, TargetMatch, TargetNames } from '../../util/find-target.t
 import { clickTarget, moveAndDragMouse, moveMouseAndClick } from '../../util/mouse';
 import { printScreen } from '../../util/print-screen';
 import { sleep } from '../../util/time';
-import { GameLoop } from '../game-loop.service';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
-export class CheckHeroes implements GameAction {
-    threshold: number;
-    controller: AbortController;
-    browser: Browser;
+import { Action, Browser, GameLoop } from '../game-api';
+
+export class CheckHeroes extends Action {
+    name = 'check-heroes';
 
     async start(browser: Browser): Promise<void> {
         this.controller = new AbortController();
@@ -32,14 +29,6 @@ export class CheckHeroes implements GameAction {
                 reject(e);
             }
         });
-    }
-
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 
     private async search() {

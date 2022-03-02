@@ -1,25 +1,24 @@
 import AbortController from 'abort-controller';
 import { BrowserWindow, ipcMain } from 'electron';
-import { AccountService } from '.';
-import Config from '../database/models/config.model';
-import { AbortedError } from '../util/aborted-error';
-import { TargetNames } from '../util/find-target.types';
-import { clickCenterWindow, clickTarget } from '../util/mouse';
-import { getTime, sleep, timeToMinutes } from '../util/time';
-import { createWindowBomb } from '../util/window';
-import configService from './config.service';
-import { EVENT_GAME_LOOP_BROWSER, EVENT_GAME_LOOP_STATUS, EVENT_GAME_LOOP_STATUS_PAUSED } from './events.types';
-import gameActionService from './game-action.service';
-import { ActionsConfig, ActionsStartConfig, Browser } from './game-loop.types';
-import logService from './log.service';
+import { AccountService } from '..';
+import Config from '../../database/models/config.model';
+import { AbortedError } from '../../util/aborted-error';
+import { getTime, sleep, timeToMinutes } from '../../util/time';
+import { createWindowBomb } from '../../util/window';
+import configService from '../config.service';
+import { EVENT_GAME_LOOP_BROWSER, EVENT_GAME_LOOP_STATUS, EVENT_GAME_LOOP_STATUS_PAUSED } from '../events.types';
+import gameActionService from '../game-action.service';
+import logService from '../log.service';
+import { Action } from './actions.class';
+import { Browser } from './browser.class';
 
 export class GameLoop {
     static instance: GameLoop;
 
     public browserActive: BrowserWindow;
     public config: Config[];
-    public actions: ActionsConfig[];
-    public actionsStart: ActionsStartConfig[];
+    public actions: Action[];
+    public actionsStart: Action[];
     public browsers: Browser[];
     public controller: AbortController;
 
@@ -87,7 +86,7 @@ export class GameLoop {
                 await logService.registerLog('Bot encerrado');
             }
 
-            this.browsers.map((browser) => browser.browser.close());
+            this.browsers.map(({ browserWindow }) => browserWindow.close());
 
             await this.abortAllActions();
             this.browsers = [];
@@ -135,10 +134,10 @@ export class GameLoop {
 
     private async abortAllActions() {
         this.actionsStart.forEach((action) => {
-            action.action.stop();
+            action.stop();
         });
         this.actions.forEach((action) => {
-            action.action.stop();
+            action.stop();
         });
         this.controller.abort();
     }
@@ -147,26 +146,15 @@ export class GameLoop {
         for (const browser of this.browsers) {
             try {
                 await this.showBrowser(browser);
-
-                await clickTarget({ target: TargetNames.X, threshold: 0.7 });
-                await clickTarget({ target: TargetNames.GO_BACK_ARROW, threshold: 0.7 });
-                await sleep(500);
+                await browser.resetPosition();
             } catch (e) {}
         }
     }
 
-    private async showBrowser({ browser }: Browser) {
-        this.browserActive = browser;
-
-        if (!browser.isFocused() || !browser.isVisible()) {
-            browser.focus();
-            browser.setAlwaysOnTop(true);
-            browser.setAlwaysOnTop(false);
-            await sleep(500);
-            await clickCenterWindow(browser);
-            await sleep(500);
-        }
+    private async showBrowser(browser: Browser) {
+        this.browserActive = browser.browserWindow;
     }
+
     setExecute(value: boolean) {
         this.execute = value;
         ipcMain.emit(EVENT_GAME_LOOP_STATUS, value);
@@ -185,7 +173,7 @@ export class GameLoop {
                         try {
                             await this.showBrowser(browser);
 
-                            await action.action.start(browser, this.controller);
+                            await action.start(browser, this.controller);
                             await sleep(500);
                         } catch (e) {
                             console.log('execActionsStart', e);
@@ -232,7 +220,7 @@ export class GameLoop {
                                 try {
                                     await this.showBrowser(browser);
 
-                                    await action.action.start(browser, this.controller);
+                                    await action.start(browser, this.controller);
                                     await sleep(500);
                                     browser.timeActionsPerformed[action.name] = currentTime;
                                 } catch (e) {
@@ -261,7 +249,7 @@ export class GameLoop {
         });
     }
 
-    private async getTimeActionCheck(action: ActionsConfig) {
+    private async getTimeActionCheck(action: Action) {
         return action.configTime ? parseInt(await this.getConfigByName(action.configTime, '0')) : 1;
     }
 
@@ -294,20 +282,12 @@ export class GameLoop {
         this.actionsStart = [];
 
         for (let action of actions) {
-            const { [action.className]: classAction } = await import(`./game-actions/${action.fileName}`);
+            const { [action.className]: classAction } = await import(`../game-actions/${action.fileName}`);
 
             if (action.loop) {
-                this.actions.push({
-                    configTime: action.configTime,
-                    lastTime: action.startTime ? getTime() : 0,
-                    action: new classAction(),
-                    name: action.fileName,
-                });
+                this.actions.push(new classAction(action.configTime));
             } else {
-                this.actionsStart.push({
-                    action: new classAction(),
-                    name: action.fileName,
-                });
+                this.actionsStart.push(new classAction());
             }
         }
     }
@@ -321,12 +301,8 @@ export class GameLoop {
         this.browsers = [];
 
         accounts.map(async (account) => {
-            this.browsers.push({
-                browser: await createWindowBomb(account),
-                account,
-                logged: false,
-                timeActionsPerformed: {},
-            });
+            const window = await createWindowBomb(account);
+            this.browsers.push(new Browser(account, window));
         });
     }
     public async getConfigByName(name: string, valueDefault: string) {

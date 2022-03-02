@@ -3,7 +3,7 @@ import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
 import { EventsService } from './service';
-import { GameLoop } from './service/game-loop.service';
+import { GameLoop } from './service/game-api/game-loop.class';
 import { copyTargets } from './util/copy-targets';
 
 declare global {

@@ -3,15 +3,8 @@ import { LogService, MapService } from '..';
 import { AbortedError } from '../../util/aborted-error';
 import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
-import { GameLoop } from '../game-loop.service';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
-
-export class NewMap implements GameAction {
-    controller: AbortController;
-    browser: Browser;
-    threshold: number;
-
+import { Action, Browser, GameLoop } from '../game-api';
+export class NewMap extends Action {
     async start(browser: Browser): Promise<void> {
         this.controller = new AbortController();
 
@@ -40,12 +33,5 @@ export class NewMap implements GameAction {
                 reject(e);
             }
         });
-    }
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 }

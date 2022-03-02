@@ -6,14 +6,10 @@ import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
 import { printScreen } from '../../util/print-screen';
 import { sleep } from '../../util/time';
-import { GameLoop } from '../game-loop.service';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
+import { Action, Browser, GameLoop } from '../game-api';
 
-export class RegisterBcoin implements GameAction {
-    threshold: number;
-    browser: Browser;
-    controller: AbortController;
+export class RegisterBcoin extends Action {
+    name = 'register-bcoin';
 
     async start(browser?: Browser): Promise<void> {
         this.controller = new AbortController();
@@ -41,7 +37,7 @@ export class RegisterBcoin implements GameAction {
                     browser.account,
                 );
 
-                await sleep(8000);
+                await sleep(8000, { abortControler: this.controller });
                 const digits = await this.getDigits();
 
                 if (digits !== '') {
@@ -64,13 +60,6 @@ export class RegisterBcoin implements GameAction {
                 reject(e);
             }
         });
-    }
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 
     private async getDigits() {

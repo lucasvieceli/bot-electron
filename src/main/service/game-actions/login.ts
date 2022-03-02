@@ -5,13 +5,10 @@ import { TargetMatch, TargetNames } from '../../util/find-target.types';
 import { controlF5, typeKeyboard } from '../../util/keyboard';
 import { clickTarget } from '../../util/mouse';
 import { getTime, sleep } from '../../util/time';
-import { GameLoop } from '../game-loop.service';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
-export class Login implements GameAction {
-    threshold: number;
-    browser: Browser;
-    controller: AbortController;
+import { Action, Browser, GameLoop } from '../game-api';
+
+export class Login extends Action {
+    name = 'login';
     async start(browser: Browser, abortController?: AbortController): Promise<void> {
         this.controller = abortController ? abortController : new AbortController();
 
@@ -60,14 +57,6 @@ export class Login implements GameAction {
                 reject(e);
             }
         });
-    }
-
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 
     private async clickLogin() {

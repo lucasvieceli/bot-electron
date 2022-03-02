@@ -27,7 +27,7 @@ import {
     EVENT_MAP_LIST,
     EVENT_MAP_TOTAL,
 } from './events.types';
-import { GameLoop } from './game-loop.service';
+import { GameLoop } from './game-api/game-loop.class';
 import logService from './log.service';
 import mapService from './map.service';
 

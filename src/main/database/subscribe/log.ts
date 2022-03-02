@@ -1,6 +1,6 @@
 import { EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm';
 import { win } from '../..';
-import { GameLoop } from '../../service/game-loop.service';
+import { GameLoop } from '../../service/game-api/game-loop.class';
 import Database from '../Database';
 import Log from '../models/log.model';
 
@@ -18,7 +18,7 @@ export class LogSubscriber implements EntitySubscriberInterface {
 
         const browsers = GameLoop.getInstance().browsers;
         if (browsers && browsers.length) {
-            browsers.map(({ browser }) => browser.webContents.send('log', entity));
+            browsers.map(({ browserWindow }) => browserWindow.webContents.send('log', entity));
         }
     }
 }

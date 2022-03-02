@@ -4,13 +4,11 @@ import { AbortedError } from '../../util/aborted-error';
 import { TargetNames } from '../../util/find-target.types';
 import { clickTarget } from '../../util/mouse';
 import { sleep } from '../../util/time';
-import { Browser } from '../game-loop.types';
-import { GameAction } from './game-action.types';
+import { Action, Browser } from '../game-api';
 import { Login } from './login';
+export class ErrorButton extends Action {
+    name = 'error-button';
 
-export class ErrorButton implements GameAction {
-    browser: Browser;
-    controller: AbortController;
     async start(browser: Browser): Promise<void> {
         this.controller = new AbortController();
 
@@ -38,12 +36,5 @@ export class ErrorButton implements GameAction {
                 reject(e);
             }
         });
-    }
-    public async stop(): Promise<void> {
-        try {
-            if (this.controller) {
-                this.controller.abort();
-            }
-        } catch (e) {}
     }
 }
