@@ -105,6 +105,7 @@ export const findTargetRepeat = async (params: FindTargetRepeatParams) => {
                     await sleep(1000);
                     continue;
                 }
+                console.log(match);
 
                 return resolve(match);
             }

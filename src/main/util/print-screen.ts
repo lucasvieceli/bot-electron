@@ -15,7 +15,7 @@ export const printScreen = async ({ abortController }: PrintScreenParams = {}): 
             if (!gameLoop.browserActive) return null;
             const capture = await gameLoop.browserActive.capturePage();
 
-            writeFile(`./test.png`, capture.toPNG(), (err) => {});
+            // writeFile(`./test.png`, capture.toPNG(), (err) => {});
 
             resolve(capture.toDataURL());
         } catch (e) {

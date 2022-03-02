@@ -1,5 +1,7 @@
+import AbortController from 'abort-controller';
 import { BrowserWindow } from 'electron';
 import Account from '../../database/models/account.model';
+import { findTargetRepeat } from '../../util/find-target';
 import { TargetNames } from '../../util/find-target.types';
 import { clickCenterWindow, clickTarget } from '../../util/mouse';
 import { sleep } from '../../util/time';
@@ -11,10 +13,21 @@ export class Browser {
     logged: boolean = false;
     timeActionsPerformed: Record<string, number> = {};
     loginAttempts = 0;
+    isLoaded = false;
 
     constructor(account: Account, browserWindow: BrowserWindow) {
         this.account = account;
         this.browserWindow = browserWindow;
+
+        this.onIsLoaded();
+    }
+
+    public onIsLoaded() {
+        this.browserWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+            if (message == 'ccu:Received: \n') {
+                this.isLoaded = true;
+            }
+        });
     }
 
     public async show() {
@@ -54,4 +67,14 @@ export class Browser {
         this.browserWindow.close();
         return true;
     }
+
+    // public async isLoaded(abortController: AbortController) {
+    //     console.log('aqui');
+    //     return await findTargetRepeat({
+    //         target: TargetNames.CONNECT_WALLET,
+    //         timeOut: 60 * 2,
+    //         abortController,
+    //         threshold: 0.7,
+    //     });
+    // }
 }
