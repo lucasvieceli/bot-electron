@@ -52,15 +52,15 @@ export class GameLoop {
                 await this.initActions();
                 await this.getConfig();
                 await this.getBrowsers();
-                this.setPaused(false);
 
-                await sleep(10000, { abortControler: this.controller });
+                // await sleep(10000, { abortControler: this.controller });
 
                 if (!this.browsers || this.browsers.length == 0) {
                     resolve(false);
                     return;
                 }
-
+                await this.isLoadedBrowsers();
+                this.setPaused(false);
                 await this.execActionsStart();
                 await this.loop();
                 // await this.stop(false);
@@ -146,6 +146,18 @@ export class GameLoop {
                 await this.showBrowser(browser);
                 await browser.resetPosition();
             } catch (e) {}
+        }
+    }
+    private async isLoadedBrowsers() {
+        try {
+            logService.registerLog('Aguardando carregamento das telas', {});
+            let loaded;
+            do {
+                loaded = this.browsers.filter((browser) => browser.isLoaded).length;
+                await sleep(1000);
+            } while (loaded < this.browsers.length);
+        } catch (e) {
+            throw e;
         }
     }
 

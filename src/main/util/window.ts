@@ -23,8 +23,8 @@ export const createWindowBomb = async (account: Account, index: number): Promise
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
             enableRemoteModule: true,
-
             // zoomFactor: 1.0 / factor,
             // zoomFactor: 1.0,
         },
@@ -45,6 +45,7 @@ export const createWindowBomb = async (account: Account, index: number): Promise
         window.webContents.setAudioMuted(true);
         window.setAlwaysOnTop(true);
         window.setAlwaysOnTop(false);
+
         await sleep(300);
     });
     return window;
