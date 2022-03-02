@@ -8,11 +8,12 @@ import numpy as np
 
 
 def scroll():
-    pyautogui.mouseDown(duration=0.1)
-    pyautogui.moveRel(0, -200, 0.7)
-    time.sleep(0.3)
-    pyautogui.mouseUp(duration=0.1)
-    print('true')
+    pyautogui.dragRel(0,-200,duration=1, button='left')
+    #pyautogui.mouseDown(duration=0.1)
+    #pyautogui.moveRel(0, -200, 0.7)
+    #time.sleep(0.3)
+   # pyautogui.mouseUp(duration=0.1)
+   # print('true')
 
 def printScreen(x,y,width, height):
     #img = pyautogui.screenshot('teste.png', region=(x,y,width, height))
@@ -20,6 +21,7 @@ def printScreen(x,y,width, height):
       with mss.mss() as sct:
         monitor = sct.monitors[0]
         sct_img = np.array(sct.grab(monitor))
+        sct.shot(output='teste.png')
         # The screen part to capture
         # monitor = {"top": 160, "left": 160, "width": 1000, "height": 135}
 
@@ -34,7 +36,7 @@ def findTarget(target, threshold,img):
     w = targetFile.shape[1]
     h = targetFile.shape[0]
 
-    yloc, xloc = np.where(result >= 0.7)
+    yloc, xloc = np.where(result >= threshold)
 
 
     rectangles = []
@@ -48,8 +50,10 @@ def findTarget(target, threshold,img):
 if __name__ == '__main__':
 
     nameFunction = sys.argv[1]
+    print(nameFunction)
 
     if nameFunction == 'scroll':
+        print('a')
         scroll()
         
     if nameFunction == 'printscreen':

@@ -14,9 +14,7 @@ const Bombcrypto: FC<BombcryptoProps> = ({}) => {
     const [lastLog, setLastLog] = useState('');
 
     useEffect(() => {
-        console.log('akiii');
         const onLog: any = (e: IpcRendererEvent, log: Log) => {
-            console.log('entrouuuuuuuuu aki');
             setLastLog(t(log.message, log.params));
         };
         ipcRenderer.on('log', onLog);
@@ -26,7 +24,12 @@ const Bombcrypto: FC<BombcryptoProps> = ({}) => {
     }, []);
 
     const iframeBomb = useMemo(
-        () => <Iframe src={'https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime()}></Iframe>,
+        () => (
+            <Iframe
+                src={'https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime()}
+                scrolling="yes"
+            ></Iframe>
+        ),
         [],
     );
 

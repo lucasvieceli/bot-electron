@@ -1,20 +1,25 @@
-import { exec } from 'child_process';
-import { writeFile } from 'fs';
-import { WINDOW_BOMBCRYPTO_HEIGHT, WINDOW_BOMBCRYPTO_WIDTH } from '../../variables';
 import { GameLoop } from '../service/game-loop.service';
-import { PrintScreenResponse } from './print-screen.types';
+import { AbortedError } from '../util/aborted-error';
+import { PrintScreenParams, PrintScreenResponse } from './print-screen.types';
 
-export const printScreen = async (): Promise<PrintScreenResponse> => {
-    try {
-        const gameLoop = GameLoop.getInstance();
-        if (!gameLoop.browserActive) return null;
-        const capture = await gameLoop.browserActive.capturePage();
+export const printScreen = async ({ abortController }: PrintScreenParams = {}): Promise<PrintScreenResponse> => {
+    return new Promise<PrintScreenResponse>(async (resolve, reject) => {
+        try {
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
+            }
 
-        // writeFile(`./test.png`, capture.toPNG(), (err) => {});
+            const gameLoop = GameLoop.getInstance();
 
-        return capture.toDataURL();
-    } catch (e) {
-        console.log('error printScreen');
-        throw e;
-    }
+            if (!gameLoop.browserActive) return null;
+            const capture = await gameLoop.browserActive.capturePage();
+
+            // writeFile(`./test.png`, capture.toPNG(), (err) => {});
+
+            resolve(capture.toDataURL());
+        } catch (e) {
+            console.log('error printScreen', e);
+            reject(e);
+        }
+    });
 };

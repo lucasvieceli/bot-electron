@@ -13,6 +13,7 @@ export interface Browser {
     [key: string]: any;
     account?: Account;
     browser: BrowserWindow;
+    logged: boolean;
     timeActionsPerformed: Record<string, number>;
 }
 

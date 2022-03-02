@@ -1,5 +1,5 @@
 import { PrintScreenResponse } from './print-screen.types';
-
+import AbortController from 'abort-controller';
 export enum TargetNames {
     METAMASK = 'metamask.png',
     METAMASK_1 = 'metamask-1.png',
@@ -58,7 +58,9 @@ export interface FindTargetParams {
     target: TargetNames;
     threshold?: number;
     print?: PrintScreenResponse;
+    abortController?: AbortController;
 }
 export interface FindTargetRepeatParams extends FindTargetParams {
     timeOut?: number;
+    abortController?: AbortController;
 }

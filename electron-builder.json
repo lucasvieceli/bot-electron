@@ -9,6 +9,11 @@
             "from": "assets",
             "to": "assets",
             "filter": ["**/*"]
+        },
+        {
+            "from": "python",
+            "to": "python",
+            "filter": ["**/*"]
         }
     ],
     "mac": {

@@ -1,1 +1,0 @@
-([('bot', './bot-build/mac/bot', 'EXECUTABLE')],)

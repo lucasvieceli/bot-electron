@@ -1,93 +1,137 @@
 import { BrowserWindow } from 'electron';
 import { WINDOW_BOMBCRYPTO_HEIGHT, WINDOW_BOMBCRYPTO_WIDTH } from '../../variables';
+import { AbortedError } from './aborted-error';
 import { centerTarget, findTarget } from './find-target';
-import { TargetNames } from './find-target.types';
-import { ClickTargetParams } from './mouse.types';
-import { PrintScreenResponse } from './print-screen.types';
+import { TargetMatch } from './find-target.types';
+import {
+    ClickTargetParams,
+    MoveAndDragMouseParams,
+    MoveMouseAndClick,
+    MoveMouseAndClickRepeatParams,
+} from './mouse.types';
 import { getTime, sleep, timeToSeconds } from './time';
 
 const robotjs = require('robotjs');
 const timeMouse = process.platform == 'win32' ? 1 : 3;
 
-export const moveMouseAndClick = async (x: number, y: number) => {
-    await robotjs.moveMouseSmooth(x, y, timeMouse);
-    await sleep(300);
-    await robotjs.mouseClick('left', false);
-    await sleep(500);
+export const moveMouseAndClick = async ({ x, y, abortController }: MoveMouseAndClick) => {
+    return new Promise<boolean>(async (resolve, reject) => {
+        try {
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
+            }
+
+            await robotjs.moveMouseSmooth(x, y, timeMouse);
+            await sleep(300);
+            await robotjs.mouseClick('left', false);
+            await sleep(500);
+            resolve(true);
+        } catch (e) {
+            reject(e);
+        }
+    });
 };
 
-const moveMouseAndClickRepeat = async (
-    x: number,
-    y: number,
-    target: TargetNames,
-    threshold: number,
-    print?: PrintScreenResponse,
-) => {
-    let attempts = 0;
+const moveMouseAndClickRepeat = async ({
+    x,
+    y,
+    target,
+    threshold,
+    print,
+    abortController,
+}: MoveMouseAndClickRepeatParams) => {
+    return new Promise<boolean>(async (resolve, reject) => {
+        try {
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
+            }
+            let attempts = 0;
 
-    while (attempts <= 3) {
-        await moveMouseAndClick(x, y);
-        await sleep(300);
+            while (attempts <= 3) {
+                await moveMouseAndClick({ x, y, abortController });
+                await sleep(300);
 
-        const [match] = await findTarget({ target, threshold, print });
-        if (match) {
-            console.log(`não cliclou, tentativa ${attempts} ${target}`);
-            attempts++;
-            await sleep(300);
-            continue;
+                const [match] = await findTarget({ target, threshold, print, abortController });
+                if (match) {
+                    console.log(`não cliclou, tentativa ${attempts} ${target}`);
+                    attempts++;
+                    await sleep(300);
+                    continue;
+                }
+                resolve(true);
+                return;
+            }
+
+            resolve(false);
+        } catch (e) {
+            reject(e);
         }
-        return true;
-    }
-
-    return false;
+    });
 };
 
 export const clickTarget = async (params: ClickTargetParams) => {
-    try {
-        const { target, threshold, timeOut = 3, print, retryClick = false } = params;
+    return new Promise<TargetMatch | false>(async (resolve, reject) => {
+        try {
+            const { target, threshold, timeOut = 3, print, retryClick = false, abortController } = params;
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
+            }
+            const startTime = getTime();
+            let hasTimeOut = false;
 
-        const startTime = getTime();
-        let hasTimeOut = false;
+            while (!hasTimeOut) {
+                const [match] = await findTarget({ target, threshold, print, abortController });
+                if (!match) {
+                    console.log(`não encontrou target ${target}`);
+                    hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
+                    await sleep(1000);
+                    continue;
+                }
 
-        while (!hasTimeOut) {
-            const [match] = await findTarget({ target, threshold, print });
-            if (!match) {
-                console.log(`não encontrou target ${target}`);
-                hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
-                await sleep(1000);
-                continue;
+                const center = centerTarget(match);
+                if (retryClick) {
+                    await moveMouseAndClickRepeat({
+                        x: center.x,
+                        y: center.y,
+                        target,
+                        threshold,
+                        print,
+                        abortController,
+                    });
+                } else {
+                    await moveMouseAndClick({ x: center.x, y: center.y, abortController });
+                }
+
+                await sleep(300);
+                resolve(match);
+                return;
             }
 
-            const center = centerTarget(match);
-            if (retryClick) {
-                await moveMouseAndClickRepeat(center.x, center.y, target, threshold, print);
-            } else {
-                await moveMouseAndClick(center.x, center.y);
-            }
-
-            await sleep(300);
-            return match;
+            resolve(false);
+        } catch (e) {
+            console.log('error clickTarget ', e);
+            reject(e);
         }
-
-        return false;
-    } catch (e) {
-        console.log('error clickTarget ', e);
-        throw e;
-    }
+    });
 };
 
-export const moveAndDragMouse = async (x: number, y: number) => {
-    // robotjs.setMouseDelay(300);
+export const moveAndDragMouse = async ({ x, y, abortController }: MoveAndDragMouseParams) => {
+    return new Promise<boolean>(async (resolve, reject) => {
+        if (abortController && abortController.signal) {
+            abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
+        }
 
-    robotjs.moveMouseSmooth(x, y, timeMouse);
-    robotjs.mouseToggle('down');
-    robotjs.moveMouseSmooth(x, y - 200, timeMouse);
-    robotjs.mouseToggle('up');
+        robotjs.moveMouseSmooth(x, y, timeMouse);
+        await sleep(300);
 
-    // robotjs.setMouseDelay(timeMouse);
-    // robotjs.moveMouse(x, y);
-    // robotjs.mouseClick();
-    // robotjs.scrollMouse(0, -1000);
+        robotjs.mouseToggle('down', 'left');
+        robotjs.moveMouse(x, y - 200);
+
+        robotjs.dragMouse(x, y - 200);
+        robotjs.mouseToggle('up');
+
+        resolve(true);
+    });
 };
 
 export const clickCenterWindow = async (browser: BrowserWindow) => {

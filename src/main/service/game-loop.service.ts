@@ -1,11 +1,13 @@
+import AbortController from 'abort-controller';
 import { BrowserWindow, ipcMain } from 'electron';
 import { AccountService } from '.';
 import Config from '../database/models/config.model';
+import { AbortedError } from '../util/aborted-error';
 import { clickCenterWindow } from '../util/mouse';
 import { getTime, sleep, timeToMinutes } from '../util/time';
 import { createWindowBomb } from '../util/window';
 import configService from './config.service';
-import { EVENT_GAME_LOOP_BROWSER, EVENT_GAME_LOOP_STATUS } from './events.types';
+import { EVENT_GAME_LOOP_BROWSER, EVENT_GAME_LOOP_STATUS, EVENT_GAME_LOOP_STATUS_PAUSED } from './events.types';
 import gameActionService from './game-action.service';
 import { ActionsConfig, ActionsStartConfig, Browser } from './game-loop.types';
 import logService from './log.service';
@@ -18,8 +20,10 @@ export class GameLoop {
     public actions: ActionsConfig[];
     public actionsStart: ActionsStartConfig[];
     public browsers: Browser[];
+    public controller: AbortController;
 
     public execute: boolean = false;
+    public isPaused: boolean = null;
 
     windowName = 'Bombcrypto';
 
@@ -33,45 +37,112 @@ export class GameLoop {
     }
 
     async start() {
+        this.controller = new AbortController();
+
         try {
-            if (this.execute) {
-                logService.registerLog('O bot já esta sendo executando', {});
-                return;
-            }
+            await new Promise(async (resolve, reject) => {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+                if (this.execute) {
+                    logService.registerLog('O bot já esta sendo executando', {});
+                    return resolve(true);
+                }
 
-            this.setExecute(true);
-            await this.initActions();
-            await this.getConfig();
-            await this.getBrowsers();
-            if (!this.browsers || this.browsers.length == 0) return false;
+                this.setExecute(true);
+                this.setPaused(null);
+                await this.initActions();
+                await this.getConfig();
+                await this.getBrowsers();
+                this.setPaused(false);
 
-            await this.execActionsStart();
-            await this.loop();
+                await sleep(10000, { abortControler: this.controller });
+
+                if (!this.browsers || this.browsers.length == 0) {
+                    resolve(false);
+                    return;
+                }
+
+                await this.execActionsStart();
+                await this.loop();
+                // await this.stop(false);
+                resolve(true);
+            });
         } catch (e) {
             console.log(e, 'Error GameLoop:start');
+            if (e.name == AbortedError.name) {
+                return false;
+            }
+
             await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
-            // await logService.registerLog('Bot será reiniciado automáticamente', {});
             await this.stop();
-            // await this.start();
         }
     }
 
-    async stop() {
-        this.setExecute(false);
-        ipcMain.emit(EVENT_GAME_LOOP_BROWSER, 0);
+    async stop(message = true) {
+        try {
+            this.setExecute(false);
+            ipcMain.emit(EVENT_GAME_LOOP_BROWSER, 0);
 
-        await logService.registerLog('Bot encerrado');
+            if (message) {
+                await logService.registerLog('Bot encerrado');
+            }
 
-        this.browsers.map((browser) => browser.browser.close());
-        this.browsers = [];
+            this.browsers.map((browser) => browser.browser.close());
 
-        this.actions.forEach((action) => {
-            delete action.action;
-        });
-        this.actionsStart.forEach((action) => {
-            action.action;
-        });
-        delete GameLoop.instance;
+            this.actions.forEach((action) => {
+                action.action.stop();
+            });
+            this.actionsStart.forEach((action) => {
+                action.action.stop();
+            });
+            this.controller.abort();
+            this.browsers = [];
+        } catch (e) {
+            if (e.name == AbortedError.name) {
+                return false;
+            }
+        }
+        // delete GameLoop.instance;
+    }
+
+    async pause() {
+        try {
+            if (this.isPaused === null) return false;
+            this.setPaused(true);
+            this.actionsStart.forEach((action) => {
+                action.action.stop();
+            });
+            this.actions.forEach((action) => {
+                action.action.stop();
+            });
+            this.controller.abort();
+
+            await logService.registerLog('Bot pausado');
+        } catch (e) {
+            if (e.name == AbortedError.name) {
+                return false;
+            }
+            console.log('game-loop:pause', e);
+        }
+    }
+    async continue() {
+        try {
+            this.controller = new AbortController();
+            this.setPaused(false);
+            await logService.registerLog('Bot iniciado');
+
+            if (!(await this.checkLoggedAllBrowsers())) {
+                await this.execActionsStart();
+            }
+
+            await this.loop();
+        } catch (e) {
+            if (e.name == AbortedError.name) {
+                return false;
+            }
+            console.log(e, 'Error GameLoop:continue');
+            await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
+            await this.stop();
+        }
     }
 
     private async showBrowser({ browser }: Browser) {
@@ -90,67 +161,108 @@ export class GameLoop {
         this.execute = value;
         ipcMain.emit(EVENT_GAME_LOOP_STATUS, value);
     }
-
-    private async execActionsStart() {
-        for (let browser of this.browsers) {
-            for (let action of this.actionsStart) {
-                try {
-                    await this.showBrowser(browser);
-
-                    await action.action.start(browser);
-                    await sleep(500);
-                } catch (e) {
-                    await logService.registerLog('Erro na ação {{action}}', { action: action.name });
-                }
-            }
-        }
+    setPaused(value: boolean) {
+        this.isPaused = value;
+        ipcMain.emit(EVENT_GAME_LOOP_STATUS_PAUSED, value);
     }
 
-    private async loop() {
-        while (this.execute) {
-            for (let browser of this.browsers) {
-                if ((await this.checkAccount(browser)) == false) return;
-
-                const currentTime = getTime();
-
-                for (let action of this.actions) {
-                    if (!this.execute) return;
-                    const timeCheck = await this.getTimeActionCheck(action);
-                    const actionLastPerformed = browser.timeActionsPerformed[action.name] || 0;
-                    const lastExecute = timeToMinutes(currentTime - actionLastPerformed);
-
-                    const checkTime = lastExecute >= timeCheck;
-
-                    if (checkTime) {
-                        browser.timeActionsPerformed[action.name] = currentTime;
+    private async execActionsStart() {
+        return new Promise(async (resolve, reject) => {
+            this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+            try {
+                for (let browser of this.browsers) {
+                    for (let action of this.actionsStart) {
                         try {
                             await this.showBrowser(browser);
 
-                            await action.action.start(browser);
+                            await action.action.start(browser, this.controller);
                             await sleep(500);
                         } catch (e) {
-                            console.log(e, e.message);
-                            await logService.registerLog('Erro na ação {{action}}: {{error}}', {
-                                action: action.name,
-                                error: JSON.stringify(e),
-                            });
+                            console.log('execActionsStart', e);
+                            if (e.name == AbortedError.name) {
+                                return reject(e);
+                            }
+                            await logService.registerLog('Erro na ação {{action}}', { action: action.name });
                         }
                     }
                 }
-
-                await sleep(1000);
+                resolve(true);
+            } catch (e) {
+                reject(e);
             }
-        }
+        });
+    }
+
+    private async loop() {
+        return new Promise(async (resolve, reject) => {
+            this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+
+            try {
+                if (!(await this.checkLoggedAllBrowsers())) {
+                    await logService.registerLog('Nenhuma conta está logada no bombcrypto');
+                    resolve(false);
+                    return;
+                }
+
+                while (this.execute && !this.isPaused) {
+                    for (let browser of this.browsers) {
+                        if ((await this.checkLogged(browser)) == false) return;
+
+                        const currentTime = getTime();
+
+                        for (let action of this.actions) {
+                            if (!this.execute) return;
+                            const timeCheck = await this.getTimeActionCheck(action);
+                            const actionLastPerformed = browser.timeActionsPerformed[action.name] || 0;
+                            const lastExecute = timeToMinutes(currentTime - actionLastPerformed);
+
+                            const checkTime = lastExecute >= timeCheck;
+
+                            if (checkTime) {
+                                browser.timeActionsPerformed[action.name] = currentTime;
+                                try {
+                                    await this.showBrowser(browser);
+
+                                    await action.action.start(browser, this.controller);
+                                    await sleep(500);
+                                } catch (e) {
+                                    console.log('game-loop:loop ', action.name, e);
+                                    if (e.name == AbortedError.name) {
+                                        return reject(e);
+                                    }
+                                    await logService.registerLog('Erro na ação {{action}}: {{error}}', {
+                                        action: action.name,
+                                        error: JSON.stringify(e),
+                                    });
+                                }
+                            }
+                        }
+
+                        await sleep(1000);
+                    }
+                }
+                resolve(true);
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     private async getTimeActionCheck(action: ActionsConfig) {
         return action.configTime ? parseInt(await this.getConfigByName(action.configTime, '0')) : 1;
     }
 
-    private async checkAccount(browser: Browser) {
-        if (!browser.account) {
+    private async checkLoggedAllBrowsers() {
+        const countLogged = this.browsers.filter((browser) => browser.logged).length;
+        return Boolean(countLogged);
+    }
+
+    private async checkLogged(browser: Browser) {
+        if (!browser.logged) {
             await logService.registerLog(
-                'Para executar as ações, é necessário o que o BOT consiga pega o ID da metamask. BOT não esta conseguindo abrir a metamask e copiar o id. Reinicie o BOT',
+                'Para executar as ações, é necessário o que o BOT consiga estar logado',
+                {},
+                browser.account,
             );
             return false;
         }
@@ -176,12 +288,12 @@ export class GameLoop {
                     configTime: action.configTime,
                     lastTime: action.startTime ? getTime() : 0,
                     action: new classAction(),
-                    name: action.name,
+                    name: action.fileName,
                 });
             } else {
                 this.actionsStart.push({
                     action: new classAction(),
-                    name: action.name,
+                    name: action.fileName,
                 });
             }
         }
@@ -199,10 +311,10 @@ export class GameLoop {
             this.browsers.push({
                 browser: await createWindowBomb(account),
                 account,
+                logged: false,
                 timeActionsPerformed: {},
             });
         });
-        await sleep(10000);
     }
     public async getConfigByName(name: string, valueDefault: string) {
         if (!this.config) {

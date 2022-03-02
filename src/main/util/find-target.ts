@@ -1,66 +1,73 @@
-const cv = require('./opencv');
-import Electron, { BrowserWindow } from 'electron';
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
 import { GameLoop } from '../service/game-loop.service';
-import {
-    CenterTarget,
-    FindTargetParams,
-    FindTargetRepeatParams,
-    TargetMatch,
-    TargetNames,
-    TargetsCv,
-} from './find-target.types';
+import { AbortedError } from './aborted-error';
+import { CenterTarget, FindTargetParams, FindTargetRepeatParams, TargetMatch, TargetNames } from './find-target.types';
 import { printScreen } from './print-screen';
 import { getTime, sleep, timeToSeconds } from './time';
+const cv = require('./opencv');
 
 export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[]> => {
-    try {
-        const { target, threshold = 7, print = await printScreen() } = params;
+    return new Promise<TargetMatch[]>(async (resolve, reject) => {
+        try {
+            const { target, threshold = 7, abortController, print = await printScreen({ abortController }) } = params;
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => {
+                    reject(new AbortedError());
+                });
+            }
 
-        if (!print) return [];
+            if (!print) {
+                resolve([]);
+                return;
+            }
 
-        const positions: TargetMatch[] = [];
+            const positions: TargetMatch[] = [];
 
-        const imageSource = await Jimp.read(Buffer.from(print.replace(/^data:image\/png;base64,/, ''), 'base64'));
+            const imageSource = await Jimp.read(Buffer.from(print.replace(/^data:image\/png;base64,/, ''), 'base64'));
 
-        const templ = await getTemplate(target);
-        let src = cv.matFromImageData(imageSource.bitmap);
-        let processedImage = new cv.Mat();
-        let mask = new cv.Mat();
+            const templ = await getTemplate(target);
+            const src = cv.matFromImageData(imageSource.bitmap);
+            const processedImage = new cv.Mat();
+            const mask = new cv.Mat();
+            const contours = new cv.MatVector();
+            const hierarchy = new cv.Mat();
 
-        cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask);
+            cv.matchTemplate(src, templ, processedImage, cv.TM_CCOEFF_NORMED, mask);
 
-        cv.threshold(processedImage, processedImage, threshold, 1, cv.THRESH_BINARY);
-        processedImage.convertTo(processedImage, cv.CV_8UC1);
-        let contours = new cv.MatVector();
-        let hierarchy = new cv.Mat();
+            cv.threshold(processedImage, processedImage, threshold, 1, cv.THRESH_BINARY);
+            processedImage.convertTo(processedImage, cv.CV_8UC1);
 
-        cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+            cv.findContours(processedImage, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
-        const browserActive = GameLoop.getInstance().browserActive;
-        const [xWindow, yWindow] = browserActive.getPosition();
+            const browserActive = GameLoop.getInstance().browserActive;
+            const [xWindow, yWindow] = browserActive.getPosition();
 
-        for (let i = 0; i < contours.size(); ++i) {
-            let [x, y] = contours.get(i).data32S; // Contains the points
+            for (let i = 0; i < contours.size(); ++i) {
+                let [x, y] = contours.get(i).data32S; // Contains the points
 
-            positions.push({
-                x: x + xWindow,
-                y: y + yWindow,
-                height: templ.rows,
-                width: templ.cols,
-            });
+                positions.push({
+                    x: x + xWindow,
+                    y: y + yWindow,
+                    height: templ.rows,
+                    width: templ.cols,
+                });
+            }
+
+            src.delete();
+            mask.delete();
+            templ.delete();
+            contours.delete();
+            hierarchy.delete();
+            processedImage.delete();
+
+            resolve(positions);
+        } catch (e) {
+            console.log(' error findTarget ', e);
+            reject(e);
         }
-
-        src.delete();
-        mask.delete();
-        templ.delete();
-        return positions;
-    } catch (e) {
-        console.log(' error findTarget ', e);
-        throw e;
-    }
+    });
 };
 
 export const centerTarget = ({ x, height, width, y }: TargetMatch): CenterTarget => {
@@ -77,22 +84,33 @@ const getTemplate = async (target: TargetNames) => {
 };
 
 export const findTargetRepeat = async (params: FindTargetRepeatParams) => {
-    const { target, threshold = 0.7, timeOut = 3, print } = params;
+    const { target, threshold = 0.7, timeOut = 3, print, abortController } = params;
+    return new Promise<TargetMatch[] | false>(async (resolve, reject) => {
+        try {
+            if (abortController && abortController.signal) {
+                abortController.signal.addEventListener('abort', () => {
+                    reject(new AbortedError());
+                });
+            }
 
-    const startTime = getTime();
-    let hasTimeOut = false;
+            const startTime = getTime();
+            let hasTimeOut = false;
 
-    while (!hasTimeOut) {
-        const match = await findTarget({ target, threshold, print });
-        if (match.length == 0) {
-            console.log(`Não encontrou ${target} findtargetrepeat`);
-            hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
-            await sleep(1000);
-            continue;
+            while (!hasTimeOut) {
+                const match = await findTarget({ target, threshold, print });
+                if (match.length == 0) {
+                    console.log(`Não encontrou ${target} findtargetrepeat`);
+                    hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
+                    await sleep(1000);
+                    continue;
+                }
+
+                return resolve(match);
+            }
+
+            return resolve(false);
+        } catch (e) {
+            reject(e);
         }
-
-        return match;
-    }
-
-    return false;
+    });
 };
