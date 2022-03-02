@@ -88,7 +88,6 @@ export const findTargetRepeat = async (params: FindTargetRepeatParams) => {
     const { target, threshold = 0.7, timeOut = 3, print, abortController } = params;
     return new Promise<TargetMatch[] | false>(async (resolve, reject) => {
         try {
-            console.log('findTargetRepeat');
             if (abortController && abortController.signal) {
                 abortController.signal.addEventListener('abort', () => {
                     reject(new AbortedError());
@@ -99,9 +98,7 @@ export const findTargetRepeat = async (params: FindTargetRepeatParams) => {
             let hasTimeOut = false;
 
             while (!hasTimeOut) {
-                console.log('aqui2222');
                 const match = await findTarget({ target, threshold, print });
-                console.log('aquiiiii 333');
                 if (match.length == 0) {
                     console.log(`Não encontrou ${target} findtargetrepeat`);
                     hasTimeOut = timeToSeconds(getTime() - startTime) > timeOut;
