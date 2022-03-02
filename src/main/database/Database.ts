@@ -3,6 +3,7 @@ import { Connection, getConnectionManager } from 'typeorm';
 import { defaultStorageFolder } from '..';
 import {
     AlterAccount1645622498304,
+    AlterAccount1646219324124,
     AlterBcoin1643829051934,
     CreateAccount1643552406874,
     CreateBcoin1643672519095,
@@ -54,6 +55,7 @@ export default class Database {
                     AlterAccount1645622498304,
                     InsertGameLoop1646050793856,
                     InsertGameLoop1646052787862,
+                    AlterAccount1646219324124,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,

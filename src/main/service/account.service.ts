@@ -15,6 +15,7 @@ const getAllActive = () => {
         .from(Account, 'm')
         .where('m.user is not null and m.user <> ""')
         .andWhere('m.password is not null and m.password <> ""')
+        .andWhere('m.enable = 1')
         .getMany();
 };
 const getById = (id: number) => {

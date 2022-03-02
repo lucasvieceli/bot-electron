@@ -23,6 +23,9 @@ export default class Account {
     @Column()
     password: string;
 
+    @Column()
+    enable: number;
+
     @CreateDateColumn()
     created: Date;
 

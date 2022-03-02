@@ -21,6 +21,7 @@ const AccountUpdate: FC<AccountUpdateProps> = ({ onSuccess }) => {
         name: '',
         user: '',
         password: '',
+        enable: 0,
     });
 
     const { t } = useTranslation();

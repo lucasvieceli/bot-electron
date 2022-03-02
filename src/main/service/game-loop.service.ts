@@ -3,7 +3,8 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { AccountService } from '.';
 import Config from '../database/models/config.model';
 import { AbortedError } from '../util/aborted-error';
-import { clickCenterWindow } from '../util/mouse';
+import { TargetNames } from '../util/find-target.types';
+import { clickCenterWindow, clickTarget } from '../util/mouse';
 import { getTime, sleep, timeToMinutes } from '../util/time';
 import { createWindowBomb } from '../util/window';
 import configService from './config.service';
@@ -88,13 +89,7 @@ export class GameLoop {
 
             this.browsers.map((browser) => browser.browser.close());
 
-            this.actions.forEach((action) => {
-                action.action.stop();
-            });
-            this.actionsStart.forEach((action) => {
-                action.action.stop();
-            });
-            this.controller.abort();
+            await this.abortAllActions();
             this.browsers = [];
         } catch (e) {
             if (e.name == AbortedError.name) {
@@ -108,13 +103,7 @@ export class GameLoop {
         try {
             if (this.isPaused === null) return false;
             this.setPaused(true);
-            this.actionsStart.forEach((action) => {
-                action.action.stop();
-            });
-            this.actions.forEach((action) => {
-                action.action.stop();
-            });
-            this.controller.abort();
+            await this.abortAllActions();
 
             await logService.registerLog('Bot pausado');
         } catch (e) {
@@ -129,11 +118,10 @@ export class GameLoop {
             this.controller = new AbortController();
             this.setPaused(false);
             await logService.registerLog('Bot iniciado');
-
             if (!(await this.checkLoggedAllBrowsers())) {
                 await this.execActionsStart();
             }
-
+            await this.resetPositions();
             await this.loop();
         } catch (e) {
             if (e.name == AbortedError.name) {
@@ -142,6 +130,28 @@ export class GameLoop {
             console.log(e, 'Error GameLoop:continue');
             await logService.registerLog('Ocorreu algum erro: {{error}}', { error: JSON.stringify(e) });
             await this.stop();
+        }
+    }
+
+    private async abortAllActions() {
+        this.actionsStart.forEach((action) => {
+            action.action.stop();
+        });
+        this.actions.forEach((action) => {
+            action.action.stop();
+        });
+        this.controller.abort();
+    }
+
+    private async resetPositions() {
+        for (const browser of this.browsers) {
+            try {
+                await this.showBrowser(browser);
+
+                await clickTarget({ target: TargetNames.X, threshold: 0.7 });
+                await clickTarget({ target: TargetNames.GO_BACK_ARROW, threshold: 0.7 });
+                await sleep(500);
+            } catch (e) {}
         }
     }
 
@@ -219,17 +229,20 @@ export class GameLoop {
                             const checkTime = lastExecute >= timeCheck;
 
                             if (checkTime) {
-                                browser.timeActionsPerformed[action.name] = currentTime;
                                 try {
                                     await this.showBrowser(browser);
 
                                     await action.action.start(browser, this.controller);
                                     await sleep(500);
+                                    browser.timeActionsPerformed[action.name] = currentTime;
                                 } catch (e) {
                                     console.log('game-loop:loop ', action.name, e);
                                     if (e.name == AbortedError.name) {
                                         return reject(e);
                                     }
+
+                                    browser.timeActionsPerformed[action.name] = currentTime;
+
                                     await logService.registerLog('Erro na ação {{action}}: {{error}}', {
                                         action: action.name,
                                         error: JSON.stringify(e),

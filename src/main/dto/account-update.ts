@@ -26,4 +26,8 @@ export class AccountUpdate {
     @IsOptional()
     @MinLength(3, { message: MIN_LENGTH })
     password: string;
+
+    @IsNotEmpty({ message: NOT_EMPTY })
+    @IsOptional()
+    enable: number;
 }

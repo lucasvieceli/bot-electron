@@ -43,7 +43,7 @@ Windows ainda não foi testado
 
 ## O que falta
 
--   [ ] Melhorar reconhecimento das imagens
+-   [x] Melhorar reconhecimento das imagens
 -   [ ] Arrumar CSS componente terminal
 -   [x] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
 -   [ ] Adicionar multi threads
@@ -55,6 +55,7 @@ Windows ainda não foi testado
 
 ## Imagens
 
+![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/7.gif?raw=true)
 ![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/1.png?raw=true)
 ![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/2.png?raw=true)
 ![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/3.png?raw=true)

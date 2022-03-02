@@ -62,7 +62,7 @@ const AccountForm: FC<AccountFormProps> = ({ value, onChangeInput }) => {
             <Row>
                 <Col md={4}>
                     <FormGroup>
-                        <Label for="password">Senha</Label>
+                        <Label for="password">{t('Senha')}</Label>
                         <Input
                             id="password"
                             onChange={onChangeInput}
@@ -72,6 +72,31 @@ const AccountForm: FC<AccountFormProps> = ({ value, onChangeInput }) => {
                             type="password"
                         />
                         <FormText>{t('Senha do usuário do bombcrypto')}</FormText>
+                    </FormGroup>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={4}>
+                    <FormGroup>
+                        <Label for="enable">{t('Ativo')}</Label>
+                        <Col md={2}>
+                            <Input
+                                id="enable"
+                                onChange={onChangeInput}
+                                value={value.enable}
+                                name="enable"
+                                placeholder=""
+                                type="select"
+                            >
+                                <option key={1} value={1}>
+                                    {t('Sim')}
+                                </option>
+                                <option key={0} value={0}>
+                                    {t('Não')}
+                                </option>
+                            </Input>
+                        </Col>
+                        <FormText>{t('Quando ativo, será utilizado no bot')}</FormText>
                     </FormGroup>
                 </Col>
             </Row>
