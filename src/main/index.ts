@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow, nativeImage, screen } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
@@ -39,6 +39,7 @@ async function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
+            // zoomFactor: 1.0 / factor,
         },
     });
 
@@ -52,6 +53,8 @@ async function createWindow() {
     }
 
     win.webContents.on('did-finish-load', function () {
+        win.webContents.setZoomFactor(1);
+
         win.show();
     });
 }
@@ -59,11 +62,13 @@ async function createWindow() {
 async function registerListeners() {}
 app.whenReady().then(EventsService.registerEvents).then(createWindow);
 
-function close() {
-    Database.getInstance().close();
-    GameLoop.getInstance().stop();
+async function close() {
+    try {
+        Database.getInstance().close();
+        GameLoop.getInstance().stop();
 
-    app.quit();
+        app.quit();
+    } catch (e) {}
 }
 
 app.on('window-all-closed', () => close());

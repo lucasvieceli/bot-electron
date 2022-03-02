@@ -10,6 +10,7 @@ import {
     MoveMouseAndClickRepeatParams,
 } from './mouse.types';
 import { getTime, sleep, timeToSeconds } from './time';
+import { getWindowBombcryptoHeight, getWindowBombcryptoWidth } from './window';
 
 const robotjs = require('robotjs');
 const timeMouse = process.platform == 'win32' ? 1 : 3;
@@ -137,8 +138,8 @@ export const moveAndDragMouse = async ({ x, y, abortController }: MoveAndDragMou
 export const clickCenterWindow = async (browser: BrowserWindow) => {
     const [xWindow, yWindow] = browser.getPosition();
 
-    const x = xWindow + WINDOW_BOMBCRYPTO_WIDTH / 2;
-    const y = yWindow + WINDOW_BOMBCRYPTO_HEIGHT / 2;
+    const x = xWindow + getWindowBombcryptoWidth() / 2;
+    const y = yWindow + getWindowBombcryptoHeight() / 2;
     robotjs.moveMouseSmooth(x, y, 0);
     robotjs.mouseClick('left', false);
 };

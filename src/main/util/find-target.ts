@@ -1,3 +1,4 @@
+import { screen } from 'electron';
 import Jimp from 'jimp';
 import path from 'path';
 import { defaultStorageFolder } from '..';
@@ -43,15 +44,15 @@ export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[
 
             const browserActive = GameLoop.getInstance().browserActive;
             const [xWindow, yWindow] = browserActive.getPosition();
-
+            const factor = screen.getPrimaryDisplay().scaleFactor;
             for (let i = 0; i < contours.size(); ++i) {
                 let [x, y] = contours.get(i).data32S; // Contains the points
 
                 positions.push({
-                    x: x + xWindow,
-                    y: y + yWindow,
-                    height: templ.rows,
-                    width: templ.cols,
+                    x: x / factor + xWindow,
+                    y: y / factor + yWindow,
+                    height: templ.rows / factor,
+                    width: templ.cols / factor,
                 });
             }
 

@@ -1,3 +1,4 @@
+import { writeFile } from 'fs';
 import { GameLoop } from '../service/game-api/game-loop.class';
 import { AbortedError } from '../util/aborted-error';
 import { PrintScreenParams, PrintScreenResponse } from './print-screen.types';
@@ -14,7 +15,7 @@ export const printScreen = async ({ abortController }: PrintScreenParams = {}): 
             if (!gameLoop.browserActive) return null;
             const capture = await gameLoop.browserActive.capturePage();
 
-            // writeFile(`./test.png`, capture.toPNG(), (err) => {});
+            writeFile(`./test.png`, capture.toPNG(), (err) => {});
 
             resolve(capture.toDataURL());
         } catch (e) {

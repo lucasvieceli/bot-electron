@@ -24,7 +24,7 @@ export default class Account {
     password: string;
 
     @Column()
-    enable: number;
+    enable: number = 1;
 
     @CreateDateColumn()
     created: Date;

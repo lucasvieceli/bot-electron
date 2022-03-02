@@ -19,6 +19,7 @@ const AccountCreate: FC<AccountCreateProps> = ({ onSuccess }) => {
         name: '',
         user: '',
         password: '',
+        enable: 1,
     });
 
     const { t } = useTranslation();

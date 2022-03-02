@@ -22,4 +22,7 @@ export class AccountCreate {
     @IsString()
     @MinLength(3, { message: MIN_LENGTH })
     password: string;
+
+    @IsNotEmpty({ message: NOT_EMPTY })
+    enable: number;
 }

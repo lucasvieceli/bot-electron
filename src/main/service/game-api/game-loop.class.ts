@@ -287,8 +287,8 @@ export class GameLoop {
         ipcMain.emit(EVENT_GAME_LOOP_BROWSER, accounts.length);
         this.browsers = [];
 
-        accounts.map(async (account) => {
-            const window = await createWindowBomb(account);
+        accounts.map(async (account, i) => {
+            const window = await createWindowBomb(account, i);
             this.browsers.push(new Browser(account, window));
         });
     }

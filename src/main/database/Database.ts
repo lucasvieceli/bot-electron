@@ -73,7 +73,7 @@ export default class Database {
         }
     }
     public close() {
-        this.connection.close();
+        return this.connection.close();
     }
     public getRepository<T>(name: string) {
         return this.connection.getRepository<T>(name);
