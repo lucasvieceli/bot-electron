@@ -18,6 +18,7 @@ export const createWindowBomb = async (account: Account): Promise<BrowserWindow>
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
+            scrollBounce: true,
         },
     });
     // window.loadURL('https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime());

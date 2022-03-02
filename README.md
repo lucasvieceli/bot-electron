@@ -46,9 +46,9 @@ Windows ainda não foi testado
 -   [ ] Melhorar reconhecimento das imagens
 -   [ ] Arrumar CSS componente terminal
 -   [x] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
--   [ ] Adicionat multi threads
+-   [ ] Adicionar multi threads
 -   [ ] Adicionar self update, para quando for lançado uma versão, todos receberem atualização
--   [ ] Adicionar abortcontroller nas ações
+-   [x] Adicionar abortcontroller nas ações
 -   [x] Adicionar funcionalidade de excluir uma conta cadastrada
 -   [ ] Adicionar ação de colocar um herói para trabalhar quando for resetado o mapa
 -   [ ] Adicionar traduções para EN

@@ -10,6 +10,8 @@ import {
     CreateGameAction1643555044764,
     CreateLog1643552491184,
     CreateNewMap1643893646832,
+    InsertGameLoop1646050793856,
+    InsertGameLoop1646052787862,
 } from './migrations';
 import Account from './models/account.model';
 import Bcoin from './models/bcoin.model';
@@ -50,6 +52,8 @@ export default class Database {
                     AlterBcoin1643829051934,
                     CreateNewMap1643893646832,
                     AlterAccount1645622498304,
+                    InsertGameLoop1646050793856,
+                    InsertGameLoop1646052787862,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,
@@ -61,8 +65,8 @@ export default class Database {
             this.connection = connectionManager.get('sqlite');
             await this.connection.connect();
         } catch (error) {
-            console.log(typeof error);
-            console.log(error);
+            console.log(typeof error, 'database');
+            console.log(error, 'database');
             alert(`Erro no banco de dados ${error.message}`);
         }
     }

@@ -1,6 +1,8 @@
+import AbortController from 'abort-controller';
 import { LogService } from '..';
+import { AbortedError } from '../../util/aborted-error';
 import { centerTarget, findTarget, findTargetRepeat } from '../../util/find-target';
-import { TargetMatch, TargetNames } from '../../util/find-target.types';
+import { CenterTarget, TargetMatch, TargetNames } from '../../util/find-target.types';
 import { clickTarget, moveAndDragMouse, moveMouseAndClick } from '../../util/mouse';
 import { printScreen } from '../../util/print-screen';
 import { sleep } from '../../util/time';
@@ -9,116 +11,181 @@ import { Browser } from '../game-loop.types';
 import { GameAction } from './game-action.types';
 export class CheckHeroes implements GameAction {
     threshold: number;
+    controller: AbortController;
+    browser: Browser;
 
     async start(browser: Browser): Promise<void> {
-        try {
-            await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
-            this.threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+        this.controller = new AbortController();
 
-            await this.goToHeroes(browser);
-            await this.search(browser);
-        } catch (e) {
-            console.log(e, 'check-heroes:start');
-            throw e;
-        }
+        await new Promise(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+                this.browser = browser;
+                this.threshold = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-default', '0.7'));
+
+                await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
+
+                await this.goToHeroes();
+                await this.search();
+                resolve(true);
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
-    private async search(browser: Browser) {
+    public async stop(): Promise<void> {
         try {
-            const exists = await this.getPositionBar();
-            if (!exists) {
-                await LogService.registerLog('Não identificou nenhum herói para fazer a rolagem', {}, browser.account);
-                await this.goToWork(browser);
-                return false;
+            if (this.controller) {
+                this.controller.abort();
             }
-            let total = 0;
+        } catch (e) {}
+    }
 
-            for (let i = 0; i <= 4; i++) {
-                total += await this.clickGreenBar(browser);
+    private async search() {
+        return await new Promise<boolean>(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
 
-                await this.scroll();
-                await sleep(1500);
+                const exists = await this.getPositionBar();
+                if (!exists) {
+                    await LogService.registerLog(
+                        'Não identificou nenhum herói para fazer a rolagem',
+                        {},
+                        this.browser.account,
+                    );
+                    await this.goToWork();
+                    resolve(false);
+                    return;
+                }
+                let total = 0;
+
+                for (let i = 0; i <= 4; i++) {
+                    total += await this.clickGreenBar();
+
+                    await this.scroll();
+                    await sleep(1500);
+                }
+                await LogService.registerLog(
+                    'Enviando {{qty}} heróis',
+                    { qty: total.toString() },
+                    this.browser.account,
+                );
+                await this.goToWork();
+                resolve(true);
+            } catch (e) {
+                console.log(e, 'check-heroes:search');
+                reject(e);
             }
-            await LogService.registerLog('Enviando {{qty}} heróis', { qty: total.toString() }, browser.account);
-            await this.goToWork(browser);
-        } catch (e) {
-            console.log(e, 'check-heroes:search');
-            throw e;
-        }
+        });
     }
 
     private async scroll() {
-        try {
-            const bar = await this.getPositionBar();
+        return await new Promise(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
 
-            if (bar) {
-                await moveAndDragMouse(bar.x, bar.y);
+                const bar = await this.getPositionBar();
+
+                if (bar) {
+                    await moveAndDragMouse({ x: bar.x, y: bar.y, abortController: this.controller });
+                }
+                resolve(true);
+            } catch (e) {
+                console.log(e, 'check-heroes:scroll');
+                reject(e);
             }
-        } catch (e) {
-            console.log(e, 'check-heroes:scroll');
-            throw e;
-        }
+        });
     }
 
     private async getPositionBar() {
-        try {
-            const exists = await findTargetRepeat({
-                target: TargetNames.BAR_LIST,
-                threshold: this.threshold,
-                timeOut: 0.9,
-            });
+        return await new Promise<CenterTarget | null>(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
 
-            if (exists) {
-                return centerTarget(exists[0]);
+                const exists = await findTargetRepeat({
+                    target: TargetNames.BAR_LIST,
+                    threshold: this.threshold,
+                    timeOut: 0.9,
+                    abortController: this.controller,
+                });
+
+                if (exists) {
+                    resolve(centerTarget(exists[0]));
+
+                    return;
+                }
+                resolve(null);
+            } catch (e) {
+                console.log(e, 'check-heroes:getPositionBar');
+                reject(e);
             }
-        } catch (e) {
-            console.log(e, 'check-heroes:getPositionBar');
-            throw e;
-        }
-
-        return null;
+        });
     }
 
-    private async clickGreenBar(browser: Browser) {
-        try {
-            const offset = 100;
-            const print = await printScreen();
-            const thresholdBar = parseFloat(await GameLoop.getInstance().getConfigByName('threshold-bar-life', '0.9'));
-            const thresholdGoWork = parseFloat(
-                await GameLoop.getInstance().getConfigByName('threshold-button-work', '0.9'),
-            );
+    private async clickGreenBar() {
+        return await new Promise<number>(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+                const game = GameLoop.getInstance();
 
-            const [fullBars, greenBars] = await Promise.all([
-                findTarget({ target: TargetNames.FULL_BAR, threshold: thresholdBar, print }),
-                findTarget({ target: TargetNames.GREEN_BAR, threshold: thresholdBar, print }),
-            ]);
-            const buttons = await findTarget({ target: TargetNames.GO_WORK, threshold: thresholdGoWork, print });
-            const bars = [...fullBars, ...greenBars];
+                const offset = 100;
+                const print = await printScreen({ abortController: this.controller });
+                const thresholdBar = parseFloat(await game.getConfigByName('threshold-bar-life', '0.9'));
+                const thresholdGoWork = parseFloat(await game.getConfigByName('threshold-button-work', '0.9'));
 
-            const notWorkingGreenBars: TargetMatch[] = [];
-            for (const bar of bars) {
-                if (!this.isWorking(bar, buttons)) {
-                    notWorkingGreenBars.push(bar);
+                const [fullBars, greenBars] = await Promise.all([
+                    findTarget({
+                        target: TargetNames.FULL_BAR,
+                        threshold: thresholdBar,
+                        print,
+                        abortController: this.controller,
+                    }),
+                    findTarget({
+                        target: TargetNames.GREEN_BAR,
+                        threshold: thresholdBar,
+                        print,
+                        abortController: this.controller,
+                    }),
+                ]);
+                const bars = [...fullBars, ...greenBars];
+                const notWorkingGreenBars: TargetMatch[] = [];
+
+                let buttons = await findTarget({
+                    target: TargetNames.GO_WORK,
+                    threshold: thresholdGoWork,
+                    print,
+                    abortController: this.controller,
+                });
+                for (const bar of bars) {
+                    if (!this.isWorking(bar, buttons)) {
+                        notWorkingGreenBars.push(bar);
+                    }
                 }
-            }
-            await LogService.registerLog(
-                'Detectado {{qty}} heróis disponíveis',
-                { qty: notWorkingGreenBars.length.toString() },
-                browser.account,
-            );
-            if (notWorkingGreenBars.length) {
-                notWorkingGreenBars.sort((a, b) => (a.y > b.y ? 1 : -1));
-                for (const bar of notWorkingGreenBars) {
-                    const center = centerTarget(bar);
-                    await moveMouseAndClick(center.x + offset, center.y);
-                }
-            }
 
-            return notWorkingGreenBars.length;
-        } catch (e) {
-            console.log(e, 'check-heroes:clickGreenBar');
-            throw e;
-        }
+                await LogService.registerLog(
+                    'Detectado {{qty}} heróis disponíveis',
+                    { qty: notWorkingGreenBars.length.toString() },
+                    this.browser.account,
+                );
+                if (notWorkingGreenBars.length) {
+                    notWorkingGreenBars.sort((a, b) => (a.y > b.y ? 1 : -1));
+                    for (const bar of notWorkingGreenBars) {
+                        const center = centerTarget(bar);
+                        await moveMouseAndClick({
+                            x: center.x + offset,
+                            y: center.y,
+                            abortController: this.controller,
+                        });
+                    }
+                }
+
+                resolve(notWorkingGreenBars.length);
+            } catch (e) {
+                console.log(e, 'check-heroes:clickGreenBar');
+                reject(e);
+            }
+        });
     }
 
     private isWorking(hero: TargetMatch, buttons: TargetMatch[]) {
@@ -137,44 +204,64 @@ export class CheckHeroes implements GameAction {
         }
     }
 
-    private async goToHeroes(browser: Browser) {
-        try {
-            await clickTarget({ target: TargetNames.GO_BACK_ARROW, threshold: this.threshold });
-            const clickHero = await clickTarget({
-                target: TargetNames.HERO_ICON,
-                threshold: this.threshold,
-                timeOut: 4,
-            });
-            if (!clickHero) {
-                await LogService.registerLog(
-                    'Não identificou botão para ir na listagem dos heróis',
-                    {},
-                    browser.account,
-                );
+    private async goToHeroes() {
+        return await new Promise(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+
+                await clickTarget({
+                    target: TargetNames.GO_BACK_ARROW,
+                    threshold: this.threshold,
+                    abortController: this.controller,
+                });
+                const clickHero = await clickTarget({
+                    target: TargetNames.HERO_ICON,
+                    threshold: this.threshold,
+                    timeOut: 4,
+                    abortController: this.controller,
+                });
+                if (!clickHero) {
+                    await LogService.registerLog(
+                        'Não identificou botão para ir na listagem dos heróis',
+                        {},
+                        this.browser.account,
+                    );
+                }
+                resolve(true);
+            } catch (e) {
+                console.log(e, 'check-heroes:goToHeroes');
+                reject(e);
             }
-        } catch (e) {
-            console.log(e, 'check-heroes:goToHeroes');
-            throw e;
-        }
+        });
     }
 
-    private async goToWork(browser: Browser) {
-        try {
-            const clickX = await clickTarget({ target: TargetNames.X, threshold: this.threshold });
-            if (!clickX) {
-                await LogService.registerLog('Não identificou botão de fechar listagem', {}, browser.account);
+    private async goToWork() {
+        return await new Promise(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+
+                const clickX = await clickTarget({
+                    target: TargetNames.X,
+                    threshold: this.threshold,
+                    abortController: this.controller,
+                });
+                if (!clickX) {
+                    await LogService.registerLog('Não identificou botão de fechar listagem', {}, this.browser.account);
+                }
+                const clickTreasure = await clickTarget({
+                    target: TargetNames.TREASURE_HUNT,
+                    threshold: this.threshold,
+                    timeOut: 4,
+                    abortController: this.controller,
+                });
+                if (!clickTreasure) {
+                    await LogService.registerLog('Não identificou botão iniciar jogo', {}, this.browser.account);
+                }
+                resolve(true);
+            } catch (e) {
+                console.log(e, 'check-heroes:goToWork');
+                reject(e);
             }
-            const clickTreasure = await clickTarget({
-                target: TargetNames.TREASURE_HUNT,
-                threshold: this.threshold,
-                timeOut: 4,
-            });
-            if (!clickTreasure) {
-                await LogService.registerLog('Não identificou botão iniciar jogo', {}, browser.account);
-            }
-        } catch (e) {
-            console.log(e, 'check-heroes:goToWork');
-            throw e;
-        }
+        });
     }
 }

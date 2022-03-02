@@ -1,7 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 import { endOfDay, startOfDay } from 'date-fns';
-import { Not } from 'typeorm';
 import Database from '../database/Database';
 import Account from '../database/models/account.model';
 import { AccountCreate } from '../dto/account-create';
@@ -10,14 +9,13 @@ import { AccountChange, AccountChangeName, PaginationParams } from './account.ty
 import paginateService from './paginate.service';
 
 const getAllActive = () => {
-    const repo = Database.getInstance().getRepository<Account>('Account');
-
-    return repo.find({
-        where: {
-            user: Not('null'),
-            password: Not('null'),
-        },
-    });
+    const query = Database.getInstance().connection.createQueryBuilder();
+    return query
+        .select(['m'])
+        .from(Account, 'm')
+        .where('m.user is not null and m.user <> ""')
+        .andWhere('m.password is not null and m.password <> ""')
+        .getMany();
 };
 const getById = (id: number) => {
     const repo = Database.getInstance().getRepository<Account>('Account');

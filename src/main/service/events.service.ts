@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
+import { globalShortcut, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 import { win } from '..';
 import { AccountCreate } from '../dto/account-create';
 import accountService from './account.service';
@@ -16,8 +16,11 @@ import {
     EVENT_BCOIN_TOTAL,
     EVENT_BCOIN_TOTAL_YESTERDAY,
     EVENT_GAME_LOOP_BROWSER,
+    EVENT_GAME_LOOP_CONTINUE,
+    EVENT_GAME_LOOP_PAUSE,
     EVENT_GAME_LOOP_START,
     EVENT_GAME_LOOP_STATUS,
+    EVENT_GAME_LOOP_STATUS_PAUSED,
     EVENT_GAME_LOOP_STOP,
     EVENT_LOG_LIST,
     EVENT_MAP_AVERAGE_LAST_WEEK,
@@ -30,9 +33,12 @@ import mapService from './map.service';
 
 const registerEvents = async () => {
     ipcMain.on(EVENT_GAME_LOOP_STATUS, (value) => win.webContents.send(EVENT_GAME_LOOP_STATUS, value));
+    ipcMain.on(EVENT_GAME_LOOP_STATUS_PAUSED, (value) => win.webContents.send(EVENT_GAME_LOOP_STATUS_PAUSED, value));
     ipcMain.on(EVENT_GAME_LOOP_BROWSER, (value) => win.webContents.send(EVENT_GAME_LOOP_BROWSER, value));
     ipcMain.on(EVENT_GAME_LOOP_START, () => GameLoop.getInstance().start());
     ipcMain.on(EVENT_GAME_LOOP_STOP, () => GameLoop.getInstance().stop());
+    ipcMain.on(EVENT_GAME_LOOP_CONTINUE, () => GameLoop.getInstance().continue());
+    ipcMain.on(EVENT_GAME_LOOP_PAUSE, () => GameLoop.getInstance().pause());
 
     ipcMain.on(EVENT_BCOIN_LIST, async (e: IpcMainEvent, params) => {
         e.returnValue = await bcoinService.pagination(params);
@@ -77,6 +83,30 @@ const registerEvents = async () => {
     });
     ipcMain.on(EVENT_ACCOUNT_DELETE, async (e: IpcMainEvent, params: number | string) => {
         e.returnValue = await accountService.remove(params);
+    });
+
+    globalShortcut.register('Shift+F1', () => {
+        const game = GameLoop.getInstance();
+        if (game.execute) {
+            game.stop();
+            return;
+        }
+
+        game.start();
+    });
+    globalShortcut.register('Shift+F2', () => {
+        const game = GameLoop.getInstance();
+
+        if (game.isPaused === null) {
+            return false;
+        }
+
+        if (game.isPaused) {
+            game.continue();
+            return;
+        }
+
+        game.pause();
     });
 };
 

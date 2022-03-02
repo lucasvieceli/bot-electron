@@ -5,7 +5,6 @@ import Database from './database/Database';
 import { EventsService } from './service';
 import { GameLoop } from './service/game-loop.service';
 import { copyTargets } from './util/copy-targets';
-require('./util/opencv');
 
 declare global {
     namespace NodeJS {
@@ -17,6 +16,7 @@ declare global {
         }
     }
 }
+
 export const defaultStorageFolder = path.join(app.getPath('documents'), 'bot-bombcrypto');
 
 export const isDev: boolean = !app.isPackaged;
