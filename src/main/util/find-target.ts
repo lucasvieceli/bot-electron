@@ -12,7 +12,7 @@ const cv = require('./opencv');
 export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[]> => {
     return new Promise<TargetMatch[]>(async (resolve, reject) => {
         try {
-            const { target, threshold = 7, abortController, print = await printScreen({ abortController }) } = params;
+            const { target, threshold = 7, abortController, print = await printScreen({ abortController }), center = false } = params;
             if (abortController && abortController.signal) {
                 abortController.signal.addEventListener('abort', () => {
                     reject(new AbortedError());
@@ -48,12 +48,21 @@ export const findTarget = async (params: FindTargetParams): Promise<TargetMatch[
             for (let i = 0; i < contours.size(); ++i) {
                 let [x, y] = contours.get(i).data32S; // Contains the points
 
-                positions.push({
+                let item = {
                     x: x / factor + xWindow,
                     y: y / factor + yWindow,
                     height: templ.rows / factor,
                     width: templ.cols / factor,
-                });
+                }
+
+                if(center){
+                    item = {
+                        ...item,
+                        ...centerTarget(item)
+                    }
+                }
+
+                positions.push(item);
             }
 
             src.delete();

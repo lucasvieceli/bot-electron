@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, screen } from 'electron';
 import { WINDOW_BOMBCRYPTO_HEIGHT, WINDOW_BOMBCRYPTO_WIDTH } from '../../variables';
 import { AbortedError } from './aborted-error';
 import { centerTarget, findTarget } from './find-target';
@@ -11,8 +11,9 @@ import {
 } from './mouse.types';
 import { getTime, sleep, timeToSeconds } from './time';
 import { getWindowBombcryptoHeight, getWindowBombcryptoWidth } from './window';
+import {mouse, straightTo, Point, } from  '@nut-tree/nut-js'
+// const robotjs = require('robotjs');
 
-const robotjs = require('robotjs');
 const timeMouse = process.platform == 'win32' ? 1 : 3;
 
 export const moveMouseAndClick = async ({ x, y, abortController }: MoveMouseAndClick) => {
@@ -21,10 +22,11 @@ export const moveMouseAndClick = async ({ x, y, abortController }: MoveMouseAndC
             if (abortController && abortController.signal) {
                 abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
             }
-
-            await robotjs.moveMouseSmooth(x, y, timeMouse);
+            await mouse.move(straightTo(new Point(x,y)))
+            // await robotjs.moveMouseSmooth(x, y, timeMouse);
             await sleep(300);
-            await robotjs.mouseClick('left', false);
+            await mouse.leftClick()
+            // await robotjs.mouseClick('left', false);
             await sleep(500);
             resolve(true);
         } catch (e) {
@@ -122,14 +124,17 @@ export const moveAndDragMouse = async ({ x, y, abortController }: MoveAndDragMou
             abortController.signal.addEventListener('abort', () => reject(new AbortedError()));
         }
 
-        robotjs.moveMouseSmooth(x, y, timeMouse);
-        await sleep(300);
+        // robotjs.moveMouseSmooth(x, y, timeMouse);
+        await mouse.move(straightTo(new Point(x,y)))
+        await mouse.leftClick()
+        await mouse.scrollDown(200)
+        // await sleep(300);
+        // await mouse.drag(straightTo(new Point(x,y - getPosition(200))))
+        // robotjs.mouseToggle('down', 'left');
+        // robotjs.moveMouse(x, y - 200);
 
-        robotjs.mouseToggle('down', 'left');
-        robotjs.moveMouse(x, y - 200);
-
-        robotjs.dragMouse(x, y - 200);
-        robotjs.mouseToggle('up');
+        // robotjs.dragMouse(x, y - 200);
+        // robotjs.mouseToggle('up');
 
         resolve(true);
     });
@@ -140,6 +145,15 @@ export const clickCenterWindow = async (browser: BrowserWindow) => {
 
     const x = xWindow + getWindowBombcryptoWidth() / 2;
     const y = yWindow + getWindowBombcryptoHeight() / 2;
-    robotjs.moveMouseSmooth(x, y, 0);
-    robotjs.mouseClick('left', false);
+    await mouse.move(straightTo(new Point(x,y)))
+    await mouse.leftClick()
+    // robotjs.moveMouseSmooth(x, y, 0);
+    // robotjs.mouseClick('left', false);
 };
+
+
+export const getPosition = (value: number) => {
+    const factor = screen.getPrimaryDisplay().scaleFactor;
+
+    return value / factor
+}

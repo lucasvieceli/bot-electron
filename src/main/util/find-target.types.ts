@@ -38,6 +38,7 @@ export enum TargetNames {
     INPUT_USERNAME = 'input-username.png',
     INPUT_PASSWORD = 'input-password.png',
     LOGIN = 'login.png',
+    TERMS = 'terms.png',
 }
 
 export interface CenterTarget {
@@ -59,6 +60,7 @@ export interface FindTargetParams {
     threshold?: number;
     print?: PrintScreenResponse;
     abortController?: AbortController;
+    center?: boolean
 }
 export interface FindTargetRepeatParams extends FindTargetParams {
     timeOut?: number;

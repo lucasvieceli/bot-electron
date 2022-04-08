@@ -52,6 +52,7 @@ const rendererConfig = {
             inject: true,
         }),
         new webpack.HotModuleReplacementPlugin(),
+        
     ],
 };
 
@@ -90,7 +91,7 @@ const mainConfig = {
         extensions: ['.tsx', '.ts', '.js'],
     },
     //Sqlite3 won't work without this line.
-    externals: { sqlite3: 'commonjs sqlite3', robotjs: 'commonjs robotjs', 'node-window-manager': 'commonjs node-window-manager' },
+    externals: { sqlite3: 'commonjs sqlite3', '@nut-tree/nut-js': 'commonjs @nut-tree/nut-js', 'node-window-manager': 'commonjs node-window-manager' },
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist-webpack', 'main'),

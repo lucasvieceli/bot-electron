@@ -24,7 +24,7 @@ export class Browser {
 
     public onIsLoaded() {
         this.browserWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-            if (message == 'ccu:Received: \n') {
+            if (message.indexOf('UnloadTime:') != -1) {
                 this.isLoaded = true;
             }
         });
@@ -35,10 +35,11 @@ export class Browser {
             this.browserWindow.focus();
             this.browserWindow.setAlwaysOnTop(true);
             this.browserWindow.setAlwaysOnTop(false);
-            await sleep(500);
-            await clickCenterWindow(this.browserWindow);
-            await sleep(500);
         }
+        await sleep(500);
+        console.log('clicar no centro')
+        await clickCenterWindow(this.browserWindow);
+        await sleep(500);
     }
 
     public async resetPosition() {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage, screen } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';

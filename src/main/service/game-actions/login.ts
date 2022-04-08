@@ -1,9 +1,10 @@
 import AbortController from 'abort-controller';
 import { LogService } from '..';
 import { AbortedError } from '../../util/aborted-error';
+import { findTarget } from '../../util/find-target';
 import { TargetMatch, TargetNames } from '../../util/find-target.types';
 import { controlF5, typeKeyboard } from '../../util/keyboard';
-import { clickTarget } from '../../util/mouse';
+import { clickTarget, getPosition, moveMouseAndClick } from '../../util/mouse';
 import { getTime, sleep } from '../../util/time';
 import { Action, Browser, GameLoop } from '../game-api';
 
@@ -38,6 +39,7 @@ export class Login extends Action {
                 browser.loginAttempts = browser.loginAttempts + 1;
 
                 const clickSign = await this.clickLogin();
+                await this.checkTerms()
 
                 if (!clickSign) {
                     await LogService.registerLog('Não conseguiu fazer login', {}, browser.account);
@@ -63,28 +65,30 @@ export class Login extends Action {
         return await new Promise<TargetMatch | boolean>(async (resolve, reject) => {
             this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
             try {
-                let clicked: TargetMatch | boolean;
-                clicked = await clickTarget({
+                const [inputUser] = await findTarget({
                     target: TargetNames.INPUT_USERNAME,
                     threshold: 0.9,
-                    timeOut: 5,
                     abortController: this.controller,
+                    center: true
                 });
-                if (!clicked) return resolve(false);
+                if (!inputUser) return resolve(false);
 
+
+                await moveMouseAndClick({x :inputUser.x + getPosition(50), y: inputUser.y, abortController: this.controller});
                 await typeKeyboard(this.browser.account.user);
 
-                clicked = await clickTarget({
+                const [inputPassword] = await findTarget({
                     target: TargetNames.INPUT_PASSWORD,
                     threshold: 0.9,
-                    timeOut: 5,
+                    center: true,
                     abortController: this.controller,
                 });
-                if (!clicked) return resolve(false);
+                if (!inputPassword) return resolve(false);
 
+                await moveMouseAndClick({x :inputPassword.x + getPosition(50), y: inputPassword.y, abortController: this.controller});
                 await typeKeyboard(this.browser.account.password);
 
-                clicked = await clickTarget({
+                const clicked = await clickTarget({
                     target: TargetNames.LOGIN,
                     threshold: 0.9,
                     abortController: this.controller,
@@ -111,7 +115,6 @@ export class Login extends Action {
                     abortController: this.controller,
                     timeOut: 1,
                 });
-
                 if (click) {
                     clickTarget({
                         target: TargetNames.ACCEPT_BUTTON,
@@ -120,6 +123,28 @@ export class Login extends Action {
                     });
                 }
                 resolve(true);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+    private async checkTerms() {
+        return await new Promise(async (resolve, reject) => {
+            this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+            try {
+                await LogService.registerLog(
+                    'Verificando se precisa aceitar os termos de uso 2',
+                    {},
+                    this.browser.account,
+                );
+                const click = await clickTarget({
+                    target: TargetNames.TERMS,
+                    threshold: this.threshold,
+                    abortController: this.controller,
+                    timeOut: 1,
+                });
+               
+                resolve(click);
             } catch (e) {
                 reject(e);
             }

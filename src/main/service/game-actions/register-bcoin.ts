@@ -13,6 +13,10 @@ export class RegisterBcoin extends Action {
 
     async start(browser?: Browser): Promise<void> {
         this.controller = new AbortController();
+        
+        return
+
+        //desabilitado, precisa refazer
 
         await new Promise(async (resolve, reject) => {
             try {

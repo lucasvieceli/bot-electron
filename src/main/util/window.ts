@@ -7,6 +7,7 @@ import {
     WINDOW_BOMBCRYPTO_TOOL_BAR_HEIGHT,
 } from '../../variables';
 import Account from '../database/models/account.model';
+import { getPosition } from './mouse';
 import { sleep } from './time';
 
 export const createWindowBomb = async (account: Account, index: number): Promise<BrowserWindow> => {
@@ -23,6 +24,7 @@ export const createWindowBomb = async (account: Account, index: number): Promise
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
             nodeIntegration: true,
+            webSecurity: false,
             contextIsolation: false,
             enableRemoteModule: true,
             // zoomFactor: 1.0 / factor,
@@ -30,14 +32,14 @@ export const createWindowBomb = async (account: Account, index: number): Promise
         },
     });
 
-    // window.loadURL('https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime());
-    if (isDev) {
-        window.loadURL('http://localhost:8080/#/bombcrypto/' + account.name || account.metamaskId);
-    } else {
-        window.loadFile('./dist-webpack/renderer/index.html', {
-            hash: '/bombcrypto/' + account.name || account.metamaskId,
-        });
-    }
+    window.loadURL('https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime());
+    // if (isDev) {
+    //     window.loadURL('http://localhost:8080/#/bombcrypto/' + account.name || account.metamaskId);
+    // } else {
+    //     window.loadFile('./dist-webpack/renderer/index.html', {
+    //         hash: '/bombcrypto/' + account.name || account.metamaskId,
+    //     });
+    // }
 
     window.once('ready-to-show', async () => {
         window.webContents.setZoomFactor(1.0 / factor);
@@ -52,7 +54,7 @@ export const createWindowBomb = async (account: Account, index: number): Promise
 };
 
 export const getPositionBrowser = (index: number) => {
-    const marginTop = 180;
+    const marginTop = getPosition(180);
     const { workArea } = screen.getPrimaryDisplay();
     const height = getWindowBombcryptoHeight();
     const width = getWindowBombcryptoWidth();
@@ -103,5 +105,5 @@ export const getWindowBombcryptoToolBarHeight = () => {
 };
 
 export const getWindowBombcryptoHeight = () => {
-    return getWindowBombCryptoIframeHeight() + getWindowBombcryptoToolBarHeight();
+    return getWindowBombCryptoIframeHeight() 
 };

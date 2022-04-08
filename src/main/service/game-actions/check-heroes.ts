@@ -3,7 +3,7 @@ import { LogService } from '..';
 import { AbortedError } from '../../util/aborted-error';
 import { centerTarget, findTarget, findTargetRepeat } from '../../util/find-target';
 import { CenterTarget, TargetMatch, TargetNames } from '../../util/find-target.types';
-import { clickTarget, moveAndDragMouse, moveMouseAndClick } from '../../util/mouse';
+import { clickTarget, getPosition, moveAndDragMouse, moveMouseAndClick } from '../../util/mouse';
 import { printScreen } from '../../util/print-screen';
 import { sleep } from '../../util/time';
 import { Action, Browser, GameLoop } from '../game-api';
@@ -23,9 +23,33 @@ export class CheckHeroes extends Action {
                 await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
 
                 await this.goToHeroes();
-                await this.search();
+                await this.setAll()
+                //ate que consiga corrigir scroll vai se colocado pra todos trabalhar
+                // await this.search();
                 resolve(true);
             } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+
+
+    private async setAll() {
+        return await new Promise<boolean>(async (resolve, reject) => {
+            try {
+                this.controller.signal.addEventListener('abort', () => reject(new AbortedError()));
+
+                const [x,y] = this.browser.browserWindow.getPosition()
+
+
+                await moveMouseAndClick({x: getPosition(458 + x), y: getPosition(159 + y)})
+                await sleep(1000);
+                await moveMouseAndClick({x: getPosition(399+ x), y: getPosition(159 + y)})
+                await this.goToWork();
+                resolve(true);
+            } catch (e) {
+                console.log(e, 'check-heroes:search');
                 reject(e);
             }
         });
