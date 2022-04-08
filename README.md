@@ -14,7 +14,7 @@ Hoje o bot esta colocando todos para trabalhar, porque ainda não conseguir reso
 -   React
 -   Typescript
 -   TypeORM
--   RobotJS
+-   @nut-tree/nut-js
 -   OpenCV.js
 -   SQLlite
 
