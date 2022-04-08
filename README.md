@@ -6,6 +6,8 @@ BOT em desenvolvimento, toda ajuda é bem vinda.
 
 Quando for executado pela primeira vez, será criado uma pasta nos seus documentos com nome de "bot-bombcrypto", nela terá o banco de dados e as imagens que o bot usa para fazer o reconhecimento, você pode alterar essas imagens caso necessário
 
+Hoje o bot esta colocando todos para trabalhar, porque ainda não conseguir resolver problema de fazer scroll na lista dos heroes
+
 ## Tecnologias utilizadas
 
 -   Electron
@@ -52,6 +54,8 @@ Windows ainda não foi testado
 -   [x] Adicionar funcionalidade de excluir uma conta cadastrada
 -   [ ] Adicionar ação de colocar um herói para trabalhar quando for resetado o mapa
 -   [ ] Adicionar traduções para EN
+-   [ ] Corrigir scroll na listagem de heroes
+-   [ ] Atualizar electronjs
 
 ## Imagens
 
