@@ -23,8 +23,9 @@ export class Browser {
     }
 
     public onIsLoaded() {
-        this.browserWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+        this.browserWindow.webContents.on('console-message', async(event, level, message, line, sourceId) => {
             if (message.indexOf('UnloadTime:') != -1) {
+                await sleep(2000)
                 this.isLoaded = true;
             }
         });

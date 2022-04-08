@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { Link, useParams } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, Form, Spinner } from 'reactstrap';
-import { AccountUpdate as AccountUpdateDTO } from '../../../../main/dto/Account-update';
+import { AccountUpdate as AccountUpdateDTO } from '../../../../main/dto/account-update';
 import { AccountService } from '../../../services';
 import { ACCOUNT_INFO } from '../../../utils/react-query';
 import { Button } from '../../molecules';
@@ -41,7 +41,7 @@ const AccountUpdate: FC<AccountUpdateProps> = ({ onSuccess }) => {
     const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
 
-        setValue((old) => ({
+        setValue((old: any) => ({
             ...old,
             [name]: value,
         }));

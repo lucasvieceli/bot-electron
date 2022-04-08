@@ -215,7 +215,7 @@ export class GameLoop {
 
                 while (this.execute && !this.isPaused) {
                     for (let browser of this.browsers) {
-                        if ((await browser.checkLogged()) == false) return;
+                        if ((await browser.checkLogged()) == false) continue;
 
                         const currentTime = getTime();
 

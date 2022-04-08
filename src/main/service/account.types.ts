@@ -1,5 +1,5 @@
 import Account from '../database/models/account.model';
-import { AccountUpdate } from '../dto/Account-update';
+import { AccountUpdate } from '../dto/account-update';
 
 export interface PaginationParams {
     page?: number;
