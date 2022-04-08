@@ -65,7 +65,6 @@ async function createWindow() {
         });
     }catch(e){
         console.log(e);
-        alert(JSON.stringify(e))
         throw e
     }
 }
