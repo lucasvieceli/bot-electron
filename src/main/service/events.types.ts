@@ -21,6 +21,9 @@ export const EVENT_ACCOUNT_CREATE = 'account:create';
 export const EVENT_ACCOUNT_DELETE = 'account:delete';
 export const EVENT_ACCOUNT_CHANGE = 'account:change';
 export const EVENT_ACCOUNT_INFO = 'account:info';
+export const EVENT_CONFIG_GET_SYSTEM = 'config:get_system';
+export const EVENT_CONFIG_UPDATE = 'config:update';
+export const EVENT_CONFIG_UPDATE_COLUMN = 'config:update_column';
 
 export interface EventResponse<T> {
     status: 'success' | 'error';

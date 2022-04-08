@@ -26,7 +26,7 @@ export const createWindowBomb = async (account: Account, index: number): Promise
             nodeIntegration: true,
             webSecurity: false,
             contextIsolation: false,
-            enableRemoteModule: true,
+            // enableRemoteModule: true,
             // zoomFactor: 1.0 / factor,
             // zoomFactor: 1.0,
         },

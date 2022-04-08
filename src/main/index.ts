@@ -38,7 +38,7 @@ async function createWindow() {
         icon: nativeImage.createFromPath(path.join(__dirname, '..', '..', 'assets', 'images', 'bcoin.ico')),
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true,
+            // enableRemoteModule: true,
             // zoomFactor: 1.0 / factor,
         },
     });

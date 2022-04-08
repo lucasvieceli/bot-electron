@@ -1,28 +1,23 @@
-import { remote } from 'electron';
-import Database from '../../main/database/Database';
+import { ipcRenderer } from 'electron';
+import { UpdateResult } from 'typeorm';
 import Config from '../../main/database/models/config.model';
+import { EVENT_CONFIG_GET_SYSTEM, EVENT_CONFIG_UPDATE, EVENT_CONFIG_UPDATE_COLUMN } from '../../main/service/events.types';
+import { returnEvent } from '../utils/return-event';
 
-const database: Database = remote.getGlobal('database');
 
 const getConfigSystem = async (): Promise<Config[]> => {
-    const repo = database.getRepository<Config>('Config');
+    const { data } = returnEvent<Config[]>(await ipcRenderer.invoke(EVENT_CONFIG_GET_SYSTEM));
 
-    return repo.find({ where: { account: null } });
+    return data
 };
 const update = async (values: Config) => {
-    return await database.connection
-        .createQueryBuilder()
-        .update('Config')
-        .set(values)
-        .where('id = :id', { id: 'config' })
-        .execute();
+    const { data } = returnEvent<UpdateResult>(await ipcRenderer.invoke(EVENT_CONFIG_UPDATE, values));
+
+    return data
 };
 const updateColumn = async (column: string, value: string) => {
-    return await database.connection
-        .createQueryBuilder()
-        .update('Config')
-        .set({ value })
-        .where('name = :name', { name: column })
-        .execute();
+    const { data } = returnEvent<UpdateResult>(await ipcRenderer.invoke(EVENT_CONFIG_UPDATE_COLUMN, {column, value}));
+
+    return data
 };
 export default { getConfigSystem, update, updateColumn };

@@ -1,7 +1,7 @@
 import { UpdateResult } from 'typeorm';
 import Database from '../database/Database';
 import Config from '../database/models/config.model';
-
+import {UpdateColumnParams} from './config.types'
 const getConfigSystem = async (): Promise<Config[]> => {
     const repo = Database.getInstance().getRepository<Config>('Config');
 
@@ -43,4 +43,21 @@ const setConfig = async (name: string, value: string, accountId?: number): Promi
     return await repo.save(create);
 };
 
-export default { getConfigSystem, getConfig, setConfig };
+const update = async (values: Config) => {
+    return await Database.getInstance().connection
+        .createQueryBuilder()
+        .update('Config')
+        .set(values)
+        .where('id = :id', { id: 'config' })
+        .execute();
+};
+const updateColumn = async (params: UpdateColumnParams) => {
+    const {value, column} = params
+    return await Database.getInstance().connection
+        .createQueryBuilder()
+        .update('Config')
+        .set({ value })
+        .where('name = :name', { name: column })
+        .execute();
+};
+export default { getConfigSystem, getConfig, setConfig, update , updateColumn};

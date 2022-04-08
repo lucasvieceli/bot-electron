@@ -1,9 +1,12 @@
 import { globalShortcut, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 import { win } from '..';
+import Config from '../database/models/config.model';
 import { AccountCreate } from '../dto/account-create';
 import accountService from './account.service';
 import { AccountChange, AccountChangeName } from './account.types';
 import bcoinService from './bcoin.service';
+import configService from './config.service';
+import { UpdateColumnParams } from './config.types';
 import {
     EVENT_ACCOUNT_CHANGE,
     EVENT_ACCOUNT_CHANGE_NAME,
@@ -14,7 +17,9 @@ import {
     EVENT_BCOIN_AVERAGE_LAST_WEEK,
     EVENT_BCOIN_LIST,
     EVENT_BCOIN_TOTAL,
-    EVENT_BCOIN_TOTAL_YESTERDAY,
+    EVENT_BCOIN_TOTAL_YESTERDAY, EVENT_CONFIG_GET_SYSTEM,
+    EVENT_CONFIG_UPDATE,
+    EVENT_CONFIG_UPDATE_COLUMN,
     EVENT_GAME_LOOP_BROWSER,
     EVENT_GAME_LOOP_CONTINUE,
     EVENT_GAME_LOOP_PAUSE,
@@ -25,7 +30,7 @@ import {
     EVENT_LOG_LIST,
     EVENT_MAP_AVERAGE_LAST_WEEK,
     EVENT_MAP_LIST,
-    EVENT_MAP_TOTAL,
+    EVENT_MAP_TOTAL
 } from './events.types';
 import { GameLoop } from './game-api/game-loop.class';
 import logService from './log.service';
@@ -70,6 +75,18 @@ const registerEvents = async () => {
     ipcMain.on(EVENT_ACCOUNT_CHANGE_NAME, async (e: IpcMainEvent, params: AccountChangeName) => {
         e.returnValue = await accountService.changeName(params);
     });
+    ipcMain.handle(
+        EVENT_CONFIG_GET_SYSTEM,
+        async () => await formatResultEvent(configService.getConfigSystem()),
+    );
+    ipcMain.handle(
+        EVENT_CONFIG_UPDATE,
+        async (e: IpcMainInvokeEvent, params: Config) => await formatResultEvent(configService.update(params)),
+    );
+    ipcMain.handle(
+        EVENT_CONFIG_UPDATE_COLUMN,
+        async (e: IpcMainInvokeEvent, params: UpdateColumnParams) => await formatResultEvent(configService.updateColumn(params)),
+    );
     ipcMain.handle(
         EVENT_ACCOUNT_CHANGE,
         async (e: IpcMainInvokeEvent, params: AccountChange) => await formatResultEvent(accountService.change(params)),
