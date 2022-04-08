@@ -4,7 +4,7 @@ import { endOfDay, startOfDay } from 'date-fns';
 import Database from '../database/Database';
 import Account from '../database/models/account.model';
 import { AccountCreate } from '../dto/account-create';
-import { AccountUpdate } from '../dto/Account-update';
+import { AccountUpdate } from '../dto/account-update';
 import { AccountChange, AccountChangeName, PaginationParams } from './account.types';
 import paginateService from './paginate.service';
 
