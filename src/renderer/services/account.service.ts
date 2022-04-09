@@ -14,6 +14,7 @@ import { PaginationResponse } from '../../main/service/paginate.types';
 import { returnEvent } from '../utils/return-event';
 
 const getName = (account: Account) => {
+    if(!account) return null;
     return account.name || account.metamaskId;
 };
 const getPagination = async (params: PaginationParams): Promise<PaginationResponse<Account>> => {

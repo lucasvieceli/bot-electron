@@ -22,9 +22,7 @@
         "start:dev": "webpack-dev-server --config webpack.config.dev.js --port 8080 ",
         "start:prod": "webpack-dev-server --config webpack.config.prod.js --port 8080 ",
         "start:electron": "npm run build:dev && electron ./dist-webpack/main/bundle.js --trace-uncaught",
-        "migration": "typeorm migration:create -d ./src/main/database/migrations -n ",
-        "build:python": "npx rimraf ./bot-build/mac &&   python3.10 -m PyInstaller ./functions.py --noconsole --noconfirm --name bot  --distpath ./bot-build/mac --onefile",
-        "env:python": "source ./botbomb/bin/activate"
+        "migration": "typeorm migration:create -d ./src/main/database/migrations -n "
     },
     "dependencies": {
         "@hot-loader/react-dom": "^17.0.2",
@@ -34,11 +32,9 @@
         "axios": "^0.25.0",
         "babel-preset-es2015": "^6.24.1",
         "cancelable-promise": "^4.2.1",
+        "class-transformer": "^0.5.1",
         "class-validator": "^0.13.2",
-        "cors": "^2.8.5",
         "date-fns": "^2.28.0",
-        "express": "^4.17.3",
-        "express-class-validator": "^1.0.3",
         "i18next": "^21.6.10",
         "jimp": "^0.16.1",
         "node-abi": "^3.8.0",
