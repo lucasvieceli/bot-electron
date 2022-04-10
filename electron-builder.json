@@ -1,18 +1,18 @@
 {
     "appId": "com.bot.bombcrypto.app",
-    "files": ["dist-webpack/main/**/*", "dist-webpack/renderer/**/*", "./assets/**/*"],
+    
+    "extends": null,
+    "files": [
+      "build/**/*",
+      "./assets/**/*"
+    ],
     "directories": {
-        "buildResources": "public"
+      "buildResources": "assets"
     },
     "extraFiles": [
         {
             "from": "assets",
             "to": "assets",
-            "filter": ["**/*"]
-        },
-        {
-            "from": "python",
-            "to": "python",
             "filter": ["**/*"]
         }
     ],
