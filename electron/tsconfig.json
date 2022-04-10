@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "outDir": "../build", // Output transpiled files to build/electron/
+      "rootDir": "../",
+      "moduleResolution": "node",
+      "noEmitOnError": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "strictPropertyInitialization": false,
+      "jsx": "react-jsx",
+      "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+      "typeRoots": [
+        "node_modules/@types"
+      ]
+    }
+  }

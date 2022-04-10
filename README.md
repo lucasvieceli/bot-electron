@@ -1,73 +1,46 @@
-## Sobre
+# Getting Started with Create React App
 
-[Imagens demonstração](#Imagens)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-BOT em desenvolvimento, toda ajuda é bem vinda.
+## Available Scripts
 
-Quando for executado pela primeira vez, será criado uma pasta nos seus documentos com nome de "bot-bombcrypto", nela terá o banco de dados e as imagens que o bot usa para fazer o reconhecimento, você pode alterar essas imagens caso necessário
+In the project directory, you can run:
 
-Hoje o bot esta colocando todos para trabalhar, porque ainda não conseguir resolver problema de fazer scroll na lista dos heroes
+### `npm start`
 
-## se alguem que entende de electronJS quiser ajudar entra em contato telegram @lucasvieceli
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## Tecnologias utilizadas
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
--   Electron
--   React
--   Typescript
--   TypeORM
--   @nut-tree/nut-js
--   OpenCV.js
--   SQLlite
+### `npm test`
 
-## Funcionalidades
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
--   Multi idioma
--   Multi account
--   Registra os bcoins do baú
--   Relatórios
--   Valor da moeda em tempo real
+### `npm run build`
 
-## Instalação em desenvolvimento
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-instale NVM na sua máquina
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-```
-nvm use
-npm i
-npm start
-```
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## BUILD
+### `npm run eject`
 
-Windows ainda não foi testado
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-```
-    npm run build && npx electron-builder --mac
-    npm run build && npx electron-builder --linux --x64
-    npm run build && npx electron-builder --windows
-```
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-## O que falta
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
--   [x] Melhorar reconhecimento das imagens
--   [ ] Arrumar CSS componente terminal
--   [x] Colocar multi accoount, desenvolver uma lib para mac,linux e windows
--   [ ] Adicionar multi threads
--   [ ] Adicionar self update, para quando for lançado uma versão, todos receberem atualização
--   [x] Adicionar abortcontroller nas ações
--   [x] Adicionar funcionalidade de excluir uma conta cadastrada
--   [ ] Adicionar ação de colocar um herói para trabalhar quando for resetado o mapa
--   [ ] Adicionar traduções para EN
--   [ ] Corrigir scroll na listagem de heroes
--   [ ] Atualizar electronjs
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Imagens
+## Learn More
 
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/7.gif?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/1.png?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/2.png?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/3.png?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/4.png?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/5.png?raw=true)
-![alt text](https://github.com/lucasvieceli/bot-electron/blob/main/6.png?raw=true)
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
