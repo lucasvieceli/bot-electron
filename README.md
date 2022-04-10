@@ -63,7 +63,7 @@ Windows ainda não foi testado
 -   [ ] Adicionar ação de colocar um herói para trabalhar quando for resetado o mapa
 -   [ ] Adicionar traduções para EN
 -   [ ] Corrigir scroll na listagem de heroes
--   [ ] Atualizar electronjs
+-   [x] Atualizar electronjs
 
 ## Imagens
 
