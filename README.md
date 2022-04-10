@@ -40,7 +40,7 @@ instale NVM na sua máquina
 ```
 nvm use
 npm i
-npm start
+npm electron:dev
 ```
 
 ## BUILD
@@ -48,9 +48,7 @@ npm start
 Windows ainda não foi testado
 
 ```
-    npm run build && npx electron-builder --mac
-    npm run build && npx electron-builder --linux --x64
-    npm run build && npx electron-builder --windows
+    npm run electron:build
 ```
 
 ## O que falta
