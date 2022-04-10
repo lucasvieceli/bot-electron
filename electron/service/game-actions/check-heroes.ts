@@ -23,9 +23,9 @@ export class CheckHeroes extends Action {
                 await LogService.registerLog('Buscando heróis disponíveis', {}, browser.account);
 
                 await this.goToHeroes();
-                // await this.setAll()
+                await this.setAll()
                 //ate que consiga corrigir scroll vai se colocado pra todos trabalhar
-                await this.search();
+                // await this.search();
                 resolve(true);
             } catch (e) {
                 reject(e);
