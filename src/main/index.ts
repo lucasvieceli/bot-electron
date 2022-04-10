@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow, Menu, nativeImage, Notification } from 'electron';
 import path from 'path';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database/Database';
@@ -52,16 +52,42 @@ async function createWindow() {
         win.maximize();
         win.on('close', () => close());
 
+
+
         if (isDev) {
             win.loadURL('http://localhost:8080');
         } else {
             win.loadFile('./dist-webpack/renderer/index.html');
         }
 
+
+        // const dockMenu = Menu.buildFromTemplate([
+        //     {
+        //       label: 'Start Bot',
+        //       click () { const NOTIFICATION_TITLE = 'Basic Notification'
+        //       const NOTIFICATION_BODY = 'Notification from the Main process'
+              
+        //         new Notification({ title: NOTIFICATION_TITLE, body: NOTIFICATION_BODY }).show() }
+        //     }, {
+        //       label: 'Stop bot',
+        //       submenu: [
+        //         { label: 'Basic' },
+        //         { label: 'Pro' }
+        //       ]
+        //     },
+        //     { label: 'New Command...' }
+        //   ])
+
+        //   if (process.platform === 'darwin') {
+        //     app.dock.setMenu(dockMenu)
+        //   }
+
         win.webContents.on('did-finish-load', function () {
             win.webContents.setZoomFactor(1);
 
             win.show();
+
+            
         });
     }catch(e){
         console.log(e);

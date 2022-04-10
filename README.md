@@ -8,6 +8,8 @@ Quando for executado pela primeira vez, será criado uma pasta nos seus document
 
 Hoje o bot esta colocando todos para trabalhar, porque ainda não conseguir resolver problema de fazer scroll na lista dos heroes
 
+## se alguem que entende de electronJS quiser ajudar entra em contato telegram @lucasvieceli
+
 ## Tecnologias utilizadas
 
 -   Electron
@@ -28,7 +30,10 @@ Hoje o bot esta colocando todos para trabalhar, porque ainda não conseguir reso
 
 ## Instalação em desenvolvimento
 
+instale NVM na sua máquina
+
 ```
+nvm use
 npm i
 npm start
 ```
