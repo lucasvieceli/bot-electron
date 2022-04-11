@@ -57,7 +57,7 @@ async function createWindow() {
         win.maximize();
         win.on('close', () => close());
 
-        win.webContents.openDevTools()
+        // win.webContents.openDevTools()
 
         if (isDev) {
             win.loadURL('http://localhost:3000/index.html');
@@ -91,10 +91,7 @@ async function createWindow() {
 
         win.webContents.on('did-finish-load', function () {
             win.webContents.setZoomFactor(1);
-
             win.show();
-
-            
         });
     }catch(e){
         console.log(e);
