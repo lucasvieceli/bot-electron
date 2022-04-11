@@ -48,7 +48,8 @@
     "eject": "react-app-rewired  eject",
     "postinstall": "electron-builder install-app-deps",
     "electron:dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
-    "electron:build": "yarn build && tsc -p electron && electron-builder"
+    "electron:build": "yarn build && tsc -p electron && electron-builder",
+    "migration": "typeorm migration:create -d ./electron/database/migrations -n "
   },
   "eslintConfig": {
     "extends": [

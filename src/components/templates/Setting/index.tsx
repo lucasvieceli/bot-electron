@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Spinner } from 'reactstrap';
 import Config from '../../../../electron/database/models/config.model';
 import { ConfigService } from '../../../services';
@@ -9,6 +10,7 @@ interface SettingProps {}
 
 const Setting: FC<SettingProps> = () => {
     const [value, setValue] = useState<Config[] >([]);
+    const { t } = useTranslation();
     useEffect(() => {
         (async () => {
             const result = await ConfigService.getConfigSystem();
@@ -38,9 +40,9 @@ const Setting: FC<SettingProps> = () => {
                     <>
                         <Row>
                             <ContainerBlock>
-                                <TextTitle>Intervalos</TextTitle>
+                                <TextTitle>{t('Intervalos')}</TextTitle>
                                 <Content>
-                                    <TextSubTitle>Intervalo em minutos</TextSubTitle>
+                                    <TextSubTitle>{t('range in minutes')}</TextSubTitle>
                                     <ConfigItemNumber
                                         value={getValue('interval-work')}
                                         name="interval-work"
@@ -62,7 +64,7 @@ const Setting: FC<SettingProps> = () => {
                                     <ConfigItemNumber
                                         value={getValue('interval-bcoin')}
                                         name="interval-bcoin"
-                                        text="Tempo para verificar registar quantidade de bcoin no baú"
+                                        text="Tempo para verificar registrar quantidade de bcoin no baú"
                                         onChange={handleChange}
                                     />
                                 </Content>
@@ -71,8 +73,7 @@ const Setting: FC<SettingProps> = () => {
                                 <TextTitle>Confiança</TextTitle>
                                 <Content>
                                     <TextSubTitle>
-                                        O quão confiante o bot precisa estar para clicar nos botões (valores entre 0 e
-                                        1. 0 é o valor mínimo, 1 é o valor máximo)
+                                        {t('O quão confiante o bot precisa estar para clicar nos botões (valores entre 0 e 1. 0 é o valor mínimo, 1 é o valor máximo')}
                                     </TextSubTitle>
                                     <ConfigItemNumber
                                         value={getValue('threshold-default')}
@@ -116,12 +117,7 @@ const Setting: FC<SettingProps> = () => {
                                         name="threshold-hero-super-legend"
                                         onChange={handleChange}
                                     />
-                                    <ConfigItemNumber
-                                        text="Botão Carteira metamask"
-                                        value={getValue('threshold-button-metamask')}
-                                        name="threshold-button-metamask"
-                                        onChange={handleChange}
-                                    />
+
                                     <ConfigItemNumber
                                         text="Botão Work"
                                         value={getValue('threshold-button-work')}
@@ -129,7 +125,7 @@ const Setting: FC<SettingProps> = () => {
                                         onChange={handleChange}
                                     />
                                     <ConfigItemNumber
-                                        text="Barra vender estamina"
+                                        text="Barra verde estamina"
                                         value={getValue('threshold-bar-life')}
                                         name="threshold-bar-life"
                                         onChange={handleChange}
@@ -140,7 +136,7 @@ const Setting: FC<SettingProps> = () => {
                         <Row>
                             <ContainerBlock>
                                 <Content>
-                                    <TextSubTitle>Irá colocar os heróis quando o mapa for resetado</TextSubTitle>
+                                    <TextSubTitle>{t('Irá colocar os heróis quando o mapa for resetado (em desenvolvimento)')}</TextSubTitle>
                                     <ConfigItemSelect
                                         text="Ativado"
                                         width={75}

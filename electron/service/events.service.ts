@@ -9,7 +9,7 @@ import {
     EVENT_BCOIN_AVERAGE_LAST_WEEK,
     EVENT_BCOIN_LIST,
     EVENT_BCOIN_TOTAL,
-    EVENT_BCOIN_TOTAL_YESTERDAY, EVENT_CONFIG_GET_SYSTEM,
+    EVENT_BCOIN_TOTAL_YESTERDAY, EVENT_CONFIG_GET, EVENT_CONFIG_GET_SYSTEM,
     EVENT_CONFIG_UPDATE,
     EVENT_CONFIG_UPDATE_COLUMN, EVENT_GAME_LOOP_CONTINUE,
     EVENT_GAME_LOOP_PAUSE,
@@ -53,6 +53,7 @@ const registerEvents = async () => {
     contextBridge.createIpcChannel(EVENT_BCOIN_AVERAGE_LAST_WEEK, bcoinService.getAverageBcoinLastWeek);
     contextBridge.createIpcChannel(EVENT_ACCOUNT_LIST, accountService.pagination);
     contextBridge.createIpcChannel(EVENT_ACCOUNT_CHANGE_NAME, accountService.changeName);
+    contextBridge.createIpcChannel(EVENT_CONFIG_GET, configService.getConfig);
     contextBridge.createIpcChannel(EVENT_CONFIG_GET_SYSTEM, async ()=>{
         return await formatResultEvent(configService.getConfigSystem())
     });

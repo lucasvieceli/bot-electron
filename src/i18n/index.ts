@@ -15,7 +15,6 @@ export const languagesCurrency: Record<LanguagesType, LanguagesCurrency> = {
     'pt-BR': 'brl',
     en: 'usd',
 };
-
 i18n.use(initReactI18next).init({
     lng: 'pt-BR',
     interpolation: {

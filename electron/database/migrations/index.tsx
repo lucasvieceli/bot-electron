@@ -9,3 +9,4 @@ export { AlterAccount1645622498304 } from './1645622498304-alterAccount';
 export { InsertGameLoop1646050793856 } from './1646050793856-InsertGameLoop';
 export { InsertGameLoop1646052787862 } from './1646052787862-InsertGameLoop';
 export { AlterAccount1646219324124 } from './1646219324124-AlterAccount';
+export { CreateConfig1649707795766 } from './1649707795766-CreateConfig';

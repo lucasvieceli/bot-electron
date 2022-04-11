@@ -13,6 +13,7 @@ import {
     CreateNewMap1643893646832,
     InsertGameLoop1646050793856,
     InsertGameLoop1646052787862,
+    CreateConfig1649707795766,
 } from './migrations';
 import Account from './models/account.model';
 import Bcoin from './models/bcoin.model';
@@ -54,6 +55,7 @@ export default class Database {
                     InsertGameLoop1646050793856,
                     InsertGameLoop1646052787862,
                     AlterAccount1646219324124,
+                    CreateConfig1649707795766,
                 ],
                 subscribers: [LogSubscriber],
                 migrationsRun: true,

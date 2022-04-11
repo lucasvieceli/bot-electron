@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Input, Row, TextTitle } from './styles';
-
+import { useTranslation } from 'react-i18next';
 interface ConfigItemSelectProps {
     text: string;
     width: number;
@@ -14,17 +14,18 @@ interface ConfigItemSelectProps {
 }
 
 const ConfigItemSelect: FC<ConfigItemSelectProps> = ({ text, values, width, value, onChange, name }) => {
+    const { t } = useTranslation();
     const handleChange = (e: any) => {
         onChange(e.nativeEvent.target.value, name);
     };
 
     return (
         <Row>
-            <TextTitle>{text}</TextTitle>
+            <TextTitle>{t(text)}</TextTitle>
             <Input bsSize="sm" type="select" value={value} style={{ width }} onChange={handleChange}>
                 {values.map((v) => (
                     <option key={v.id} value={v.id}>
-                        {v.label}
+                        {t(v.label)}
                     </option>
                 ))}
             </Input>
