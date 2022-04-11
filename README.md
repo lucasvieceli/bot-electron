@@ -35,7 +35,7 @@ instale NVM na sua máquina
 ```
 nvm use
 npm i
-npm electron:dev
+npm run electron:dev
 ```
 
 ## BUILD
