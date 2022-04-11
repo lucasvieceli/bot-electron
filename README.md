@@ -1,9 +1,4 @@
-An error occurred running the Unity content on this page. See your browser JavaScript console for more info. The error was:
-SecurityError: Blocked a frame with origin "https://app.bombcrypto.io" from accessing a cross-origin frame.
-Error: Blocked a frame with origin "https://app.bombcrypto.io" from accessing a cross-origin frame.
-at window.AF (https://websdk.appsflyer.com/?st=pba&:2:2245)
-at _logEventAppsFlyer (https://app.bombcrypto.io/webgl/Build/8b7d9a15924a5ac476d66b7bc06b9515.js:1:294582)
-at https://app.bombcrypto.io/webgl/Build/99e60b7e5f35a1f2374b0b41d19aa3## Sobre
+## Sobre
 
 [Imagens demonstração](#Imagens)
 
