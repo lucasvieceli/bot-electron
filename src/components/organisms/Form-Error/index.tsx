@@ -16,11 +16,11 @@ const FormErrors: FC<FormErrorsProps> = ({ errors }) => {
                     {errors.map((error: any) =>
                         Object.keys(error.constraints).map((key) => {
                             const property = `fieldName${error.property}`;
-                            const msg = error.constraints[key];
+                            const translateProperty = t(property)
 
                             return (
                                 <>
-                                    {t(error.constraints[key], { [property]: t(property) })} <br />
+                                    {t(error.constraints[key], { 'fieldName': translateProperty })} <br />
                                 </>
                             );
                         }),
