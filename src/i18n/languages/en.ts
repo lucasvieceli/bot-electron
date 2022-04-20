@@ -93,6 +93,7 @@ export default {
         'Herói Comum': 'Common hero',
         'Herói raro': 'Rare hero',
         'Herói super raro': 'Super rare hero',
+        'Herói épico':'Epic hero',
         'Herói lendário': 'Legendary hero',
         'Herói super lendário': 'Super legendary hero',
         'Botão Work': 'Work button',
