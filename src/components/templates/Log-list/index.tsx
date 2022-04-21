@@ -23,7 +23,7 @@ const LogList: FC<LogListProps> = ({}) => {
                     <BreadcrumbItem active>{t('Logs')}</BreadcrumbItem>
                 </Breadcrumb>
 
-                <TextTitle>{t('Mapas')}</TextTitle>
+                <TextTitle>{t('Logs')}</TextTitle>
                 <TextSubTitle>{t('Lista das ações executadas pelo bot')}</TextSubTitle>
                 <LogListOrg />
             </Container>

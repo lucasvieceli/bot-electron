@@ -33,7 +33,23 @@ export const createWindowBomb = async (account: Account, index: number): Promise
         },
     });
 
-    window.loadURL('https://app.bombcrypto.io/webgl/index.html?a=' + new Date().getTime());
+    window.loadURL('https://app.bombcrypto.io/?a=' + new Date().getTime());
+
+    window.webContents.on('did-finish-load', ()=>{
+        let code = `
+            let root = document.getElementById("root")
+
+            root.removeChild(root.children[0])
+        
+        
+            let iframe = document.createElement('iframe');
+            iframe.src = "./webgl/index.html"
+            iframe.width = ${WINDOW_BOMBCRYPTO_IFRAME_WIDTH / factor}
+            iframe.height = ${WINDOW_BOMBCRYPTO_IFRAME_HEIGHT / factor}
+            root.appendChild(iframe)`;
+        window.webContents.executeJavaScript(code);
+    });
+    
     // if (isDev) {
     //     window.loadURL('http://localhost:8080/#/bombcrypto/' + account.name || account.metamaskId);
     // } else {
